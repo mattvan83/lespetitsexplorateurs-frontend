@@ -22,7 +22,7 @@
     "@react-navigation/native-stack": "6",
     "@reduxjs/toolkit": "1.8.3",
     "expo": "~50.0.8",
-    "expo-location": "~16.5.4",
+    "expo-location": "16.5.5",
     "expo-status-bar": "~1.11.1",
     "react": "18.2.0",
     "react-dom": "18",
@@ -37,7 +37,7 @@
     "@babel/core": "^7.20.0",
     "@testing-library/react-native": "10.1.1",
     "jest": "^29.7.0",
-    "jest-expo": "49",
+    "jest-expo": "50.0.2",
     "node-fetch": "2",
     "react-test-renderer": "18"
   },
