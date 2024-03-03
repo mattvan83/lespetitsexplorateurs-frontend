@@ -11,6 +11,8 @@ const globalStyles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
         color: '#120D26',
+        marginTop: 80,
+        marginLeft : 20,
     },
     title3: {
         fontSize: 16,
