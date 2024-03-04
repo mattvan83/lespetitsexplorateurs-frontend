@@ -16,7 +16,7 @@ import InputLocalisation from '../components/InputLocalisation';
 
 export default function FiltersScreen({ navigation }) {
   const [price, setPrice] = useState(0);
-  const [scope, setScope] = useState(0);
+  const [scope, setScope] = useState(1);
 
   const categories = [
     { name: 'Sport', iconPath: '../assets/icones/cat-sport.png' },
@@ -80,27 +80,27 @@ export default function FiltersScreen({ navigation }) {
       <ScrollView style={styles.filtersContainer}>
         <Text style={globalStyles.title2}>Filtres</Text>
 
-        <Text style={globalStyles.title3}>Catégories</Text>
+        <Text style={globalStyles.title4}>Catégories</Text>
         <ScrollView horizontal={true} style={styles.filters}>
           {categoryList}
         </ScrollView>
 
-        <Text style={globalStyles.title3}>Date</Text>
+        <Text style={globalStyles.title4}>Date</Text>
         <ScrollView horizontal={true} style={styles.filters}>
           {dateList}
         </ScrollView>
 
-        <Text style={globalStyles.title3}>Moment de la journée</Text>
+        <Text style={globalStyles.title4}>Moment de la journée</Text>
         <ScrollView horizontal={true} style={styles.filters}>
           {momentList}
         </ScrollView>
 
-        <Text style={globalStyles.title3}>Tranche d'âge</Text>
+        <Text style={globalStyles.title4}>Tranche d'âge</Text>
         <ScrollView horizontal={true} style={styles.filters}>
           {ageList}
         </ScrollView>
 
-        <Text style={globalStyles.title3}>Prix : 0 - {price} €</Text>
+        <Text style={globalStyles.title4}>Prix : 0 - {price} €</Text>
         <Slider
           style={styles.slider}
           lowerLimit={0}
@@ -112,17 +112,21 @@ export default function FiltersScreen({ navigation }) {
           step={1}
           onValueChange={(value) => setPrice(value)}
         />
+        <View style={styles.sliderBottom}>
+          <Text style={styles.textSlider}>0€</Text>
+          <Text style={styles.textSlider}>30€</Text>
+        </View>
 
-        <Text style={globalStyles.title3}>Localisation</Text>
+        <Text style={globalStyles.title4}>Localisation</Text>
 
         <InputLocalisation />
 
 
-        <Text style={globalStyles.title3}>Dans un rayon de {scope}km</Text>
+        <Text style={globalStyles.title4}>Dans un rayon de {scope}km</Text>
         <Slider
           style={styles.slider}
-          lowerLimit={0}
-          minimumValue={0}
+          lowerLimit={1}
+          minimumValue={1}
           maximumValue={50}
           upperLimit={50}
           minimumTrackTintColor="#5669FF"
@@ -130,7 +134,10 @@ export default function FiltersScreen({ navigation }) {
           step={1}
           onValueChange={(value) => setScope(value)}
         />
-
+        <View style={styles.sliderBottom}>
+          <Text style={styles.textSlider}>1km</Text>
+          <Text style={styles.textSlider}>50km</Text>
+        </View>
 
 
       </ScrollView>
@@ -231,5 +238,15 @@ const styles = StyleSheet.create({
     width: '90%',
     height: 40,
     alignSelf: 'center',
+  },
+  sliderBottom: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '90%',
+    alignSelf: 'center',
+  },
+  textSlider: {
+    fontSize: 14,
+    color: '#8A8AA3',
   }
 });
