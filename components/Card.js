@@ -21,12 +21,21 @@ export default function Card({
           <Text style={styles.activityLocation}>{activityLocation}</Text>
         </View>
         {/* Icone si isFavorite=false */}
-        <Icon
-          style={styles.heartIcon}
-          name="heart-outline"
-          size={28}
-          color="#EB5757"
-        />
+        {!isFavorite ? (
+          <Icon
+            style={styles.heartIcon}
+            name="heart-outline"
+            size={28}
+            color="#EB5757"
+          />
+        ) : (
+          <Icon
+            style={styles.heartIcon}
+            name="heart"
+            size={20}
+            color="#EB5757"
+          />
+        )}
         {/* Icone si isFavorite=true */}
         {/* <Icon style={styles.heartIcon} name="heart" size={20} color="#EB5757" /> */}
       </View>

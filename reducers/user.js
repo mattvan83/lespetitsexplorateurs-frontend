@@ -7,6 +7,7 @@ const initialState = {
     firstName: null,
     latitude: null,
     longitude: null,
+    activities: [],
   },
 };
 
@@ -28,8 +29,12 @@ export const userSlice = createSlice({
       state.value.latitude = action.payload.latitude;
       state.value.longitude = action.payload.longitude;
     },
+    importActivities: (state, action) => {
+      state.value.activities = action.payload;
+    },
   },
 });
 
-export const { login, logout, addCurrentLocation } = userSlice.actions;
+export const { login, logout, addCurrentLocation, importActivities } =
+  userSlice.actions;
 export default userSlice.reducer;

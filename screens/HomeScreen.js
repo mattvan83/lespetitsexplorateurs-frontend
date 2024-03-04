@@ -15,7 +15,9 @@ import globalStyles from "../globalStyles";
 import { useEffect, useState } from "react";
 import * as Location from "expo-location";
 import { useDispatch, useSelector } from "react-redux";
-import { addCurrentLocation } from "../reducers/user";
+import { addCurrentLocation, importActivities } from "../reducers/user";
+
+const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 
 export default function HomeScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
@@ -37,6 +39,36 @@ export default function HomeScreen({ navigation }) {
     })();
   }, []);
 
+  useEffect(() => {
+    if (!user.latitude && !user.longitude) {
+      fetch(`${BACKEND_ADDRESS}/activities/nogeoloc/${user.token}`)
+        .then((response) => response.json())
+        .then((data) => {
+          data.result && dispatch(importActivities(data.activities));
+        });
+    } else {
+      fetch(
+        `${BACKEND_ADDRESS}/activities/geoloc/${user.token}/${user.latitude}/${user.longitude}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          data.result && dispatch(importActivities(data.activities));
+        });
+    }
+  }, []);
+
+  // const activities = user.activities.map((activity, i) => {
+  //   return (
+  //     <Card
+  //       imagePath={activity.imgUrl}
+  //       activityDate={"Jeudi 15 Mars à 10h"}
+  //       activityName={activity.name}
+  //       activityLocation={`${activity.postalCode}, ${activity.city}`}
+  //       isFavorite={activity.isLiked}
+  //     ></Card>
+  //   );
+  // });
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
@@ -54,17 +86,21 @@ export default function HomeScreen({ navigation }) {
                 activityDate={"Jeudi 15 Mars à 10h"}
                 activityName={"Eveil musical"}
                 activityLocation={"26240, SAINT-VALLIER"}
+                isFavorite={true}
               ></Card>
               <Card
                 activityDate={"Jeudi 15 Mars à 10h"}
                 activityName={"Eveil musical"}
                 activityLocation={"26240, SAINT-VALLIER"}
+                isFavorite={false}
               ></Card>
               <Card
                 activityDate={"Jeudi 15 Mars à 10h"}
                 activityName={"Eveil musical"}
                 activityLocation={"26240, SAINT-VALLIER"}
+                isFavorite={false}
               ></Card>
+              {/* {activities} */}
             </ScrollView>
           </View>
         </View>
