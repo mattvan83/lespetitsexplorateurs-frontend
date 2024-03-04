@@ -6,7 +6,7 @@ import {
   View,
   TouchableOpacity,
 } from "react-native";
-import SvgUri from "react-native-svg-uri";
+// import SvgUri from "react-native-svg-uri";
 
 export default function SearchBar() {
   const handleSubmit = () => {};
@@ -15,26 +15,23 @@ export default function SearchBar() {
     <View style={styles.searchContainer}>
       <View style={styles.search}>
         <View style={styles.searchBar}>
-          <SvgUri
+          {/* <SvgUri
             width="28"
             height="28"
             source={require("../assets/icons/search-grey.svg")}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Rechercher une activité..."
-          />
+          /> */}
+          <TextInput style={styles.input} placeholder="Rechercher un lieu..." />
         </View>
         <TouchableOpacity
           onPress={() => handleSubmit()}
           style={styles.filtersButton}
           activeOpacity={0.8}
         >
-          <SvgUri
+          {/* <SvgUri
             width="28"
             height="28"
             source={require("../assets/icons/search-filters-darker.svg")}
-          />
+          /> */}
           <Text style={styles.textButton}>Filtres</Text>
         </TouchableOpacity>
       </View>
