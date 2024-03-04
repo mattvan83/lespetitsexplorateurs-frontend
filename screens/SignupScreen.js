@@ -12,6 +12,7 @@ export default function SignupScreen({ navigation }) {
   };
 
   return (
+    
     <View style={styles.container}>
       <Text>Signup Screen</Text>
       <TouchableOpacity
@@ -28,7 +29,7 @@ export default function SignupScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "blue",
+    backgroundColor: "white",
     alignItems: "center",
     justifyContent: "center",
   },

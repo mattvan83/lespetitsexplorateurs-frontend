@@ -24,6 +24,15 @@ import ActivitiesScreen from "./screens/ActivitiesScreen";
 import MessagingScreen from "./screens/MessagingScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
+
+import user from './reducers/user';
+
+const store = configureStore({
+ reducer: { user },
+});
+
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
@@ -63,6 +72,7 @@ const TabNavigator = () => {
 
 export default function App() {
   return (
+    <Provider store={store}>
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Signup" component={SignupScreen} />
@@ -88,6 +98,7 @@ export default function App() {
         <Stack.Screen name="TabNavigator" component={TabNavigator} />
       </Stack.Navigator>
     </NavigationContainer>
+    </Provider>
   );
 }
 
