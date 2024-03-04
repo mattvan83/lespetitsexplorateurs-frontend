@@ -1,5 +1,5 @@
 import { StyleSheet, TextInput, Text, Image, View, TouchableOpacity } from 'react-native';
-import SvgUri from 'react-native-svg-uri';
+// import SvgUri from 'react-native-svg-uri';
 
 export default function InputLocalisation() {
 
@@ -11,7 +11,7 @@ export default function InputLocalisation() {
         <View style={styles.searchContainer}>
             <View style={styles.search}>
                 <View style={styles.searchBar}>
-                    <SvgUri width="24" height="24" source={require('../assets/icones/sign-password.svg')} />
+                    {/* <SvgUri width="24" height="24" source={require('../assets/icones/sign-password.svg')} /> */}
                     <TextInput
                         style={styles.input}
                         placeholder='Saisissez une ville...'
@@ -22,7 +22,7 @@ export default function InputLocalisation() {
                     style={styles.geolocButton}
                     activeOpacity={0.8}
                 >
-                     <SvgUri width="28" height="28" source={require('../assets/icones/filter-geoloc.svg')} />
+                     {/* <SvgUri width="28" height="28" source={require('../assets/icones/filter-geoloc.svg')} /> */}
                 </TouchableOpacity>
 
             </View>
@@ -35,6 +35,7 @@ export default function InputLocalisation() {
 const styles = StyleSheet.create({
     searchContainer: {
         alignItems: 'center',
+        marginTop: 20,
     },
     search: {
         flexDirection: 'row',
