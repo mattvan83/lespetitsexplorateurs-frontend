@@ -11,7 +11,7 @@ export default function InputLocalisation() {
         <View style={styles.searchContainer}>
             <View style={styles.search}>
                 <View style={styles.searchBar}>
-                    <SvgUri width="24" height="24" source={require('../assets/filter-pin.svg')} />
+                    <SvgUri width="24" height="24" source={require('../assets/icones/sign-password.svg')} />
                     <TextInput
                         style={styles.input}
                         placeholder='Saisissez une ville...'
@@ -22,7 +22,7 @@ export default function InputLocalisation() {
                     style={styles.geolocButton}
                     activeOpacity={0.8}
                 >
-                     <SvgUri width="28" height="28" source={require('../assets/filter-geoloc.svg')} />
+                     <SvgUri width="28" height="28" source={require('../assets/icones/filter-geoloc.svg')} />
                 </TouchableOpacity>
 
             </View>

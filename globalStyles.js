@@ -36,7 +36,7 @@ const globalStyles = StyleSheet.create({
         borderColor: '#E4dfdf',
         borderWidth: 1,
         borderRadius: 12,
-        margin: 13,
+        margin: 6,
         width: '90%',
     },
     input: {

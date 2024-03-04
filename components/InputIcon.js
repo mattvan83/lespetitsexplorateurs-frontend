@@ -1,12 +1,10 @@
 import { StyleSheet, TextInput, View } from 'react-native';
-import SvgUri from 'react-native-svg-uri';
 
 export default function InputIcon({ placeholder }) {
 
     return (
         <View style={styles.inputContainer}>
             <View style={styles.border}>
-                <SvgUri width="24" height="24" source={require('../assets/sign-password.svg')} />
                 <TextInput
                     style={styles.input}
                     placeholder={placeholder}
