@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     borderRadius: 16,
     margin: 13,
-    width: "90%",
+    width: 275,
     height: 112,
     backgroundColor: "white",
     //Ombre portée
