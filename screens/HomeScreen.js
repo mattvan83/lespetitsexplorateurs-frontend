@@ -12,8 +12,31 @@ import {
 import SearchBar from "../components/SearchBar";
 import Card from "../components/Card";
 import globalStyles from "../globalStyles";
+import { useEffect, useState } from "react";
+import * as Location from "expo-location";
+import { useDispatch, useSelector } from "react-redux";
+import { addCurrentLocation } from "../reducers/user";
 
 export default function HomeScreen({ navigation }) {
+  const user = useSelector((state) => state.user.value);
+  console.log("user: ", user);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+
+      if (status === "granted") {
+        const {
+          coords: { latitude, longitude },
+        } = await Location.getCurrentPositionAsync();
+        const coordinates = { latitude, longitude };
+        dispatch(addCurrentLocation(coordinates));
+      }
+    })();
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
