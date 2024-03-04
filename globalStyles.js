@@ -18,6 +18,8 @@ const globalStyles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         color: '#120D26',
+        marginTop: 24,
+        marginLeft : 20,
     },
 
     // FORMS
@@ -36,7 +38,7 @@ const globalStyles = StyleSheet.create({
         borderColor: '#E4dfdf',
         borderWidth: 1,
         borderRadius: 12,
-        margin: 13,
+        margin: 6,
         width: '90%',
     },
     input: {
