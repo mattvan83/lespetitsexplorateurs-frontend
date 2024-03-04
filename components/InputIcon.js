@@ -1,36 +1,13 @@
-<<<<<<< HEAD
 import { StyleSheet, TextInput, View } from "react-native";
-import SvgUri from "react-native-svg-uri";
 
 export default function InputIcon({ placeholder }) {
   return (
     <View style={styles.inputContainer}>
       <View style={styles.border}>
-        <SvgUri
-          width="24"
-          height="24"
-          source={require("../assets/icons/sign-password.svg")}
-        />
         <TextInput style={styles.input} placeholder={placeholder} />
       </View>
     </View>
   );
-=======
-import { StyleSheet, TextInput, View } from 'react-native';
-
-export default function InputIcon({ placeholder }) {
-
-    return (
-        <View style={styles.inputContainer}>
-            <View style={styles.border}>
-                <TextInput
-                    style={styles.input}
-                    placeholder={placeholder}
-                />
-            </View>
-        </View>
-    );
->>>>>>> signupscreen
 }
 
 const styles = StyleSheet.create({
