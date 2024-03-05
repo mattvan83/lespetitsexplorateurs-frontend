@@ -26,41 +26,57 @@ export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    let isPositionObtained = false;
+
     (async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
       console.log("permission geolocalization status: ", status);
 
       if (status === "granted") {
-        const {
-          coords: { latitude, longitude },
-        } = await Location.getCurrentPositionAsync();
+        try {
+          const {
+            coords: { latitude, longitude },
+          } = await Location.getCurrentPositionAsync();
 
-        const coordinates = { latitude, longitude };
-        console.log("user coordinates: ", coordinates);
+          const coordinates = { latitude, longitude };
+          console.log("user coordinates: ", coordinates);
 
-        dispatch(addCurrentLocation(coordinates));
+          // Set the flag to indicate that the position has been obtained
+          isPositionObtained = true;
+          dispatch(addCurrentLocation(coordinates));
+
+          if (isPositionObtained) {
+            console.log("User coordinates available");
+            fetch(
+              `${BACKEND_ADDRESS}/activities/geoloc/${user.token}/${coordinates.latitude}/${coordinates.longitude}`
+            )
+              .then((response) => response.json())
+              .then((data) => {
+                data.result && dispatch(importActivities(data.activities));
+              });
+          }
+        } catch (error) {
+          console.error("Error obtaining user coordinates: ", error);
+        }
       }
-    })();
-  }, []);
 
-  useEffect(() => {
-    if (!user.latitude && !user.longitude) {
-      console.log("User coordinates unavailable");
-      fetch(`${BACKEND_ADDRESS}/activities/nogeoloc/${user.token}`)
-        .then((response) => response.json())
-        .then((data) => {
-          data.result && dispatch(importActivities(data.activities));
-        });
-    } else {
-      console.log("User coordinates available");
-      fetch(
-        `${BACKEND_ADDRESS}/activities/geoloc/${user.token}/${user.latitude}/${user.longitude}`
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          data.result && dispatch(importActivities(data.activities));
-        });
-    }
+      // Check if the position is not obtained after a certain delay
+      const delay = 2000; // Set your desired delay in milliseconds
+      const timeoutId = setTimeout(() => {
+        if (!isPositionObtained) {
+          console.log("User coordinates unavailable");
+          // Handle the case where coordinates are not obtained within the specified delay
+          fetch(`${BACKEND_ADDRESS}/activities/nogeoloc/${user.token}`)
+            .then((response) => response.json())
+            .then((data) => {
+              data.result && dispatch(importActivities(data.activities));
+            });
+        }
+      }, delay);
+
+      // Cleanup the timeout when the component unmounts or when the position is obtained
+      return () => clearTimeout(timeoutId);
+    })();
   }, []);
 
   const activities = user.activities.map((activity, i) => {
