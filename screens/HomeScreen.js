@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Dimensions,
 } from "react-native";
 import SearchBar from "../components/SearchBar";
 import Card from "../components/Card";
@@ -21,10 +22,11 @@ import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 
 export default function HomeScreen({ navigation }) {
-  const [dataSet, setDataSet] = useState([]);
-  const [citiesData, setCitiesData] = useState([]);
+  const [suggestionsList, setSuggestionsList] = useState([]);
+  const [cityData, setCityData] = useState([]);
   const user = useSelector((state) => state.user.value);
   // console.log("user: ", user);
+  console.log("cityData: ", cityData);
 
   const dispatch = useDispatch();
 
@@ -104,8 +106,12 @@ export default function HomeScreen({ navigation }) {
             coords: data.centre.coordinates,
           };
         });
-        setDataSet(suggestions);
+        setSuggestionsList(suggestions);
       });
+  };
+
+  const onClearPress = () => {
+    setSuggestionsList(null);
   };
 
   const activities = user.activities.map((activity, i) => {
@@ -158,16 +164,24 @@ export default function HomeScreen({ navigation }) {
           {/* <SearchBar /> */}
           <AutocompleteDropdown
             onChangeText={(value) => searchCity(value)}
-            onSelectItem={(item) =>
-              item && setCitiesData([...citiesData, item])
-            }
-            dataSet={dataSet}
+            onSelectItem={(item) => item && setCityData(item)}
+            dataSet={suggestionsList}
+            suggestionsListMaxHeight={Dimensions.get("window").height * 0.45}
+            onClear={onClearPress}
             textInputProps={{
               placeholder: "Rechercher un lieu...",
+              style: {
+                color: "#120D26",
+                paddingLeft: 20,
+              },
             }}
             inputContainerStyle={styles.inputContainer}
             containerStyle={styles.dropdownContainer}
             suggestionsListContainerStyle={styles.suggestionListContainer}
+            suggestionsListTextStyle={{
+              color: "#120D26",
+              fontSize: 12,
+            }}
             closeOnSubmit
           />
         </View>
@@ -222,8 +236,8 @@ const styles = StyleSheet.create({
     // backgroundColor: "#ffffff",
   },
   suggestionListContainer: {
-    borderRadius: 3,
-    backgroundColor: "rgba(255, 255, 255, 0.95)",
+    borderRadius: 4,
+    backgroundColor: "rgba(255, 255, 255, 0.97)",
   },
   listActivities: {
     flex: 0.35,
