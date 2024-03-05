@@ -16,10 +16,13 @@ import { useEffect, useState } from "react";
 import * as Location from "expo-location";
 import { useDispatch, useSelector } from "react-redux";
 import { addCurrentLocation, importActivities } from "../reducers/user";
+import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 
 const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 
 export default function HomeScreen({ navigation }) {
+  const [dataSet, setDataSet] = useState([]);
+  const [citiesData, setCitiesData] = useState([]);
   const user = useSelector((state) => state.user.value);
   // console.log("user: ", user);
 
@@ -79,6 +82,32 @@ export default function HomeScreen({ navigation }) {
     })();
   }, []);
 
+  const searchCity = (query) => {
+    // Prevent search with an empty query
+    if (query === "") {
+      return;
+    }
+
+    fetch(
+      `https://geo.api.gouv.fr/communes?nom=${query}&fields=code,nom,departement,region,centre&limit=8`
+    )
+      .then((response) => response.json())
+      .then((apiData) => {
+        const suggestions = apiData.map((data, i) => {
+          return {
+            id: i,
+            title: `${data.nom}, ${data.departement.nom}, ${data.region.nom}`,
+            cityName: data.nom,
+            postalCode: data.code,
+            department: data.departement.nom,
+            region: data.region.name,
+            coords: data.centre.coordinates,
+          };
+        });
+        setDataSet(suggestions);
+      });
+  };
+
   const activities = user.activities.map((activity, i) => {
     const inputDate = new Date(activity.date);
 
@@ -126,11 +155,29 @@ export default function HomeScreen({ navigation }) {
         style={styles.container}
       >
         <View style={styles.header}>
-          <SearchBar />
+          {/* <SearchBar /> */}
+          <AutocompleteDropdown
+            onChangeText={(value) => searchCity(value)}
+            onSelectItem={(item) =>
+              item && setCitiesData([...citiesData, item])
+            }
+            dataSet={dataSet}
+            textInputProps={{
+              placeholder: "Rechercher un lieu...",
+            }}
+            inputContainerStyle={styles.inputContainer}
+            containerStyle={styles.dropdownContainer}
+            suggestionsListContainerStyle={styles.suggestionListContainer}
+            closeOnSubmit
+          />
         </View>
         <View style={styles.body}>
           <View style={styles.listActivities}>
-            <Text style={globalStyles.title3}>Près de chez vous</Text>
+            {user.latitude && user.longitude ? (
+              <Text style={globalStyles.title3}>Près de chez vous</Text>
+            ) : (
+              <Text style={globalStyles.title3}>Bientôt</Text>
+            )}
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -156,10 +203,27 @@ const styles = StyleSheet.create({
     flex: 0.25,
     backgroundColor: "#4A43EC",
     width: "100%",
+    justifyContent: "flex-end",
+    alignItems: "center",
   },
   body: {
     flex: 0.8,
     width: "100%",
+  },
+  dropdownContainer: {
+    width: "100%",
+    marginBottom: 20,
+  },
+  inputContainer: {
+    width: "70%",
+    marginHorizontal: "15%",
+    // borderWidth: 1,
+    // borderColor: "#51e181",
+    // backgroundColor: "#ffffff",
+  },
+  suggestionListContainer: {
+    borderRadius: 3,
+    backgroundColor: "rgba(255, 255, 255, 0.95)",
   },
   listActivities: {
     flex: 0.35,
