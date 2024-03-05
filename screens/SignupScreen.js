@@ -12,6 +12,9 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 import globalStyles from "../globalStyles";
+import { AntDesign } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
+
 
 const EMAIL_REGEX =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -63,6 +66,7 @@ export default function SignupScreen({ navigation }) {
           </View>
         )}
         <View style={globalStyles.border}>
+          <Ionicons name="mail-outline" size={24} color="#D0CFD4" />
           <TextInput
             placeholder="jane.doe@gmail.com"
             autoCapitalize="none"
@@ -74,8 +78,9 @@ export default function SignupScreen({ navigation }) {
           />
         </View>
         <View style={globalStyles.border}>
+          <AntDesign name="smileo" size={24} color="#D0CFD4" />
           <TextInput
-            placeholder="WonderMama13"
+            placeholder="Pseudonyme"
             textContentType="username"
             onChangeText={(value) => setUsername(value)}
             value={username}
@@ -83,6 +88,7 @@ export default function SignupScreen({ navigation }) {
           />
         </View>
         <View style={globalStyles.border}>
+          <Ionicons name="lock-closed-outline" size={24} color="#D0CFD4" />
           <TextInput
             placeholder="Mot de passe"
             textContentType="newPassword"
