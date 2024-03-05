@@ -6,7 +6,7 @@ import {
   View,
   TouchableOpacity,
 } from "react-native";
-// import SvgUri from 'react-native-svg-uri';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function InputLocalisation() {
   const handleSubmit = () => {};
@@ -15,7 +15,7 @@ export default function InputLocalisation() {
     <View style={styles.searchContainer}>
       <View style={styles.search}>
         <View style={styles.searchBar}>
-          {/* <SvgUri width="24" height="24" source={require('../assets/icones/sign-password.svg')} /> */}
+        <Ionicons name="location-outline" size={24} color="#D0CFD4" />
           <TextInput
             style={styles.input}
             placeholder="Saisissez une ville..."
@@ -26,7 +26,7 @@ export default function InputLocalisation() {
           style={styles.geolocButton}
           activeOpacity={0.8}
         >
-          {/* <SvgUri width="28" height="28" source={require('../assets/icones/filter-geoloc.svg')} /> */}
+          <Ionicons name="locate-sharp" size={28} color="white" />
         </TouchableOpacity>
       </View>
     </View>
@@ -66,6 +66,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#5669FF",
     borderRadius: 8,
-    padding: 4,
   },
 });
