@@ -24,13 +24,15 @@ import ActivitiesScreen from "./screens/ActivitiesScreen";
 import MessagingScreen from "./screens/MessagingScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 
-import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
+import { Provider } from "react-redux";
+import { configureStore } from "@reduxjs/toolkit";
 
-import user from './reducers/user';
+import { AutocompleteDropdownContextProvider } from "react-native-autocomplete-dropdown";
+
+import user from "./reducers/user";
 
 const store = configureStore({
- reducer: { user },
+  reducer: { user },
 });
 
 const Stack = createNativeStackNavigator();
@@ -73,31 +75,54 @@ const TabNavigator = () => {
 export default function App() {
   return (
     <Provider store={store}>
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Signup" component={SignupScreen} />
-        <Stack.Screen name="Signin" component={SigninScreen} />
-        <Stack.Screen name="Filters" component={FiltersScreen} />
-        <Stack.Screen name="ListResults" component={ListResultsScreen} />
-        <Stack.Screen name="MapResults" component={MapResultsScreen} />
-        <Stack.Screen name="ActivitySheet" component={ActivitySheetScreen} />
-        <Stack.Screen
-          name="OrganizerProfile"
-          component={OrganizerProfileScreen}
-        />
-        <Stack.Screen name="ActivityPart1" component={ActivityPart1Screen} />
-        <Stack.Screen name="ActivityPart2" component={ActivityPart2Screen} />
-        <Stack.Screen name="ActivityPart3" component={ActivityPart3Screen} />
-        <Stack.Screen name="ActivityPart4" component={ActivityPart4Screen} />
-        <Stack.Screen name="ActivityPart5" component={ActivityPart5Screen} />
-        <Stack.Screen name="ActivityPart6" component={ActivityPart6Screen} />
-        <Stack.Screen
-          name="MessagingDiscussion"
-          component={MessagingDiscussionScreen}
-        />
-        <Stack.Screen name="TabNavigator" component={TabNavigator} />
-      </Stack.Navigator>
-    </NavigationContainer>
+      <AutocompleteDropdownContextProvider>
+        <NavigationContainer>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="Signup" component={SignupScreen} />
+            <Stack.Screen name="Signin" component={SigninScreen} />
+            <Stack.Screen name="Filters" component={FiltersScreen} />
+            <Stack.Screen name="ListResults" component={ListResultsScreen} />
+            <Stack.Screen name="MapResults" component={MapResultsScreen} />
+            <Stack.Screen
+              name="ActivitySheet"
+              component={ActivitySheetScreen}
+            />
+            <Stack.Screen
+              name="OrganizerProfile"
+              component={OrganizerProfileScreen}
+            />
+            <Stack.Screen
+              name="ActivityPart1"
+              component={ActivityPart1Screen}
+            />
+            <Stack.Screen
+              name="ActivityPart2"
+              component={ActivityPart2Screen}
+            />
+            <Stack.Screen
+              name="ActivityPart3"
+              component={ActivityPart3Screen}
+            />
+            <Stack.Screen
+              name="ActivityPart4"
+              component={ActivityPart4Screen}
+            />
+            <Stack.Screen
+              name="ActivityPart5"
+              component={ActivityPart5Screen}
+            />
+            <Stack.Screen
+              name="ActivityPart6"
+              component={ActivityPart6Screen}
+            />
+            <Stack.Screen
+              name="MessagingDiscussion"
+              component={MessagingDiscussionScreen}
+            />
+            <Stack.Screen name="TabNavigator" component={TabNavigator} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </AutocompleteDropdownContextProvider>
     </Provider>
   );
 }
