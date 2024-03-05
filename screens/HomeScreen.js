@@ -21,7 +21,7 @@ const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 
 export default function HomeScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
-  console.log("user: ", user);
+  // console.log("user: ", user);
 
   const dispatch = useDispatch();
 
@@ -80,6 +80,23 @@ export default function HomeScreen({ navigation }) {
   }, []);
 
   const activities = user.activities.map((activity, i) => {
+    const inputDate = new Date(activity.date);
+
+    const options = {
+      weekday: "long", // full weekday name
+      day: "numeric", // day of the month
+      month: "long", // full month name
+      hour: "numeric",
+      minute: "numeric",
+    };
+
+    const formattedDate = inputDate
+      .toLocaleString("fr-FR", options)
+      .replace(":", "h")
+      .toUpperCase();
+
+    // console.log(formattedDate);
+
     return (
       <Card
         key={i}
@@ -91,7 +108,7 @@ export default function HomeScreen({ navigation }) {
             ? "localImage2"
             : "localImage3"
         }
-        activityDate={"Jeudi 15 Mars à 10h"}
+        activityDate={formattedDate}
         activityName={activity.name}
         activityLocation={`${activity.postalCode}, ${activity.city}`}
         isFavorite={activity.isLiked}
