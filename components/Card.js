@@ -1,6 +1,13 @@
 import { StyleSheet, Text, Image, View } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
+const imageMapping = {
+  localImage1: require("../assets/test/activity1.png"),
+  localImage2: require("../assets/test/activity2.png"),
+  localImage3: require("../assets/test/activity3.png"),
+  localImage4: require("../assets/Images/eveil-musical.png"),
+};
+
 export default function Card({
   imagePath,
   activityDate,
@@ -8,19 +15,22 @@ export default function Card({
   activityLocation,
   isFavorite,
 }) {
+  // imagePath = "localImage2";
+  // Check if the image is in the mapping
+  const isLocalAsset = imageMapping.hasOwnProperty(imagePath);
+
   return (
     <View style={styles.cardContainer}>
       <View style={styles.card}>
         <Image
           style={styles.img}
-          source={require("../assets/Images/eveil-musical.png")}
+          source={isLocalAsset ? imageMapping[imagePath] : { uri: imagePath }}
         />
         <View style={styles.details}>
           <Text style={styles.activityDate}>{activityDate}</Text>
           <Text style={styles.activityName}>{activityName}</Text>
           <Text style={styles.activityLocation}>{activityLocation}</Text>
         </View>
-        {/* Icone si isFavorite=false */}
         {!isFavorite ? (
           <Icon
             style={styles.heartIcon}
@@ -36,8 +46,6 @@ export default function Card({
             color="#EB5757"
           />
         )}
-        {/* Icone si isFavorite=true */}
-        {/* <Icon style={styles.heartIcon} name="heart" size={20} color="#EB5757" /> */}
       </View>
     </View>
   );

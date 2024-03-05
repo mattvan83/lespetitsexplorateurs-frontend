@@ -83,7 +83,14 @@ export default function HomeScreen({ navigation }) {
     return (
       <Card
         key={i}
-        imagePath={activity.imgUrl}
+        id={activity.id}
+        imagePath={
+          activity.imgUrl.includes(1)
+            ? "localImage1"
+            : activity.imgUrl.includes(2)
+            ? "localImage2"
+            : "localImage3"
+        }
         activityDate={"Jeudi 15 Mars à 10h"}
         activityName={activity.name}
         activityLocation={`${activity.postalCode}, ${activity.city}`}
