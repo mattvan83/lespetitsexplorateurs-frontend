@@ -13,6 +13,7 @@ import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 import globalStyles from "../globalStyles";
 import { Ionicons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const EMAIL_REGEX =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -27,6 +28,7 @@ export default function SigninScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = () => {
     if (EMAIL_REGEX.test(email)) {
@@ -44,6 +46,10 @@ export default function SigninScreen({ navigation }) {
     } else {
       setEmailError(true);
     }
+  };
+
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -80,10 +86,17 @@ export default function SigninScreen({ navigation }) {
           <TextInput
             placeholder="Mot de passe"
             textContentType="password"
-            secureTextEntry={true}
+            secureTextEntry={!showPassword}
             onChangeText={(value) => setPassword(value)}
             value={password}
-            style={globalStyles.input}
+            style={styles.input}
+          />
+          <MaterialCommunityIcons
+            name={showPassword ? 'eye-off' : 'eye'}
+            size={24}
+            color="#aaa"
+            style={styles.icon}
+            onPress={toggleShowPassword}
           />
         </View>
       </View>
@@ -160,5 +173,12 @@ const styles = StyleSheet.create({
     color: "#EB5757",
     width: "90%",
     alignSelf: "center",
+  },
+  input: {
+    flex: 1,
+    height: 56,
+    color: "#747688",
+    fontSize: 14,
+    marginLeft: 10,
   },
 });

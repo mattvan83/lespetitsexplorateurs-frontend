@@ -42,6 +42,7 @@ const globalStyles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     paddingLeft: 10,
+    paddingRight: 10,
     borderColor: "#E4dfdf",
     borderWidth: 1,
     borderRadius: 12,
