@@ -11,8 +11,11 @@ import { Svg, Rect, Defs, Pattern, Use} from 'react-native-svg';
 import { Path } from 'react-native-svg' ;
 import { Image as SVGImage } from 'react-native-svg';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { useState, useEffect } from "react";
 
 export default function ActivitySheetScreen({ navigation }) {
+  const [activityInfo, setActivityInfo] = useState('');
+  const [organizerName, setOrganizerName] = useState('');
   
   const handleShare = () => {
     console.log('share');
@@ -34,6 +37,54 @@ export default function ActivitySheetScreen({ navigation }) {
   const handleCalendar = () => {
     console.log('add to calendar');
   }
+
+  //Constante pour la mise en place du fetch / récupération des infos côté front - useEffect pour appeler qu'une seule fois au chargement du composant
+  //à remplacer grâce au useSelector une fois les autres pages accessibles?
+  useEffect(() => {
+    const activityId = '65e588da8bd57996d994d8b8'
+
+    fetch(`http://172.20.10.8:3000/activities/${activityId}`)
+      .then(response => response.json())
+      .then(data => {
+          console.log('Activity details : ', data);
+          setActivityInfo(data);
+
+          //.replace pour enlever les guillemets autour de l'organizerId car problème de fetch avec
+          const organizerId = data.organizer.replace(/'/g, '');
+          console.log(organizerId);
+
+          fetch(`http://172.20.10.8:3000/users/${organizerId}`)
+          .then(response => response.json())
+          .then(name => {
+          console.log('Organizer name : ', name);
+          setOrganizerName(name);
+      });
+      });
+    }, []);
+
+
+  //Gestion de la date
+  const dateObject = new Date(activityInfo.date);
+    const daysOfWeek = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
+    const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+    // Obtenir le jour de la semaine, le jour du mois, le mois et l'année
+    const day = daysOfWeek[dateObject.getDay()];
+    const date = dateObject.getDate();
+    const month = months[dateObject.getMonth()];
+    const year = dateObject.getFullYear();
+    // Obtenir l'heure et les minutes
+    const hours = dateObject.getUTCHours().toString().padStart(2, '0'); // Ajoute un zéro devant si nécessaire
+    const minutes = dateObject.getUTCMinutes().toString().padStart(2, '0'); // Ajoute un zéro devant si nécessaire
+    // Formater date et heure
+    const formattedDate = `${day} ${date} ${month} ${year}`;
+    const formattedTime = `${hours}h${minutes}`;
+
+  //Gestion de la durée
+    // Conversion en heures, minutes et secondes
+    const durationHours = Math.floor(activityInfo.duration / (1000 * 60 * 60));
+    const durationMinutes = Math.floor((activityInfo.duration % (1000 * 60 * 60)) / (1000 * 60));
+    // Formater la durée
+    const formattedDuration = `${durationHours}h${durationMinutes}`;
 
   return (
     <View style={styles.container}>
@@ -64,7 +115,7 @@ export default function ActivitySheetScreen({ navigation }) {
         </ImageBackground>
       
       <View style={styles.activity}>
-        <Text style={styles.title}>Nom de l'activité</Text>
+        <Text style={styles.title}>{activityInfo.name}</Text>
         <View style={styles.div}>
           <View style={styles.icon}>
             <Svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -75,8 +126,8 @@ export default function ActivitySheetScreen({ navigation }) {
             </Svg>
           </View>
           <View marginLeft={20}>
-            <Text style={styles.bold}>Vendredi 2 février 2024</Text>
-            <Text style={styles.small}>De 9h15 à 10h30</Text>
+            <Text style={styles.bold}>{formattedDate}</Text>
+            <Text style={styles.small}>{formattedTime} - Durée de l'activité : {formattedDuration}</Text>
           </View>
         </View>
 
@@ -88,18 +139,18 @@ export default function ActivitySheetScreen({ navigation }) {
             </Svg>
           </View>
           <View marginLeft={20}>
-            <Text style={styles.bold}>Gymnase Le Grand-Serre</Text>
-            <Text style={styles.small}>Route des Antes, Le Grand-Serre</Text>
+            <Text style={styles.bold}>{activityInfo.locationName}</Text>
+            <Text style={styles.small}>{activityInfo.address}, {activityInfo.postalCode} {activityInfo.city}</Text>
           </View>
         </View>
 
-        <View style={styles.div}>
+        <View style={styles.orgaDiv}>
           <Image style={styles.icon} source={require('../assets/Images/logo-temp.png')} />
           <View marginLeft={20}>
-            <Text style={styles.bold}>La récrée de la Galaure</Text>
+            <Text style={styles.bold}>{organizerName.name}</Text>
             <Text style={styles.small}>Organisateur</Text>
           </View>
-          <View>
+          <View style={styles.followWrite}>
             <TouchableOpacity onPress={() => handleFollow()} style={styles.btn}>
               <Text style={styles.btnOrganizer}>Suivre</Text>
             </TouchableOpacity>
@@ -109,9 +160,9 @@ export default function ActivitySheetScreen({ navigation }) {
           </View>
         </View>
 
-        <ScrollView>
           <Text style={styles.subtitle}>À propos de l'évènement</Text>
-          <Text style={styles.description}>Accusantium vel eius reprehenderit odio velit sed in non. Accusantium vel eius reprehenderit odio velit sed in non. Accusantium vel eius reprehenderit odio velit sed in non. Accusantium vel eius reprehenderit odio velit sed in non. Accusantium vel eius reprehenderit odio velit sed in non.  Accusantium vel eius reprehenderit odio velit sed in non. Accusantium vel eius reprehenderit odio velit sed in non. Consequuntur…</Text>
+        <ScrollView>
+          <Text style={styles.description}>{activityInfo.description}</Text>
         </ScrollView>
       </View>
 
@@ -185,10 +236,17 @@ const styles = StyleSheet.create({
   div: {
     display: 'flex',
     height: 55,
-    width: 245,
+    width: 305,
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
+  },
+  orgaDiv: {
+    display: 'flex',
+    height: 55,
+    width: 260,
+    flexDirection: 'row',
+    alignItems: 'center', 
   },
   bold: {
     fontWeight: 'bold',
@@ -200,6 +258,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: 'grey',
     marginRight: 25,
+  },
+  followWrite: {
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
   },
   btn: {
     justifyContent: 'center',
