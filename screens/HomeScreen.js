@@ -23,6 +23,8 @@ export default function HomeScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
   console.log("user: ", user);
 
+  console.log(user.preferences)
+
   const dispatch = useDispatch();
 
   useEffect(() => {
