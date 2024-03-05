@@ -4,10 +4,18 @@ const initialState = {
   value: {
     token: null,
     username: null,
-    firstName: null,
     latitude: null,
     longitude: null,
     activities: [],
+    filters: {
+      categoryFilter : [],
+      dateFilter: [],
+      momentFilter: [],
+      ageFilter: [],
+      priceFilter: null,
+      locationFilter: null,
+      scopeFilter: null
+    }
   },
 };
 
@@ -32,9 +40,27 @@ export const userSlice = createSlice({
     importActivities: (state, action) => {
       state.value.activities = action.payload;
     },
+    setFilters:  (state, action) => {
+      state.value.filters.categoryFilter = action.payload.categoryFilter;
+      state.value.filters.dateFilter = action.payload.dateFilter;
+      state.value.filters.momentFilter = action.payload.momentFilter;
+      state.value.filters.ageFilter= action.payload.ageFilter;
+      state.value.filters.priceFilter = action.payload.priceFilter;
+      state.value.filters.locationFilter = action.payload.locationFilter;
+      state.value.filters.scopeFilter = action.payload.scopeFilter;
+    },
+    resetFilters:  (state, action) => {
+      state.value.filters.categoryFilter = [];
+      state.value.filters.dateFilter = [];
+      state.value.filters.momentFilter = [];
+      state.value.filters.ageFilter= [];
+      state.value.filters.priceFilter = null;
+      state.value.filters.locationFilter = null;
+      state.value.filters.scopeFilter = null;
+    },
   },
 });
 
-export const { login, logout, addCurrentLocation, importActivities } =
+export const { login, logout, addCurrentLocation, importActivities, setFilters, resetFilters } =
   userSlice.actions;
 export default userSlice.reducer;

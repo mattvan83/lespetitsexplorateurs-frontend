@@ -1,7 +1,6 @@
 import {
   StyleSheet,
   Text,
-  TextInput,
   ScrollView,
   View,
   TouchableOpacity,
@@ -9,71 +8,96 @@ import {
   Platform,
 } from "react-native";
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { setFilters, resetFilters } from '../reducers/user';
 import globalStyles from '../globalStyles';
 import Slider from '@react-native-community/slider';
 import FilterCategoryMedium from '../components/FilterCategoryMedium';
 import InputLocalisation from '../components/InputLocalisation';
+import { handleFilterButtonClick } from '../modules/handleFilterButtonClick';
 
 export default function FiltersScreen({ navigation }) {
+  const dispatch = useDispatch();
   const [price, setPrice] = useState(0);
   const [scope, setScope] = useState(1);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedDates, setSelectedDates] = useState([]);
+  const [selectedMoments, setSelectedMoments] = useState([]);
+  const [selectedAges, setSelectedAges] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState(null);
 
-  const categories = [
-    { name: 'Sport', iconPath: '../assets/icones/cat-sport.png' },
-    { name: 'Musique', iconPath: '../assets/icones/cat-sport.png' },
-    { name: 'Créativité', iconPath: '../assets/icones/cat-sport.png' },
-    { name: 'Motricité', iconPath: '../assets/icones/cat-sport.png' },
-    { name: 'Éveil', iconPath: '../assets/icones/cat-sport.png' },
-  ];
+  const categories = ['Sport', 'Musique', 'Créativité', 'Motricité', 'Éveil'];
   const dateFilters = ["Aujourd'hui", "Demain", "Cette semaine", "Ce week-end"];
   const momentFilters = ["Matin", "Après-midi", "Soir"];
   const ageFilters = ["3-12 mois", "1-3 ans", "3-6 ans", "6-10 ans", "10+ ans"];
 
-  const categoryList = categories.map((data, i) => {
-    return <FilterCategoryMedium key={i} category={data.name} iconPath={data.iconPath} />
+  const handleCategoryList = (category)=> {
+    handleFilterButtonClick(category, selectedCategories, setSelectedCategories);
+  }
+
+  const categoryList = categories.map((category, i) => {
+    const isActive = selectedCategories.includes(category);
+    return <FilterCategoryMedium key={i} category={category} handleCategoryList={handleCategoryList} isActive={isActive} />
   })
 
-  const dateList = dateFilters.map((data, i) => {
+  const dateList = dateFilters.map((dateCategory, i) => {
     return (
-      <View key={i} style={styles.dateFilters}>
-        <TouchableOpacity
-          // onPress={() => handleSubmit()}
+      <View key={i} style={selectedDates.includes(dateCategory)? styles.activeFilter: styles.inactiveFilter}>
+        <TouchableOpacity 
+          onPress={() => handleFilterButtonClick(dateCategory, selectedDates, setSelectedDates)}
           style={styles.button}
           activeOpacity={0.8}
         >
-          <Text style={styles.dateText}>{data}</Text>
+          <Text style={selectedDates.includes(dateCategory)? styles.activeFilterText: styles.inactiveFilterText}>{dateCategory}</Text>
         </TouchableOpacity>
       </View>
     )
   })
 
-  const momentList = momentFilters.map((data, i) => {
+  const momentList = momentFilters.map((moment, i) => {
     return (
-      <View key={i} style={styles.dateFilters}>
+      <View key={i} style={selectedMoments.includes(moment)? styles.activeFilter: styles.inactiveFilter}>
         <TouchableOpacity
-          // onPress={() => handleSubmit()}
+          onPress={() => handleFilterButtonClick(moment, selectedMoments, setSelectedMoments)}
           style={styles.button}
           activeOpacity={0.8}
         >
-          <Text style={styles.dateText}>{data}</Text>
+          <Text style={selectedMoments.includes(moment)? styles.activeFilterText: styles.inactiveFilterText}>{moment}</Text>
         </TouchableOpacity>
       </View>
     )
   })
 
-  const ageList = ageFilters.map((data, i) => {
+  const ageList = ageFilters.map((age, i) => {
     return (
-      <View key={i} style={styles.dateFilters}>
+      <View key={i} style={selectedAges.includes(age)? styles.activeFilter: styles.inactiveFilter}>
         <TouchableOpacity
-          // onPress={() => handleSubmit()}
+          onPress={() => handleFilterButtonClick(age, selectedAges, setSelectedAges)}
           style={styles.button}
           activeOpacity={0.8}
         >
-          <Text style={styles.dateText}>{data}</Text>
+          <Text style={selectedAges.includes(age)? styles.activeFilterText: styles.inactiveFilterText}>{age}</Text>
         </TouchableOpacity>
       </View>
     )
   })
+
+  const handleResetFilters = () => {
+    setSelectedCategories([]);
+    setSelectedDates([]);
+    setSelectedMoments([]);
+    setSelectedAges([]);
+    setPrice(0);
+    setSelectedLocation(null);
+    setScope(1);
+
+    dispatch(resetFilters());
+  }
+
+  const handleSetFilters = () => {
+    dispatch(setFilters({ categoryFilter: selectedCategories, dateFilter: selectedDates, momentFilter: selectedMoments, ageFilter: selectedAges, priceFilter : price, locationFilter: selectedLocation, scopeFilter: scope}));
+    navigation.navigate('ListResults');
+  }
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
@@ -81,7 +105,7 @@ export default function FiltersScreen({ navigation }) {
         <Text style={globalStyles.title2}>Filtres</Text>
 
         <Text style={globalStyles.title4}>Catégories</Text>
-        <ScrollView horizontal={true} style={styles.filters}>
+        <ScrollView horizontal={true} style={styles.categoryFilters}>
           {categoryList}
         </ScrollView>
 
@@ -144,14 +168,14 @@ export default function FiltersScreen({ navigation }) {
 
       <View style={styles.buttonsContainer}>
         <TouchableOpacity
-          onPress={() => handleSubmit()}
+          onPress={() => handleResetFilters()}
           style={styles.eraseButton}
           activeOpacity={0.8}
         >
           <Text style={styles.eraseTextButton}>EFFACER</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => handleSubmit()}
+          onPress={() => handleSetFilters()}
           style={styles.applyButton}
           activeOpacity={0.8}
         >
@@ -172,11 +196,13 @@ const styles = StyleSheet.create({
     flex: 1,
     height: '70%',
   },
+  categoryFilters: {
+    marginLeft: 10,
+  },
   filters: {
     marginLeft: 20,
-
   },
-  dateFilters: {
+  inactiveFilter: {
     marginTop: 20,
     marginRight: 14,
     borderWidth: 1,
@@ -187,8 +213,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 10,
   },
-  dateText: {
+  inactiveFilterText: {
     color: '#120D26',
+    fontSize: 16
+  },
+  activeFilter : {
+    marginTop: 20,
+    marginRight: 14,
+    backgroundColor: '#5669FF',
+    borderRadius: 10,
+    height: 42,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 10,
+  },
+  activeFilterText: {
+    color: '#fff',
     fontSize: 16
   },
   buttonsContainer: {
@@ -248,5 +288,6 @@ const styles = StyleSheet.create({
   textSlider: {
     fontSize: 14,
     color: '#8A8AA3',
-  }
+  },
+  
 });
