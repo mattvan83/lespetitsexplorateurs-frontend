@@ -12,8 +12,8 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 import globalStyles from "../globalStyles";
-import { Ionicons } from '@expo/vector-icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const EMAIL_REGEX =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -21,7 +21,7 @@ const EMAIL_REGEX =
 // const { BACKEND_ADDRESS } = process.env;
 // console.log(BACKEND_ADDRESS);
 
-BACKEND_ADDRESS = "http://192.168.1.27:3000";
+const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 
 export default function SigninScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -32,14 +32,15 @@ export default function SigninScreen({ navigation }) {
 
   const handleSubmit = () => {
     if (EMAIL_REGEX.test(email)) {
-      fetch('http://172.20.10.8:3000/users/signin', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      fetch(`${BACKEND_ADDRESS}/users/signin`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       })
         .then((response) => response.json())
         .then((data) => {
-          data.result && dispatch(login({ token: data.token, username: data.username }));
+          data.result &&
+            dispatch(login({ token: data.token, username: data.username }));
           setEmail("");
           setPassword("");
           navigation.navigate("TabNavigator", { screen: "Explorer" });
@@ -93,7 +94,7 @@ export default function SigninScreen({ navigation }) {
             style={styles.input}
           />
           <MaterialCommunityIcons
-            name={showPassword ? 'eye-off' : 'eye'}
+            name={showPassword ? "eye-off" : "eye"}
             size={24}
             color="#aaa"
             style={styles.icon}

@@ -3,32 +3,33 @@ import {
   Text,
   TextInput,
   View,
-  TouchableOpacity,
+  // TouchableOpacity,
   SafeAreaView,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   Dimensions,
 } from "react-native";
-import SearchBar from "../components/SearchBar";
+// import SearchBar from "../components/SearchBar";
 import Card from "../components/Card";
 import globalStyles from "../globalStyles";
 import { useEffect, useState } from "react";
 import * as Location from "expo-location";
 import { useDispatch, useSelector } from "react-redux";
-import { addCurrentLocation, importActivities } from "../reducers/user";
+import {
+  addCurrentLocation,
+  importActivities,
+  setCitySearched,
+} from "../reducers/user";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 
 const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 
 export default function HomeScreen({ navigation }) {
   const [suggestionsList, setSuggestionsList] = useState([]);
-  const [cityData, setCityData] = useState([]);
   const user = useSelector((state) => state.user.value);
   // console.log("user: ", user);
-  console.log("cityData: ", cityData);
-
-  console.log(user.preferences)
+  console.log("user.citySearched: ", user.citySearched);
 
   const dispatch = useDispatch();
 
@@ -104,7 +105,7 @@ export default function HomeScreen({ navigation }) {
             cityName: data.nom,
             postalCode: data.code,
             department: data.departement.nom,
-            region: data.region.name,
+            region: data.region.nom,
             coords: data.centre.coordinates,
           };
         });
@@ -166,7 +167,11 @@ export default function HomeScreen({ navigation }) {
           {/* <SearchBar /> */}
           <AutocompleteDropdown
             onChangeText={(value) => searchCity(value)}
-            onSelectItem={(item) => item && setCityData(item)}
+            onSelectItem={(item) =>
+              item &&
+              dispatch(setCitySearched(item)) &&
+              navigation.navigate("ListResults")
+            }
             dataSet={suggestionsList}
             suggestionsListMaxHeight={Dimensions.get("window").height * 0.45}
             onClear={onClearPress}
