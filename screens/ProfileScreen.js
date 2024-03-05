@@ -1,55 +1,150 @@
 import {
   StyleSheet,
   Text,
-  TextInput,
+  Image,
+  ScrollView,
   View,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import globalStyles from '../globalStyles';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { setPreferences, resetPreferences } from '../reducers/user';
+import { useState } from 'react';
 import { logout } from '../reducers/user';
+import Slider from '@react-native-community/slider';
+import InputLocalisation from '../components/InputLocalisation';
+import Button from '../components/Button';
+import FilterTextCategory from "../components/FilterTextCategory";
+import { handleFilterButtonClick } from '../modules/handleFilterButtonClick';
 
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.value);
+  const [scope, setScope] = useState(1);
+  const [selectedAges, setSelectedAges] = useState([]);
+  const [selectedLocation, setSelectedLocation] = useState(null);
 
   const handleLogOut = () => {
+    dispatch(resetPreferences())
     dispatch(logout())
-    navigation.navigate('Explorer')
+    navigation.navigate('Signin')
   }
 
+  const ageCategory = ["3-12 mois", "1-3 ans", "3-6 ans", "6-10 ans", "10+ ans"];
+
+  const handleAgeList = (category) => {
+    handleFilterButtonClick(category, selectedAges, setSelectedAges);
+  }
+
+  const ageList = ageCategory.map((category, i) => {
+    const isActive = selectedAges.includes(category);
+    return <FilterTextCategory key={i} category={category} handleCategoryList={handleAgeList} isActive={isActive} />
+  })
+
+  const handleSetPreferences = () => {
+    dispatch(setPreferences({ agePreference: selectedAges, locationPreference: selectedLocation, scopePreference: scope}));
+    navigation.navigate('Explorer');
+  }
+
+
   return (
-    <View style={styles.container}>
-      <Text style={globalStyles.title2}>Mon profil</Text>
-      <TouchableOpacity
-        onPress={() => handleLogOut()}
-        activeOpacity={0.8}
-      >
-        <Text style={styles.deconnexion}>Se déconnecter</Text>
-      </TouchableOpacity>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+      <View style={styles.filtersContainer}>
+        <Text style={globalStyles.title2}>Mon profil</Text>
+        <TouchableOpacity
+          onPress={() => handleLogOut()}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.deconnexion}>Se déconnecter</Text>
+        </TouchableOpacity>
+
+        <Text style={globalStyles.title4}>Nom d'utilisateur</Text>
+        <Text style={styles.text} >{user.username}</Text>
+
+        <Text style={globalStyles.title4}>Image de profil</Text>
+        <Image
+          style={styles.profileImg}
+          source={require('../assets/Images/avatar.jpg')}
+        />
+
+        <Text style={globalStyles.title4}>Localisation</Text>
+        <InputLocalisation />
+
+        <Text style={globalStyles.title4}>Dans un rayon de {scope}km</Text>
+        <Slider
+          style={styles.slider}
+          lowerLimit={1}
+          minimumValue={1}
+          maximumValue={50}
+          upperLimit={50}
+          minimumTrackTintColor="#5669FF"
+          maximumTrackTintColor="#E7E7E9"
+          step={1}
+          onValueChange={(value) => setScope(value)}
+        />
+        <View style={styles.sliderBottom}>
+          <Text style={styles.textSlider}>1km</Text>
+          <Text style={styles.textSlider}>50km</Text>
+        </View>
+
+        <Text style={globalStyles.title4}>Âges des enfants</Text>
+        <ScrollView horizontal={true} style={styles.filters} >
+          {ageList}
+        </ScrollView>
 
 
-      {/* A supprimer quand je l'aurais sur la page explorer */}
+        {/* A supprimer quand je l'aurais sur la page explorer */}
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Filters')}
+          style={styles.filtersButton}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.textButton}>Filtres</Text>
+        </TouchableOpacity>
+
+      </View>
+      <View style={styles.bottom}>
       <TouchableOpacity
-        onPress={() => navigation.navigate('Filters')}
-        style={styles.filtersButton}
-        activeOpacity={0.8}
-      >
-        <Text style={styles.textButton}>Filtres</Text>
-      </TouchableOpacity>
-    </View>
+          onPress={() => handleSetPreferences()}
+          style={styles.button}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.textButton}>Enregistrer</Text>
+        </TouchableOpacity>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: 'column',
     backgroundColor: "white",
   },
-  deconnexion: {
-    margin: 20,
+  filtersContainer: {
+    flex: 0.9,
   },
-
-// a supprimer plus tard 
+  profileImg: {
+    width: 100,
+    height: 100,
+    borderRadius: 100,
+    marginTop: 10,
+    marginLeft: 20,
+    borderWidth: 1,
+    borderColor: '#EBEDFF',
+  },
+  deconnexion: {
+    position: 'absolute',
+    right: 20,
+    color: '#5669FF',
+  },
+  filters: {
+    marginLeft: 20,
+  },
+  // a supprimer plus tard 
   filtersButton: {
     width: 100,
     flexDirection: 'row',
@@ -58,10 +153,54 @@ const styles = StyleSheet.create({
     backgroundColor: '#EBEDFF',
     borderRadius: 100,
     padding: 6,
-},
-textButton: {
+  },
+  textButton: {
     color: '#5669FF',
     fontWeight: 'bold',
     fontSize: 16
-}
+  },
+
+  slider: {
+    width: '90%',
+    height: 40,
+    alignSelf: 'center',
+  },
+  sliderBottom: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '90%',
+    alignSelf: 'center',
+  },
+  textSlider: {
+    fontSize: 14,
+    color: '#8A8AA3',
+  },
+  text: {
+    fontSize: 16,
+    color: "#120D26",
+    marginTop: 12,
+    marginLeft: 20,
+  },
+  bottom: {
+    position: "absolute",
+    bottom: 20,
+    width: "100%",
+    flex: 0.1
+  },
+  button: {
+    padding: 10,
+    width: "70%",
+    height: 58,
+    backgroundColor: "#5669FF",
+    borderRadius: 15,
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: 'center',
+  },
+  textButton: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#fff",
+    textTransform: "uppercase",
+  },
 });

@@ -28,6 +28,8 @@ export default function HomeScreen({ navigation }) {
   // console.log("user: ", user);
   console.log("cityData: ", cityData);
 
+  console.log(user.preferences)
+
   const dispatch = useDispatch();
 
   useEffect(() => {
