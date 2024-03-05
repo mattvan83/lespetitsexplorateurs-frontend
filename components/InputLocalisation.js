@@ -29,7 +29,6 @@ export default function InputLocalisation() {
           {/* <SvgUri width="28" height="28" source={require('../assets/icones/filter-geoloc.svg')} /> */}
         </TouchableOpacity>
       </View>
-
     </View>
   );
 }
