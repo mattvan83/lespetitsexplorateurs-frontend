@@ -39,8 +39,9 @@ export default function SigninScreen({ navigation }) {
       })
         .then((response) => response.json())
         .then((data) => {
-          data.result &&
-            dispatch(login({ token: data.token, username: data.username }));
+          data.result && dispatch(login({ token: data.token, username: data.username }));
+          setEmail("");
+          setPassword("");
           navigation.navigate("TabNavigator", { screen: "Explorer" });
         });
     } else {

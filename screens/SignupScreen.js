@@ -43,6 +43,9 @@ export default function SignupScreen({ navigation }) {
         .then((response) => response.json())
         .then((data) => {
           data.result && dispatch(login({ token: data.token, username }));
+          setEmail("");
+          setPassword("");
+          setUsername("");
           navigation.navigate("TabNavigator", { screen: "Explorer" });
         });
     } else {
@@ -86,7 +89,7 @@ export default function SignupScreen({ navigation }) {
         <View style={globalStyles.border}>
           <AntDesign name="smileo" size={24} color="#D0CFD4" />
           <TextInput
-            placeholder="Pseudonyme"
+            placeholder="Nom d'utilisateur"
             textContentType="username"
             onChangeText={(value) => setUsername(value)}
             value={username}

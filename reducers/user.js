@@ -15,6 +15,11 @@ const initialState = {
       priceFilter: null,
       locationFilter: null,
       scopeFilter: null
+    },
+    preferences: {
+      agePreference: [],
+      locationPreference: null,
+      scopePreference: null
     }
   },
 };
@@ -58,9 +63,19 @@ export const userSlice = createSlice({
       state.value.filters.locationFilter = null;
       state.value.filters.scopeFilter = null;
     },
+    setPreferences:  (state, action) => {
+      state.value.preferences.agePreference= action.payload.agePreference;
+      state.value.preferences.locationPreference = action.payload.locationPreference;
+      state.value.preferences.scopePreference = action.payload.scopePreference;
+    },
+    resetPreferences:  (state, action) => {
+      state.value.preferences.agePreference= [];
+      state.value.preferences.locationPreference = null;
+      state.value.preferences.scopePreference = null;
+    },
   },
 });
 
-export const { login, logout, addCurrentLocation, importActivities, setFilters, resetFilters } =
+export const { login, logout, addCurrentLocation, importActivities, setFilters, resetFilters, setPreferences, resetPreferences } =
   userSlice.actions;
 export default userSlice.reducer;

@@ -9,8 +9,6 @@ import { useSelector } from 'react-redux';
 
 export default function ListResultsScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
-
-  console.log(user);
   
   return (
     <View style={styles.container}>

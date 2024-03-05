@@ -142,9 +142,7 @@ export default function FiltersScreen({ navigation }) {
         </View>
 
         <Text style={globalStyles.title4}>Localisation</Text>
-
         <InputLocalisation />
-
 
         <Text style={globalStyles.title4}>Dans un rayon de {scope}km</Text>
         <Slider
