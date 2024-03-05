@@ -87,7 +87,7 @@ export default function HomeScreen({ navigation }) {
         </View>
         <View style={styles.body}>
           <View style={styles.listActivities}>
-            <Text style={globalStyles.title2}>Près de chez vous</Text>
+            <Text style={globalStyles.title3}>Près de chez vous</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
               {/* <Card
                 activityDate={"Jeudi 15 Mars à 10h"}

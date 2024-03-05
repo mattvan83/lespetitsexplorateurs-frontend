@@ -11,10 +11,17 @@ const globalStyles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     color: "#120D26",
-    marginTop: 24,
+    marginTop: 80,
     marginLeft: 20,
   },
   title3: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#120D26",
+    marginTop: 24,
+    marginLeft: 20,
+  },
+  title4: {
     fontSize: 16,
     fontWeight: "bold",
     color: "#120D26",
