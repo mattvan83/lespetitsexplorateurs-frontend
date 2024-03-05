@@ -129,24 +129,6 @@ export default function HomeScreen({ navigation }) {
           <View style={styles.listActivities}>
             <Text style={globalStyles.title3}>Près de chez vous</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {/* <Card
-                activityDate={"Jeudi 15 Mars à 10h"}
-                activityName={"Eveil musical"}
-                activityLocation={"26240, SAINT-VALLIER"}
-                isFavorite={true}
-              ></Card>
-              <Card
-                activityDate={"Jeudi 15 Mars à 10h"}
-                activityName={"Eveil musical"}
-                activityLocation={"26240, SAINT-VALLIER"}
-                isFavorite={false}
-              ></Card>
-              <Card
-                activityDate={"Jeudi 15 Mars à 10h"}
-                activityName={"Eveil musical"}
-                activityLocation={"26240, SAINT-VALLIER"}
-                isFavorite={false}
-              ></Card> */}
               {activities}
             </ScrollView>
           </View>

@@ -7,9 +7,14 @@ import {
   TouchableOpacity,
 } from "react-native";
 // import SvgUri from "react-native-svg-uri";
+import { useNavigation } from "@react-navigation/native";
 
 export default function SearchBar() {
-  const handleSubmit = () => {};
+  const navigation = useNavigation();
+
+  const handleSubmit = () => {
+    navigation.navigate("Filters");
+  };
 
   return (
     <View style={styles.searchContainer}>
