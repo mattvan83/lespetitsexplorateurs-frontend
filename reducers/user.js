@@ -8,6 +8,15 @@ const initialState = {
     latitude: null,
     longitude: null,
     activities: [],
+    filters: {
+      categoryFilter: [],
+      dateFilter: [],
+      momentFilter: [],
+      ageFilter: [],
+      priceFilter: null,
+      locationFilter: null,
+      scopeFilter: null
+    }
   },
 };
 
@@ -32,6 +41,12 @@ export const userSlice = createSlice({
     importActivities: (state, action) => {
       state.value.activities = action.payload;
     },
+    addPreferences: (state, action) => {
+
+    },
+    deletePreferences: (state, action) => {
+      
+    }
   },
 });
 
