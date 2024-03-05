@@ -28,12 +28,16 @@ export default function HomeScreen({ navigation }) {
   useEffect(() => {
     (async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
+      console.log("permission geolocalization status: ", status);
 
       if (status === "granted") {
         const {
           coords: { latitude, longitude },
         } = await Location.getCurrentPositionAsync();
+
         const coordinates = { latitude, longitude };
+        console.log("user coordinates: ", coordinates);
+
         dispatch(addCurrentLocation(coordinates));
       }
     })();
@@ -41,12 +45,14 @@ export default function HomeScreen({ navigation }) {
 
   useEffect(() => {
     if (!user.latitude && !user.longitude) {
+      console.log("User coordinates unavailable");
       fetch(`${BACKEND_ADDRESS}/activities/nogeoloc/${user.token}`)
         .then((response) => response.json())
         .then((data) => {
           data.result && dispatch(importActivities(data.activities));
         });
     } else {
+      console.log("User coordinates available");
       fetch(
         `${BACKEND_ADDRESS}/activities/geoloc/${user.token}/${user.latitude}/${user.longitude}`
       )
@@ -57,17 +63,18 @@ export default function HomeScreen({ navigation }) {
     }
   }, []);
 
-  // const activities = user.activities.map((activity, i) => {
-  //   return (
-  //     <Card
-  //       imagePath={activity.imgUrl}
-  //       activityDate={"Jeudi 15 Mars à 10h"}
-  //       activityName={activity.name}
-  //       activityLocation={`${activity.postalCode}, ${activity.city}`}
-  //       isFavorite={activity.isLiked}
-  //     ></Card>
-  //   );
-  // });
+  const activities = user.activities.map((activity, i) => {
+    return (
+      <Card
+        key={i}
+        imagePath={activity.imgUrl}
+        activityDate={"Jeudi 15 Mars à 10h"}
+        activityName={activity.name}
+        activityLocation={`${activity.postalCode}, ${activity.city}`}
+        isFavorite={activity.isLiked}
+      ></Card>
+    );
+  });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -80,9 +87,9 @@ export default function HomeScreen({ navigation }) {
         </View>
         <View style={styles.body}>
           <View style={styles.listActivities}>
-            <Text style={globalStyles.title2}>Près de chez vous</Text>
+            <Text style={globalStyles.title3}>Près de chez vous</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              <Card
+              {/* <Card
                 activityDate={"Jeudi 15 Mars à 10h"}
                 activityName={"Eveil musical"}
                 activityLocation={"26240, SAINT-VALLIER"}
@@ -99,8 +106,8 @@ export default function HomeScreen({ navigation }) {
                 activityName={"Eveil musical"}
                 activityLocation={"26240, SAINT-VALLIER"}
                 isFavorite={false}
-              ></Card>
-              {/* {activities} */}
+              ></Card> */}
+              {activities}
             </ScrollView>
           </View>
         </View>
