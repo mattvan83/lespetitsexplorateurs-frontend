@@ -131,6 +131,7 @@ export default function ActivitySheetScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
   image: {
     flex: 3.5,
