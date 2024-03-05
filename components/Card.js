@@ -1,4 +1,4 @@
-import { StyleSheet, Text, Image, View } from "react-native";
+import { StyleSheet, Text, Image, View, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const imageMapping = {
@@ -14,10 +14,12 @@ export default function Card({
   activityName,
   activityLocation,
   isFavorite,
+  activityDistance,
 }) {
-  // imagePath = "localImage2";
   // Check if the image is in the mapping
   const isLocalAsset = imageMapping.hasOwnProperty(imagePath);
+
+  // console.log(activityDistance);
 
   return (
     <View style={styles.cardContainer}>
@@ -27,25 +29,37 @@ export default function Card({
           source={isLocalAsset ? imageMapping[imagePath] : { uri: imagePath }}
         />
         <View style={styles.details}>
-          <Text style={styles.activityDate}>{activityDate}</Text>
+          <View style={styles.dateFavoriteContainer}>
+            <Text style={styles.activityDate}>{activityDate}</Text>
+            <TouchableOpacity activeOpacity={0.8} style={styles.favorite}>
+              {!isFavorite ? (
+                <Icon
+                  style={styles.heartIcon}
+                  name="heart-outline"
+                  size={20}
+                  color="#EB5757"
+                />
+              ) : (
+                <Icon
+                  style={styles.heartIcon}
+                  name="heart"
+                  size={20}
+                  color="#EB5757"
+                />
+              )}
+            </TouchableOpacity>
+          </View>
+
           <Text style={styles.activityName}>{activityName}</Text>
-          <Text style={styles.activityLocation}>{activityLocation}</Text>
+          <View style={styles.locationContainer}>
+            <Text style={styles.activityLocation}>{activityLocation}</Text>
+            {activityDistance ? (
+              <Text style={styles.activityLocation}>{activityDistance} KM</Text>
+            ) : (
+              <></>
+            )}
+          </View>
         </View>
-        {!isFavorite ? (
-          <Icon
-            style={styles.heartIcon}
-            name="heart-outline"
-            size={28}
-            color="#EB5757"
-          />
-        ) : (
-          <Icon
-            style={styles.heartIcon}
-            name="heart"
-            size={20}
-            color="#EB5757"
-          />
-        )}
       </View>
     </View>
   );
@@ -56,11 +70,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   card: {
+    justifyContent: "space-evenly",
     alignItems: "center",
     flexDirection: "row",
-    paddingLeft: 10,
     borderRadius: 16,
-    margin: 13,
+    margin: 8,
     width: 325,
     height: 112,
     backgroundColor: "white",
@@ -70,33 +84,57 @@ const styles = StyleSheet.create({
     shadowRadius: 25,
     shadowOpacity: 0.07,
     elevation: 5, // Pour Android
+    // borderColor: "red",
+    // borderWidth: 1,
   },
   img: {
     height: 92,
     width: 82,
     borderRadius: 8,
-    marginRight: 16,
+    // borderColor: "blue",
+    // borderWidth: 1,
   },
   details: {
-    gap: 10,
+    gap: 4,
+    height: 82,
+    width: 215,
+    justifyContent: "space-between",
+    // borderColor: "green",
+    // borderWidth: 1,
+  },
+  dateFavoriteContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    // borderColor: "green",
+    // borderWidth: 1,
   },
   activityDate: {
     fontWeight: "bold",
     color: "#5669FF",
     fontSize: 12,
   },
+  favorite: {
+    width: 24,
+    height: 24,
+    // borderColor: "yellow",
+    // borderWidth: 1,
+  },
   activityName: {
     fontWeight: "bold",
     color: "#120D26",
     fontSize: 20,
+    // borderColor: "red",
+    // borderWidth: 1,
+  },
+  locationContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    // borderColor: "yellow",
+    // borderWidth: 1,
   },
   activityLocation: {
     color: "#888693",
     fontSize: 12,
-  },
-  heartIcon: {
-    position: "absolute",
-    top: 15,
-    right: 15,
   },
 });

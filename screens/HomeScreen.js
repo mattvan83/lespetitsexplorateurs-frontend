@@ -112,6 +112,9 @@ export default function HomeScreen({ navigation }) {
         activityName={activity.name}
         activityLocation={`${activity.postalCode}, ${activity.city}`}
         isFavorite={activity.isLiked}
+        activityDistance={
+          user.latitude && user.longitude ? activity.distance : null
+        }
       ></Card>
     );
   });
@@ -128,7 +131,11 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.body}>
           <View style={styles.listActivities}>
             <Text style={globalStyles.title3}>Près de chez vous</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.scrollView}
+            >
               {activities}
             </ScrollView>
           </View>
@@ -153,22 +160,13 @@ const styles = StyleSheet.create({
   body: {
     flex: 0.8,
     width: "100%",
-    // marginTop: 15,
   },
   listActivities: {
     flex: 0.35,
-    // width: "100%",
-    // margin: 13,
-    // marginLeft: "5%",
-    // marginRight: "5%",
   },
   scrollView: {
-    // flex: 1,
-    // paddingRight: 20,
-    // marginVertical: 20,
-    // backgroundColor: "grey",
-    // width: "100%",
-    // height: "100%",
+    justifyContent: "center",
+    paddingHorizontal: 10,
   },
   card: {
     marginRight: 100,
