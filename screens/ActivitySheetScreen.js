@@ -6,6 +6,8 @@ import {
   ImageBackground,
   Image,
   ScrollView,
+  Share,
+  Alert,
 } from "react-native";
 import { Svg, Rect, Defs, Pattern, Use} from 'react-native-svg'; 
 import { Path } from 'react-native-svg' ;
@@ -16,9 +18,28 @@ import { useState, useEffect } from "react";
 export default function ActivitySheetScreen({ navigation }) {
   const [activityInfo, setActivityInfo] = useState('');
   const [organizerName, setOrganizerName] = useState('');
+  const [organizerImage, setOrganizerImage] = useState('');
   
-  const handleShare = () => {
+  const handleShare = async () => {
     console.log('share');
+
+    try {
+      const result = await Share.share({
+        message:
+          'Les Petits Explorateurs | Activité proche de chez vous !',
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      Alert.alert(error.message);
+    }
   }
   
   const handleLike = () => {
@@ -41,9 +62,9 @@ export default function ActivitySheetScreen({ navigation }) {
   //Constante pour la mise en place du fetch / récupération des infos côté front - useEffect pour appeler qu'une seule fois au chargement du composant
   //à remplacer grâce au useSelector une fois les autres pages accessibles?
   useEffect(() => {
-    const activityId = '65e588da8bd57996d994d8b8'
+    const activityId = '65e77175e8a90dd96d5b277c'
 
-    fetch(`http://172.20.10.8:3000/activities/${activityId}`)
+    fetch(`http://192.168.1.111:3000/activities/${activityId}`)
       .then(response => response.json())
       .then(data => {
           console.log('Activity details : ', data);
@@ -53,15 +74,17 @@ export default function ActivitySheetScreen({ navigation }) {
           const organizerId = data.organizer.replace(/'/g, '');
           console.log(organizerId);
 
-          fetch(`http://172.20.10.8:3000/users/${organizerId}`)
+          fetch(`http://192.168.1.111:3000/users/${organizerId}`)
           .then(response => response.json())
-          .then(name => {
-          console.log('Organizer name : ', name);
-          setOrganizerName(name);
+          .then(data => {
+          console.log('Organizer info : ', data);
+          setOrganizerName(data.name);
+          setOrganizerImage({ data: data.image });
       });
       });
     }, []);
 
+    console.log(organizerImage);
 
   //Gestion de la date
   const dateObject = new Date(activityInfo.date);
@@ -145,9 +168,9 @@ export default function ActivitySheetScreen({ navigation }) {
         </View>
 
         <View style={styles.orgaDiv}>
-          <Image style={styles.icon} source={require('../assets/Images/logo-temp.png')} />
+          <Image style={styles.icon} source={require('../assets/test/profil1.png')} />
           <View marginLeft={20}>
-            <Text style={styles.bold}>{organizerName.name}</Text>
+            <Text style={styles.bold}>{organizerName}</Text>
             <Text style={styles.small}>Organisateur</Text>
           </View>
           <View style={styles.followWrite}>

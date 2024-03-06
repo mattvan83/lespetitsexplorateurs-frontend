@@ -35,7 +35,7 @@ export default function SignupScreen({ navigation }) {
 
   const handleSubmit = () => {
     if (EMAIL_REGEX.test(email)) {
-      fetch('http://172.20.10.8:3000/users/signup', {
+      fetch('http://192.168.1.111:3000/users/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, username, password }),
