@@ -219,7 +219,7 @@ export default function HomeScreen({ navigation }) {
             style={styles.filtersButton}
             activeOpacity={0.8}
           >
-            <Ionicons name="filter" size={24} color="#4A43EC" />
+            <Ionicons name="filter" size={24} color="#D0CFD4" />
             {/* <Text style={styles.textButton}>Filtres</Text> */}
           </TouchableOpacity>
           </View>

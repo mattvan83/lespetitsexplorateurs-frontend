@@ -133,7 +133,7 @@ export default function ListResultsScreen({ navigation }) {
         activityDistance={
           user.latitude && user.longitude ? activity.distance : null
         }
-      ></Card>
+      />
     );
   });
 
