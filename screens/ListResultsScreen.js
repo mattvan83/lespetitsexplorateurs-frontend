@@ -23,7 +23,7 @@ import {
 } from "../reducers/user";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 
-const BACKEND_ADDRESS = "http://192.168.1.20:3000";
+const BACKEND_ADDRESS = "http://192.168.1.111:3000";
 
 export default function ListResultsScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
