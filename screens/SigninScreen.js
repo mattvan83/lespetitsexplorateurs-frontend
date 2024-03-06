@@ -28,6 +28,7 @@ export default function SigninScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [authentificationError, setAuthentificationError] = useState(Boolean);
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = () => {
@@ -39,11 +40,15 @@ export default function SigninScreen({ navigation }) {
       })
         .then((response) => response.json())
         .then((data) => {
-          data.result && dispatch(login({ token: data.token, username: data.username }));
-          data.result && dispatch(setPreferences({ agePreference: data.userPreferences.concernedAges, cityPreference: data.userPreferences.city, latitudePreference: data.userPreferences.latitude, longitudePreference: data.userPreferences.longitude, scopePreference: data.userPreferences.radius}));
-          setEmail("");
-          setPassword("");
-          navigation.navigate("TabNavigator", { screen: "Explorer" });
+          if (data.result) {
+            dispatch(login({ token: data.token, username: data.username }));
+            dispatch(setPreferences({ agePreference: data.userPreferences.concernedAges, cityPreference: data.userPreferences.city, latitudePreference: data.userPreferences.latitude, longitudePreference: data.userPreferences.longitude, scopePreference: data.userPreferences.radius }));
+            setEmail("");
+            setPassword("");
+            navigation.navigate("TabNavigator", { screen: "Explorer" });
+          } else {
+            setAuthentificationError(true)
+          }
         });
     } else {
       setEmailError(true);
@@ -69,6 +74,11 @@ export default function SigninScreen({ navigation }) {
         {emailError && (
           <View>
             <Text style={styles.error}>Email invalide</Text>
+          </View>
+        )}
+        {authentificationError && (
+          <View>
+            <Text style={styles.error}>Email ou mot de passe invalide</Text>
           </View>
         )}
         <View style={globalStyles.border}>
