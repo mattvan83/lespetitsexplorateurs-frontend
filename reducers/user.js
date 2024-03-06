@@ -24,7 +24,15 @@ const initialState = {
       latitudePreference: null,
       longitudePreference: null,
       scopePreference: 50
-    }
+    },
+   citySearched: {
+      cityName: null,
+      postalCode: null,
+      department: null,
+      region: null,
+      latitude: null,
+      longitude: null,
+    },
   },
 };
 
@@ -49,11 +57,11 @@ export const userSlice = createSlice({
     importActivities: (state, action) => {
       state.value.activities = action.payload;
     },
-    setFilters:  (state, action) => {
+    setFilters: (state, action) => {
       state.value.filters.categoryFilter = action.payload.categoryFilter;
       state.value.filters.dateFilter = action.payload.dateFilter;
       state.value.filters.momentFilter = action.payload.momentFilter;
-      state.value.filters.ageFilter= action.payload.ageFilter;
+      state.value.filters.ageFilter = action.payload.ageFilter;
       state.value.filters.priceFilter = action.payload.priceFilter;
       state.value.filters.cityFilter = action.payload.cityFilter;
       state.value.filters.longitudeFilter = action.payload.longitudeFilter;
@@ -69,7 +77,7 @@ export const userSlice = createSlice({
       state.value.filters.categoryFilter = [];
       state.value.filters.dateFilter = [];
       state.value.filters.momentFilter = [];
-      state.value.filters.ageFilter= [];
+      state.value.filters.ageFilter = [];
       state.value.filters.priceFilter = null;
       state.value.filters.cityFilter = null;
       state.value.filters.longitudeFilter = null;
@@ -90,9 +98,35 @@ export const userSlice = createSlice({
       state.value.preferences.longitudePreference = null;
       state.value.preferences.scopePreference = null;
     },
+    setCitySearched: (state, action) => {
+      state.value.citySearched.cityName = action.payload.cityName;
+      state.value.citySearched.postalCode = action.payload.postalCode;
+      state.value.citySearched.department = action.payload.department;
+      state.value.citySearched.region = action.payload.region;
+      state.value.citySearched.latitude = action.payload.coords[1];
+      state.value.citySearched.longitude = action.payload.coords[0];
+    },
+    resetCitySearched: (state, action) => {
+      state.value.citySearched.cityName = null;
+      state.value.citySearched.postalCode = null;
+      state.value.citySearched.department = null;
+      state.value.citySearched.region = null;
+      state.value.citySearched.latitude = null;
+      state.value.citySearched.longitude = null;
+    },
   },
 });
 
-export const { login, logout, addCurrentLocation, importActivities, setFilters, setLocationFilters, resetFilters, setPreferences, resetPreferences } =
-  userSlice.actions;
+export const {
+  login,
+  logout,
+  addCurrentLocation,
+  importActivities,
+  setFilters,
+  setLocationFilters, resetFilters,
+  setPreferences,
+  resetPreferences,
+  setCitySearched,
+  resetCitySearched,
+} = userSlice.actions;
 export default userSlice.reducer;

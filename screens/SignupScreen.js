@@ -24,7 +24,7 @@ const EMAIL_REGEX =
 // const { BACKEND_ADDRESS } = process.env;
 // console.log(process.env.BACKEND_ADDRESS);
 
-BACKEND_ADDRESS = "http://192.168.1.22:3000";
+const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 
 export default function SignupScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -37,8 +37,8 @@ export default function SignupScreen({ navigation }) {
   const handleSubmit = () => {
     if (EMAIL_REGEX.test(email)) {
       fetch(`${BACKEND_ADDRESS}/users/signup`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, username, password }),
       })
         .then((response) => response.json())
@@ -108,7 +108,7 @@ export default function SignupScreen({ navigation }) {
             style={styles.input}
           />
           <MaterialCommunityIcons
-            name={showPassword ? 'eye-off' : 'eye'}
+            name={showPassword ? "eye-off" : "eye"}
             size={24}
             color="#aaa"
             style={styles.icon}

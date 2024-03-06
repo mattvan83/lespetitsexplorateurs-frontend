@@ -8,22 +8,29 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Dimensions,
 } from "react-native";
-import SearchBar from "../components/SearchBar";
+// import SearchBar from "../components/SearchBar";
 import Card from "../components/Card";
 import globalStyles from "../globalStyles";
 import { useEffect, useState } from "react";
 import * as Location from "expo-location";
 import { useDispatch, useSelector } from "react-redux";
-import { addCurrentLocation, importActivities } from "../reducers/user";
+import {
+  addCurrentLocation,
+  importActivities,
+  setCitySearched,
+} from "../reducers/user";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 
 const BACKEND_ADDRESS = "http://192.168.1.111:3000";
 
 export default function HomeScreen({ navigation }) {
-  const [dataSet, setDataSet] = useState([]);
-  const [citiesData, setCitiesData] = useState([]);
+  const [suggestionsList, setSuggestionsList] = useState([]);
   const user = useSelector((state) => state.user.value);
+  // console.log("user: ", user);
+  console.log("user.citySearched: ", user.citySearched);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -40,14 +47,28 @@ export default function HomeScreen({ navigation }) {
           } = await Location.getCurrentPositionAsync();
 
           const coordinates = { latitude, longitude };
-          console.log("user coordinates: ", coordinates);
 
           // Set the flag to indicate that the position has been obtained
           isPositionObtained = true;
-          dispatch(addCurrentLocation(coordinates));
 
           if (isPositionObtained) {
             console.log("User coordinates available");
+
+            // Set the geo-localization coordinates in user reducer
+            dispatch(addCurrentLocation(coordinates));
+            console.log("user coordinates: ", coordinates);
+
+            // // Set the city name in user reducer
+            // let geoLocationInfo = await Location.reverseGeocodeAsync({
+            //   latitude: coordinates.latitude,
+            //   longitude: coordinates.longitude,
+            // });
+
+            // if (geoLocationInfo.length > 0) {
+            //   const city = geoLocationInfo[0].city;
+            //   dispatch(setCity(city));
+            // }
+
             fetch(
               `${BACKEND_ADDRESS}/activities/geoloc/${user.token}/${coordinates.latitude}/${coordinates.longitude}`
             )
@@ -98,12 +119,20 @@ export default function HomeScreen({ navigation }) {
             cityName: data.nom,
             postalCode: data.code,
             department: data.departement.nom,
-            region: data.region.name,
+            region: data.region.nom,
             coords: data.centre.coordinates,
           };
         });
-        setDataSet(suggestions);
+        setSuggestionsList(suggestions);
       });
+  };
+
+  const onClearPress = () => {
+    setSuggestionsList(null);
+  };
+
+  const handlePressFilters = () => {
+    navigation.navigate("Filters");
   };
 
   const activities = user.activities.map((activity, i) => {
@@ -153,21 +182,44 @@ export default function HomeScreen({ navigation }) {
         style={styles.container}
       >
         <View style={styles.header}>
-          {/* <SearchBar /> */}
           <AutocompleteDropdown
             onChangeText={(value) => searchCity(value)}
             onSelectItem={(item) =>
-              item && setCitiesData([...citiesData, item])
+              item &&
+              dispatch(setCitySearched(item)) &&
+              navigation.navigate("ListResults")
             }
-            dataSet={dataSet}
+            dataSet={suggestionsList}
+            suggestionsListMaxHeight={Dimensions.get("window").height * 0.45}
+            onClear={onClearPress}
             textInputProps={{
               placeholder: "Rechercher un lieu...",
+              style: {
+                color: "#120D26",
+                paddingLeft: 20,
+              },
             }}
             inputContainerStyle={styles.inputContainer}
             containerStyle={styles.dropdownContainer}
             suggestionsListContainerStyle={styles.suggestionListContainer}
+            suggestionsListTextStyle={{
+              color: "#120D26",
+              fontSize: 12,
+            }}
             closeOnSubmit
           />
+          <TouchableOpacity
+            onPress={() => handlePressFilters()}
+            style={styles.filtersButton}
+            activeOpacity={0.8}
+          >
+            {/* <SvgUri
+            width="28"
+            height="28"
+            source={require("../assets/icons/search-filters-darker.svg")}
+          /> */}
+            <Text style={styles.textButton}>Filtres</Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.body}>
           <View style={styles.listActivities}>
@@ -199,10 +251,27 @@ const styles = StyleSheet.create({
   },
   header: {
     flex: 0.25,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "#4A43EC",
     width: "100%",
-    justifyContent: "flex-end",
+  },
+  filtersButton: {
+    width: 70,
+    flexDirection: "row",
+    justifyContent: "space-around",
     alignItems: "center",
+    backgroundColor: "#EBEDFF",
+    borderRadius: 100,
+    padding: 6,
+    marginRight: "25%",
+    marginTop: "15%",
+  },
+  textButton: {
+    color: "#5669FF",
+    fontWeight: "bold",
+    fontSize: 16,
   },
   body: {
     flex: 0.8,
@@ -210,21 +279,21 @@ const styles = StyleSheet.create({
   },
   dropdownContainer: {
     width: "100%",
-    marginBottom: 20,
   },
   inputContainer: {
     width: "70%",
-    marginHorizontal: "15%",
+    marginTop: "15%",
+    marginLeft: "25%",
     // borderWidth: 1,
     // borderColor: "#51e181",
     // backgroundColor: "#ffffff",
   },
   suggestionListContainer: {
-    borderRadius: 3,
-    backgroundColor: "rgba(255, 255, 255, 0.95)",
+    borderRadius: 4,
+    backgroundColor: "rgba(255, 255, 255, 0.97)",
   },
   listActivities: {
-    flex: 0.35,
+    height: "100%",
   },
   scrollView: {
     justifyContent: "center",
