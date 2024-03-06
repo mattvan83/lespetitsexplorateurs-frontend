@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import globalStyles from '../globalStyles';
 import { useDispatch, useSelector } from 'react-redux';
-import { setPreferences, resetPreferences } from '../reducers/user';
+import { setPreferences, resetPreferences, setLocationFilters } from '../reducers/user';
 import { useState } from 'react';
 import { logout } from '../reducers/user';
 import Slider from '@react-native-community/slider';
@@ -29,16 +29,13 @@ export default function ProfileScreen({ navigation }) {
   const [selectedLongitude, setSelectedLongitude] = useState(user.preferences.latitudePreference);
   const [selectedLatitude, setSelectedLatitude] = useState(user.preferences.longitudePreference);
 
-console.log(user.preferences.scopePreference)
-console.log(user.preferences.agePreference)
-
   const handleLogOut = () => {
     dispatch(resetPreferences())
     dispatch(logout())
     navigation.navigate('Signin')
   }
 
-  const ageCategory = ["3_12months", "12_24months", "24_36months", "3_6years", "7_10years", "10+years"];
+  const ageCategory = ["3_12months", "1_3years", "3_6years", "6_10years", "10+years"];
 
   const handleAgeList = (category) => {
     handleFilterButtonClick(category, selectedAges, setSelectedAges);
@@ -65,6 +62,7 @@ console.log(user.preferences.agePreference)
       .then((response) => response.json())
       .then((data) => {
         data.result && dispatch(setPreferences({ agePreference: selectedAges, cityPreference: selectedCity, latitudePreference: selectedLatitude, longitudePreference: selectedLongitude,scopePreference: scope}));
+        data.result && dispatch(setLocationFilters({ cityFilter: selectedCity, latitudeFilter: selectedLatitude, longitudeFilter: selectedLongitude}));
         navigation.navigate("TabNavigator", { screen: "Explorer" });
       });
   }
@@ -91,7 +89,7 @@ console.log(user.preferences.agePreference)
         />
 
         <Text style={globalStyles.title4}>Localisation</Text>
-        <InputLocalisation />
+        <InputLocalisation setSelectedCity={setSelectedCity} selectedCity={selectedCity} setSelectedLongitude={setSelectedLongitude} setSelectedLatitude={setSelectedLatitude} />
 
         <Text style={globalStyles.title4}>Dans un rayon de {scope}km</Text>
         <Slider

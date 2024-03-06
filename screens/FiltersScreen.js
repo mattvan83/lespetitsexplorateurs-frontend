@@ -32,7 +32,7 @@ export default function FiltersScreen({ navigation }) {
   const categories = ['Sport', 'Musique', 'Créativité', 'Motricité', 'Éveil'];
   const dateFilters = ["Aujourd'hui", "Demain", "Cette semaine", "Ce week-end"];
   const momentFilters = ["Matin", "Après-midi", "Soir"];
-  const ageFilters = ["3_12months", "12_24months", "24_36months", "3_6years", "7_10years", "10+years"];
+  const ageFilters =  ["3_12months", "1_3years", "3_6years", "6_10years", "10+years"];
 
   const handleCategoryList = (category)=> {
     handleFilterButtonClick(category, selectedCategories, setSelectedCategories);
@@ -90,15 +90,17 @@ export default function FiltersScreen({ navigation }) {
     setSelectedDates([]);
     setSelectedMoments([]);
     setSelectedAges([]);
-    setPrice(0);
-    setSelectedLocation(null);
-    setScope(1);
+    setPrice(30);
+    setSelectedLongitude(null);
+    setSelectedLatitude(null);
+    setSelectedCity(null);
+    setScope(25);
 
     dispatch(resetFilters());
   }
 
   const handleSetFilters = () => {
-    dispatch(setFilters({ categoryFilter: selectedCategories, dateFilter: selectedDates, momentFilter: selectedMoments, ageFilter: selectedAges, priceFilter : price, locationFilter: selectedLocation, scopeFilter: scope}));
+    dispatch(setFilters({ categoryFilter: selectedCategories, dateFilter: selectedDates, momentFilter: selectedMoments, ageFilter: selectedAges, priceFilter : price, cityFilter: selectedCity, longitudeFilter: selectedLongitude, latitudeFilter: selectedLatitude, scopeFilter: scope}));
     navigation.navigate('ListResults');
   }
 
@@ -146,7 +148,7 @@ export default function FiltersScreen({ navigation }) {
         </View>
 
         <Text style={globalStyles.title4}>Localisation</Text>
-        <InputLocalisation />
+        <InputLocalisation setSelectedCity={setSelectedCity} selectedCity={selectedCity} setSelectedLongitude={setSelectedLongitude} setSelectedLatitude={setSelectedLatitude} />
 
         <Text style={globalStyles.title4}>Dans un rayon de {scope}km</Text>
         <Slider

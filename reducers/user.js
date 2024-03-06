@@ -13,7 +13,9 @@ const initialState = {
       momentFilter: [],
       ageFilter: [],
       priceFilter: null,
-      locationFilter: null,
+      cityFilter: null,
+      latitudeFilter: null,
+      longitudeFilter: null,
       scopeFilter: null
     },
     preferences: {
@@ -53,8 +55,15 @@ export const userSlice = createSlice({
       state.value.filters.momentFilter = action.payload.momentFilter;
       state.value.filters.ageFilter= action.payload.ageFilter;
       state.value.filters.priceFilter = action.payload.priceFilter;
-      state.value.filters.locationFilter = action.payload.locationFilter;
+      state.value.filters.cityFilter = action.payload.cityFilter;
+      state.value.filters.longitudeFilter = action.payload.longitudeFilter;
+      state.value.filters.latitudeFilter = action.payload.latitudeFilter;
       state.value.filters.scopeFilter = action.payload.scopeFilter;
+    },
+    setLocationFilters:  (state, action) => {
+      state.value.filters.cityFilter = action.payload.cityFilter;
+      state.value.filters.longitudeFilter = action.payload.longitudeFilter;
+      state.value.filters.latitudeFilter = action.payload.latitudeFilter;
     },
     resetFilters:  (state, action) => {
       state.value.filters.categoryFilter = [];
@@ -62,7 +71,9 @@ export const userSlice = createSlice({
       state.value.filters.momentFilter = [];
       state.value.filters.ageFilter= [];
       state.value.filters.priceFilter = null;
-      state.value.filters.locationFilter = null;
+      state.value.filters.cityFilter = null;
+      state.value.filters.longitudeFilter = null;
+      state.value.filters.latitudeFilter = null;
       state.value.filters.scopeFilter = null;
     },
     setPreferences:  (state, action) => {
@@ -82,6 +93,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const { login, logout, addCurrentLocation, importActivities, setFilters, resetFilters, setPreferences, resetPreferences } =
+export const { login, logout, addCurrentLocation, importActivities, setFilters, setLocationFilters, resetFilters, setPreferences, resetPreferences } =
   userSlice.actions;
 export default userSlice.reducer;
