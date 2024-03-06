@@ -47,14 +47,28 @@ export default function HomeScreen({ navigation }) {
           } = await Location.getCurrentPositionAsync();
 
           const coordinates = { latitude, longitude };
-          console.log("user coordinates: ", coordinates);
 
           // Set the flag to indicate that the position has been obtained
           isPositionObtained = true;
-          dispatch(addCurrentLocation(coordinates));
 
           if (isPositionObtained) {
             console.log("User coordinates available");
+
+            // Set the geo-localization coordinates in user reducer
+            dispatch(addCurrentLocation(coordinates));
+            console.log("user coordinates: ", coordinates);
+
+            // // Set the city name in user reducer
+            // let geoLocationInfo = await Location.reverseGeocodeAsync({
+            //   latitude: coordinates.latitude,
+            //   longitude: coordinates.longitude,
+            // });
+
+            // if (geoLocationInfo.length > 0) {
+            //   const city = geoLocationInfo[0].city;
+            //   dispatch(setCity(city));
+            // }
+
             fetch(
               `${BACKEND_ADDRESS}/activities/geoloc/${user.token}/${coordinates.latitude}/${coordinates.longitude}`
             )
@@ -279,7 +293,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.97)",
   },
   listActivities: {
-    flex: 0.35,
+    height: "100%",
   },
   scrollView: {
     justifyContent: "center",

@@ -27,9 +27,14 @@ const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 
 export default function ListResultsScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
+  const userFilters = useSelector((state) => state.user.value.filters);
+  const userCitySearched = useSelector(
+    (state) => state.user.value.citySearched
+  );
   const [suggestionsList, setSuggestionsList] = useState([]);
 
-  console.log("user.citySearched: ", user.citySearched);
+  console.log("user.citySearched: ", userCitySearched);
+  console.log("user.filters: ", userFilters);
 
   const dispatch = useDispatch();
 
@@ -41,7 +46,7 @@ export default function ListResultsScreen({ navigation }) {
       .then((data) => {
         data.result && dispatch(importActivities(data.activities));
       });
-  }, []);
+  }, [userCitySearched]);
 
   const searchCity = (query) => {
     // Prevent search with an empty query
