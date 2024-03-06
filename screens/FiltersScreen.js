@@ -134,6 +134,7 @@ export default function FiltersScreen({ navigation }) {
           minimumTrackTintColor="#5669FF"
           maximumTrackTintColor="#E7E7E9"
           step={1}
+          value={22}
           onValueChange={(value) => setPrice(value)}
         />
         <View style={styles.sliderBottom}>
@@ -151,6 +152,7 @@ export default function FiltersScreen({ navigation }) {
           minimumValue={1}
           maximumValue={50}
           upperLimit={50}
+          value={25}
           minimumTrackTintColor="#5669FF"
           maximumTrackTintColor="#E7E7E9"
           step={1}

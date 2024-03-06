@@ -15,7 +15,6 @@ import { useState } from 'react';
 import { logout } from '../reducers/user';
 import Slider from '@react-native-community/slider';
 import InputLocalisation from '../components/InputLocalisation';
-import Button from '../components/Button';
 import FilterTextCategory from "../components/FilterTextCategory";
 import { handleFilterButtonClick } from '../modules/handleFilterButtonClick';
 
@@ -24,11 +23,14 @@ BACKEND_ADDRESS = "http://192.168.1.22:3000";
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
-  const [scope, setScope] = useState(1);
-  const [selectedAges, setSelectedAges] = useState([]);
-  const [selectedCity, setSelectedCity] = useState(null);
-  const [selectedLongitude, setSelectedLongitude] = useState(null);
-  const [selectedLatitude, setSelectedLatitude] = useState(null);
+  const [scope, setScope] = useState(user.preferences.scopePreference);
+  const [selectedAges, setSelectedAges] = useState(user.preferences.agePreference);
+  const [selectedCity, setSelectedCity] = useState(user.preferences.cityPreference);
+  const [selectedLongitude, setSelectedLongitude] = useState(user.preferences.latitudePreference);
+  const [selectedLatitude, setSelectedLatitude] = useState(user.preferences.longitudePreference);
+
+console.log(user.preferences.scopePreference)
+console.log(user.preferences.agePreference)
 
   const handleLogOut = () => {
     dispatch(resetPreferences())
@@ -98,6 +100,7 @@ export default function ProfileScreen({ navigation }) {
           minimumValue={1}
           maximumValue={50}
           upperLimit={50}
+          value = {scope}
           minimumTrackTintColor="#5669FF"
           maximumTrackTintColor="#E7E7E9"
           step={1}

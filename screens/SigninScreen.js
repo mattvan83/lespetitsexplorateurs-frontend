@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { login } from "../reducers/user";
+import { login, setPreferences } from "../reducers/user";
 import globalStyles from "../globalStyles";
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -39,8 +39,8 @@ export default function SigninScreen({ navigation }) {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log(data)
           data.result && dispatch(login({ token: data.token, username: data.username }));
+          data.result && dispatch(setPreferences({ agePreference: data.userPreferences.concernedAges, cityPreference: data.userPreferences.city, latitudePreference: data.userPreferences.latitude, longitudePreference: data.userPreferences.longitude, scopePreference: data.userPreferences.radius}));
           setEmail("");
           setPassword("");
           navigation.navigate("TabNavigator", { screen: "Explorer" });
