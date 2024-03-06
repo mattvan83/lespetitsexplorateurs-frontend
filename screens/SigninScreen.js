@@ -21,7 +21,7 @@ const EMAIL_REGEX =
 // const { BACKEND_ADDRESS } = process.env;
 // console.log(BACKEND_ADDRESS);
 
-const BACKEND_ADDRESS = "http://192.168.1.22:3000";
+const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 
 export default function SigninScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -39,8 +39,18 @@ export default function SigninScreen({ navigation }) {
       })
         .then((response) => response.json())
         .then((data) => {
-          data.result && dispatch(login({ token: data.token, username: data.username }));
-          data.result && dispatch(setPreferences({ agePreference: data.userPreferences.concernedAges, cityPreference: data.userPreferences.city, latitudePreference: data.userPreferences.latitude, longitudePreference: data.userPreferences.longitude, scopePreference: data.userPreferences.radius}));
+          data.result &&
+            dispatch(login({ token: data.token, username: data.username }));
+          data.result &&
+            dispatch(
+              setPreferences({
+                agePreference: data.userPreferences.concernedAges,
+                cityPreference: data.userPreferences.city,
+                latitudePreference: data.userPreferences.latitude,
+                longitudePreference: data.userPreferences.longitude,
+                scopePreference: data.userPreferences.radius,
+              })
+            );
           setEmail("");
           setPassword("");
           navigation.navigate("TabNavigator", { screen: "Explorer" });

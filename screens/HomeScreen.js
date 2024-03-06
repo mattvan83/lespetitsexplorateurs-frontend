@@ -21,9 +21,9 @@ import {
   setCitySearched,
 } from "../reducers/user";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from "@expo/vector-icons";
 
-const BACKEND_ADDRESS = "http://192.168.1.22:3000";
+const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 
 export default function HomeScreen({ navigation }) {
   const [suggestionsList, setSuggestionsList] = useState([]);
@@ -161,8 +161,8 @@ export default function HomeScreen({ navigation }) {
           activity.imgUrl.includes(1)
             ? "localImage1"
             : activity.imgUrl.includes(2)
-              ? "localImage2"
-              : "localImage3"
+            ? "localImage2"
+            : "localImage3"
         }
         activityDate={formattedDate}
         activityName={activity.name}
@@ -184,7 +184,7 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.searchContainer}>
           <View style={styles.search}>
             <View style={styles.searchBar}>
-            <Ionicons name="location-outline" size={24} color="#D0CFD4" />
+              <Ionicons name="location-outline" size={24} color="#D0CFD4" />
               <AutocompleteDropdown
                 onChangeText={(value) => searchCity(value)}
                 onSelectItem={(item) =>
@@ -193,7 +193,9 @@ export default function HomeScreen({ navigation }) {
                   navigation.navigate("ListResults")
                 }
                 dataSet={suggestionsList}
-                suggestionsListMaxHeight={Dimensions.get("window").height * 0.45}
+                suggestionsListMaxHeight={
+                  Dimensions.get("window").height * 0.45
+                }
                 onClear={onClearPress}
                 textInputProps={{
                   placeholder: "Rechercher un lieu...",
@@ -206,7 +208,7 @@ export default function HomeScreen({ navigation }) {
                 containerStyle={styles.dropdownContainer}
                 suggestionsListContainerStyle={styles.suggestionListContainer}
                 rightButtonsContainerStyle={styles.rightButtonsContainerStyle}
-                emptyResultText='Recherche infructueuse'
+                emptyResultText="Recherche infructueuse"
                 suggestionsListTextStyle={{
                   color: "#120D26",
                   fontSize: 12,
@@ -215,15 +217,14 @@ export default function HomeScreen({ navigation }) {
               />
             </View>
             <TouchableOpacity
-            onPress={() => handlePressFilters()}
-            style={styles.filtersButton}
-            activeOpacity={0.8}
-          >
-            <Ionicons name="filter" size={24} color="#4A43EC" />
-            {/* <Text style={styles.textButton}>Filtres</Text> */}
-          </TouchableOpacity>
+              onPress={() => handlePressFilters()}
+              style={styles.filtersButton}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="filter" size={24} color="#4A43EC" />
+              {/* <Text style={styles.textButton}>Filtres</Text> */}
+            </TouchableOpacity>
           </View>
-          
         </View>
         <View style={styles.body}>
           <View style={styles.listActivities}>
@@ -266,7 +267,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#EBEDFF",
     borderRadius: 100,
-    justifyContent: 'center',
+    justifyContent: "center",
     padding: 6,
   },
   textButton: {
@@ -321,7 +322,7 @@ const styles = StyleSheet.create({
     width: "90%",
     fontSize: 16,
     marginLeft: 10,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     marginLeft: 5,
   },
   suggestionListContainer: {
@@ -329,6 +330,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.95)",
   },
   rightButtonsContainerStyle: {
-    backgroundColor: 'white',
-  }
+    backgroundColor: "white",
+  },
 });
