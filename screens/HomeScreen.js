@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addCurrentLocation, importActivities } from "../reducers/user";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 
-const BACKEND_ADDRESS = "http://192.168.1.22:3000";
+const BACKEND_ADDRESS = "http://192.168.1.111:3000";
 
 export default function HomeScreen({ navigation }) {
   const [dataSet, setDataSet] = useState([]);

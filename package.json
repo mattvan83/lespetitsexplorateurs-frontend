@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.5.1",
+    "@react-native-community/datetimepicker": "^7.6.2",
     "@react-native-community/slider": "^4.5.0",
     "@react-navigation/bottom-tabs": "6",
     "@react-navigation/native": "6",
@@ -25,6 +26,7 @@
     "expo": "~50.0.8",
     "expo-location": "16.5.5",
     "expo-status-bar": "~1.11.1",
+    "express-fileupload": "^1.4.3",
     "react": "18.2.0",
     "react-dom": "18",
     "react-native": "0.73.4",
