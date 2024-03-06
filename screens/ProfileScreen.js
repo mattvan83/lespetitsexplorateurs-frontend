@@ -19,12 +19,16 @@ import Button from '../components/Button';
 import FilterTextCategory from "../components/FilterTextCategory";
 import { handleFilterButtonClick } from '../modules/handleFilterButtonClick';
 
+BACKEND_ADDRESS = "http://192.168.1.22:3000";
+
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
   const [scope, setScope] = useState(1);
   const [selectedAges, setSelectedAges] = useState([]);
-  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [selectedCity, setSelectedCity] = useState(null);
+  const [selectedLongitude, setSelectedLongitude] = useState(null);
+  const [selectedLatitude, setSelectedLatitude] = useState(null);
 
   const handleLogOut = () => {
     dispatch(resetPreferences())
@@ -32,7 +36,7 @@ export default function ProfileScreen({ navigation }) {
     navigation.navigate('Signin')
   }
 
-  const ageCategory = ["3-12 mois", "1-3 ans", "3-6 ans", "6-10 ans", "10+ ans"];
+  const ageCategory = ["3_12months", "12_24months", "24_36months", "3_6years", "7_10years", "10+years"];
 
   const handleAgeList = (category) => {
     handleFilterButtonClick(category, selectedAges, setSelectedAges);
@@ -44,8 +48,23 @@ export default function ProfileScreen({ navigation }) {
   })
 
   const handleSetPreferences = () => {
-    dispatch(setPreferences({ agePreference: selectedAges, locationPreference: selectedLocation, scopePreference: scope}));
-    navigation.navigate('Explorer');
+    fetch(`${BACKEND_ADDRESS}/users/updatePreferences`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        token: user.token,
+        concernedAges: selectedAges,
+        radius: scope,
+        city: selectedCity,
+        longitude: selectedLongitude,
+        latitude: selectedLatitude,
+       }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        data.result && dispatch(setPreferences({ agePreference: selectedAges, cityPreference: selectedCity, latitudePreference: selectedLatitude, longitudePreference: selectedLongitude,scopePreference: scope}));
+        navigation.navigate("TabNavigator", { screen: "Explorer" });
+      });
   }
 
 

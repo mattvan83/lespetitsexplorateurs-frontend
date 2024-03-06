@@ -21,7 +21,7 @@ const EMAIL_REGEX =
 // const { BACKEND_ADDRESS } = process.env;
 // console.log(BACKEND_ADDRESS);
 
-BACKEND_ADDRESS = "http://192.168.1.27:3000";
+BACKEND_ADDRESS = "http://192.168.1.22:3000";
 
 export default function SigninScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -32,13 +32,14 @@ export default function SigninScreen({ navigation }) {
 
   const handleSubmit = () => {
     if (EMAIL_REGEX.test(email)) {
-      fetch('http://172.20.10.8:3000/users/signin', {
+      fetch(`${BACKEND_ADDRESS}/users/signin`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
       })
         .then((response) => response.json())
         .then((data) => {
+          console.log(data)
           data.result && dispatch(login({ token: data.token, username: data.username }));
           setEmail("");
           setPassword("");
