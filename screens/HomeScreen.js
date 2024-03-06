@@ -10,7 +10,6 @@ import {
   ScrollView,
   Dimensions,
 } from "react-native";
-// import SearchBar from "../components/SearchBar";
 import Card from "../components/Card";
 import globalStyles from "../globalStyles";
 import { useEffect, useState } from "react";
@@ -22,8 +21,9 @@ import {
   setCitySearched,
 } from "../reducers/user";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
+import { Ionicons } from '@expo/vector-icons';
 
-const BACKEND_ADDRESS = "http://192.168.1.111:3000";
+const BACKEND_ADDRESS = "http://192.168.1.22:3000";
 
 export default function HomeScreen({ navigation }) {
   const [suggestionsList, setSuggestionsList] = useState([]);
@@ -161,8 +161,8 @@ export default function HomeScreen({ navigation }) {
           activity.imgUrl.includes(1)
             ? "localImage1"
             : activity.imgUrl.includes(2)
-            ? "localImage2"
-            : "localImage3"
+              ? "localImage2"
+              : "localImage3"
         }
         activityDate={formattedDate}
         activityName={activity.name}
@@ -181,45 +181,49 @@ export default function HomeScreen({ navigation }) {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}
       >
-        <View style={styles.header}>
-          <AutocompleteDropdown
-            onChangeText={(value) => searchCity(value)}
-            onSelectItem={(item) =>
-              item &&
-              dispatch(setCitySearched(item)) &&
-              navigation.navigate("ListResults")
-            }
-            dataSet={suggestionsList}
-            suggestionsListMaxHeight={Dimensions.get("window").height * 0.45}
-            onClear={onClearPress}
-            textInputProps={{
-              placeholder: "Rechercher un lieu...",
-              style: {
-                color: "#120D26",
-                paddingLeft: 20,
-              },
-            }}
-            inputContainerStyle={styles.inputContainer}
-            containerStyle={styles.dropdownContainer}
-            suggestionsListContainerStyle={styles.suggestionListContainer}
-            suggestionsListTextStyle={{
-              color: "#120D26",
-              fontSize: 12,
-            }}
-            closeOnSubmit
-          />
-          <TouchableOpacity
+        <View style={styles.searchContainer}>
+          <View style={styles.search}>
+            <View style={styles.searchBar}>
+            <Ionicons name="location-outline" size={24} color="#D0CFD4" />
+              <AutocompleteDropdown
+                onChangeText={(value) => searchCity(value)}
+                onSelectItem={(item) =>
+                  item &&
+                  dispatch(setCitySearched(item)) &&
+                  navigation.navigate("ListResults")
+                }
+                dataSet={suggestionsList}
+                suggestionsListMaxHeight={Dimensions.get("window").height * 0.45}
+                onClear={onClearPress}
+                textInputProps={{
+                  placeholder: "Rechercher un lieu...",
+                  style: {
+                    color: "#120D26",
+                    paddingLeft: 20,
+                  },
+                }}
+                inputContainerStyle={styles.inputContainer}
+                containerStyle={styles.dropdownContainer}
+                suggestionsListContainerStyle={styles.suggestionListContainer}
+                rightButtonsContainerStyle={styles.rightButtonsContainerStyle}
+                emptyResultText='Recherche infructueuse'
+                suggestionsListTextStyle={{
+                  color: "#120D26",
+                  fontSize: 12,
+                }}
+                closeOnSubmit
+              />
+            </View>
+            <TouchableOpacity
             onPress={() => handlePressFilters()}
             style={styles.filtersButton}
             activeOpacity={0.8}
           >
-            {/* <SvgUri
-            width="28"
-            height="28"
-            source={require("../assets/icons/search-filters-darker.svg")}
-          /> */}
-            <Text style={styles.textButton}>Filtres</Text>
+            <Ionicons name="filter" size={24} color="#4A43EC" />
+            {/* <Text style={styles.textButton}>Filtres</Text> */}
           </TouchableOpacity>
+          </View>
+          
         </View>
         <View style={styles.body}>
           <View style={styles.listActivities}>
@@ -259,14 +263,11 @@ const styles = StyleSheet.create({
   },
   filtersButton: {
     width: 70,
-    flexDirection: "row",
-    justifyContent: "space-around",
     alignItems: "center",
     backgroundColor: "#EBEDFF",
     borderRadius: 100,
+    justifyContent: 'center',
     padding: 6,
-    marginRight: "25%",
-    marginTop: "15%",
   },
   textButton: {
     color: "#5669FF",
@@ -276,21 +277,6 @@ const styles = StyleSheet.create({
   body: {
     flex: 0.8,
     width: "100%",
-  },
-  dropdownContainer: {
-    width: "100%",
-  },
-  inputContainer: {
-    width: "70%",
-    marginTop: "15%",
-    marginLeft: "25%",
-    // borderWidth: 1,
-    // borderColor: "#51e181",
-    // backgroundColor: "#ffffff",
-  },
-  suggestionListContainer: {
-    borderRadius: 4,
-    backgroundColor: "rgba(255, 255, 255, 0.97)",
   },
   listActivities: {
     height: "100%",
@@ -302,4 +288,47 @@ const styles = StyleSheet.create({
   card: {
     marginRight: 100,
   },
+  searchContainer: {
+    alignItems: "center",
+    marginTop: 20,
+  },
+  search: {
+    flexDirection: "row",
+    gap: 8,
+    height: 45,
+    width: "90%",
+  },
+  searchBar: {
+    flex: 1,
+    alignItems: "center",
+    flexDirection: "row",
+    paddingLeft: 10,
+    paddingRight: 5,
+    borderRadius: 12,
+    borderColor: "#E4dfdf",
+    borderWidth: 1,
+  },
+  input: {
+    width: "90%",
+    color: "#747688",
+    fontSize: 16,
+    marginLeft: 10,
+  },
+  dropdownContainer: {
+    width: "100%",
+  },
+  inputContainer: {
+    width: "90%",
+    fontSize: 16,
+    marginLeft: 10,
+    backgroundColor: 'white',
+    marginLeft: 5,
+  },
+  suggestionListContainer: {
+    borderRadius: 3,
+    backgroundColor: "rgba(255, 255, 255, 0.95)",
+  },
+  rightButtonsContainerStyle: {
+    backgroundColor: 'white',
+  }
 });
