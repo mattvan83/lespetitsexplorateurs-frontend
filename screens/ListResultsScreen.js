@@ -3,7 +3,7 @@ import {
   Text,
   TextInput,
   View,
-  // TouchableOpacity,
+  TouchableOpacity,
   SafeAreaView,
   KeyboardAvoidingView,
   Platform,
@@ -87,6 +87,10 @@ export default function ListResultsScreen({ navigation }) {
     setSuggestionsList(null);
   };
 
+  const handlePressFilters = () => {
+    navigation.navigate("Filters");
+  };
+
   const activities = user.activities.map((activity, i) => {
     const inputDate = new Date(activity.date);
 
@@ -156,6 +160,18 @@ export default function ListResultsScreen({ navigation }) {
             }}
             closeOnSubmit
           />
+          <TouchableOpacity
+            onPress={() => handlePressFilters()}
+            style={styles.filtersButton}
+            activeOpacity={0.8}
+          >
+            {/* <SvgUri
+            width="28"
+            height="28"
+            source={require("../assets/icons/search-filters-darker.svg")}
+          /> */}
+            <Text style={styles.textButton}>Filtres</Text>
+          </TouchableOpacity>
         </View>
         <View style={styles.body}>
           <View style={styles.listActivities}>
@@ -181,10 +197,27 @@ const styles = StyleSheet.create({
   },
   header: {
     flex: 0.25,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     // backgroundColor: "#4A43EC",
     width: "100%",
-    justifyContent: "flex-end",
+  },
+  filtersButton: {
+    width: 70,
+    flexDirection: "row",
+    justifyContent: "space-around",
     alignItems: "center",
+    backgroundColor: "#EBEDFF",
+    borderRadius: 100,
+    padding: 6,
+    marginRight: "25%",
+    marginTop: "15%",
+  },
+  textButton: {
+    color: "#5669FF",
+    fontWeight: "bold",
+    fontSize: 16,
   },
   body: {
     flex: 0.8,
@@ -192,11 +225,12 @@ const styles = StyleSheet.create({
   },
   dropdownContainer: {
     width: "100%",
-    marginBottom: 20,
+    // marginBottom: 20,
   },
   inputContainer: {
     width: "70%",
-    marginHorizontal: "15%",
+    marginTop: "15%",
+    marginLeft: "25%",
     // borderWidth: 1,
     // borderColor: "#51e181",
     // backgroundColor: "#ffffff",
