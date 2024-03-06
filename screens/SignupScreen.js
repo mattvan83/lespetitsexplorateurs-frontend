@@ -7,14 +7,15 @@ import {
   Image,
   TouchableOpacity,
   KeyboardAvoidingView,
+  Keyboard
 } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 import globalStyles from "../globalStyles";
 import { AntDesign } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 
 const EMAIL_REGEX =
@@ -53,9 +54,9 @@ export default function SignupScreen({ navigation }) {
     }
   };
 
-  const toggleShowPassword = () => { 
-    setShowPassword(!showPassword); 
-}; 
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   return (
     <KeyboardAvoidingView
@@ -101,18 +102,18 @@ export default function SignupScreen({ navigation }) {
           <TextInput
             placeholder="Mot de passe"
             textContentType="newPassword"
-            secureTextEntry={!showPassword} 
+            secureTextEntry={!showPassword}
             onChangeText={(value) => setPassword(value)}
             value={password}
             style={styles.input}
           />
-          <MaterialCommunityIcons 
-                    name={showPassword ? 'eye-off' : 'eye'} 
-                    size={24} 
-                    color="#aaa"
-                    style={styles.icon} 
-                    onPress={toggleShowPassword} 
-                /> 
+          <MaterialCommunityIcons
+            name={showPassword ? 'eye-off' : 'eye'}
+            size={24}
+            color="#aaa"
+            style={styles.icon}
+            onPress={toggleShowPassword}
+          />
         </View>
       </View>
 
@@ -129,7 +130,7 @@ export default function SignupScreen({ navigation }) {
           onPress={() => navigation.navigate("Signin")}
           activeOpacity={0.8}
         >
-          <Text style={styles.textBottom}>
+          <Text>
             Déjà inscrit ? Connectez-vous ici
           </Text>
         </TouchableOpacity>

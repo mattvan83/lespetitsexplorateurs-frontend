@@ -47,22 +47,25 @@ export default function ProfileScreen({ navigation }) {
   })
 
   const handleSetPreferences = () => {
+    console.log(selectedCity)
+    console.log(selectedLongitude)
+    console.log(selectedLatitude)
     fetch(`${BACKEND_ADDRESS}/users/updatePreferences`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         token: user.token,
         concernedAges: selectedAges,
         radius: scope,
         city: selectedCity,
         longitude: selectedLongitude,
         latitude: selectedLatitude,
-       }),
+      }),
     })
       .then((response) => response.json())
       .then((data) => {
-        data.result && dispatch(setPreferences({ agePreference: selectedAges, cityPreference: selectedCity, latitudePreference: selectedLatitude, longitudePreference: selectedLongitude,scopePreference: scope}));
-        data.result && dispatch(setLocationFilters({ cityFilter: selectedCity, latitudeFilter: selectedLatitude, longitudeFilter: selectedLongitude}));
+        data.result && dispatch(setPreferences({ agePreference: selectedAges, cityPreference: selectedCity, latitudePreference: selectedLatitude, longitudePreference: selectedLongitude, scopePreference: scope }));
+        data.result && dispatch(setLocationFilters({ cityFilter: selectedCity, latitudeFilter: selectedLatitude, longitudeFilter: selectedLongitude }));
         navigation.navigate("TabNavigator", { screen: "Explorer" });
       });
   }
@@ -98,7 +101,7 @@ export default function ProfileScreen({ navigation }) {
           minimumValue={1}
           maximumValue={50}
           upperLimit={50}
-          value = {scope}
+          value={scope}
           minimumTrackTintColor="#5669FF"
           maximumTrackTintColor="#E7E7E9"
           step={1}
@@ -126,7 +129,7 @@ export default function ProfileScreen({ navigation }) {
 
       </View>
       <View style={styles.bottom}>
-      <TouchableOpacity
+        <TouchableOpacity
           onPress={() => handleSetPreferences()}
           style={styles.button}
           activeOpacity={0.8}
