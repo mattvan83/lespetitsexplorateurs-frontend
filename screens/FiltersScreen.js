@@ -8,7 +8,7 @@ import {
   Platform,
 } from "react-native";
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setFilters, resetFilters } from '../reducers/user';
 import globalStyles from '../globalStyles';
 import Slider from '@react-native-community/slider';
@@ -18,18 +18,21 @@ import { handleFilterButtonClick } from '../modules/handleFilterButtonClick';
 
 export default function FiltersScreen({ navigation }) {
   const dispatch = useDispatch();
-  const [price, setPrice] = useState(0);
-  const [scope, setScope] = useState(1);
+  const user = useSelector((state) => state.user.value);
+  const [price, setPrice] = useState(30);
+  const [scope, setScope] = useState(user.preferences.scopePreference);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedDates, setSelectedDates] = useState([]);
   const [selectedMoments, setSelectedMoments] = useState([]);
-  const [selectedAges, setSelectedAges] = useState([]);
-  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [selectedAges, setSelectedAges] = useState(user.preferences.agePreference);
+  const [selectedCity, setSelectedCity] = useState(user.preferences.cityPreference);
+  const [selectedLongitude, setSelectedLongitude] = useState(user.preferences.latitudePreference);
+  const [selectedLatitude, setSelectedLatitude] = useState(user.preferences.longitudePreference);
 
   const categories = ['Sport', 'Musique', 'Créativité', 'Motricité', 'Éveil'];
   const dateFilters = ["Aujourd'hui", "Demain", "Cette semaine", "Ce week-end"];
   const momentFilters = ["Matin", "Après-midi", "Soir"];
-  const ageFilters = ["3-12 mois", "1-3 ans", "3-6 ans", "6-10 ans", "10+ ans"];
+  const ageFilters = ["3_12months", "12_24months", "24_36months", "3_6years", "7_10years", "10+years"];
 
   const handleCategoryList = (category)=> {
     handleFilterButtonClick(category, selectedCategories, setSelectedCategories);
@@ -134,7 +137,7 @@ export default function FiltersScreen({ navigation }) {
           minimumTrackTintColor="#5669FF"
           maximumTrackTintColor="#E7E7E9"
           step={1}
-          value={22}
+          value={price}
           onValueChange={(value) => setPrice(value)}
         />
         <View style={styles.sliderBottom}>
@@ -152,7 +155,7 @@ export default function FiltersScreen({ navigation }) {
           minimumValue={1}
           maximumValue={50}
           upperLimit={50}
-          value={25}
+          value={scope}
           minimumTrackTintColor="#5669FF"
           maximumTrackTintColor="#E7E7E9"
           step={1}

@@ -21,7 +21,7 @@ const initialState = {
       cityPreference: null,
       latitudePreference: null,
       longitudePreference: null,
-      scopePreference: null
+      scopePreference: 50
     }
   },
 };
