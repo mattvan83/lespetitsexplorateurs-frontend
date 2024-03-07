@@ -17,8 +17,9 @@ import * as Location from "expo-location";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addCurrentLocation,
+  addCurrentCity,
   importActivities,
-  setCitySearched,
+  setLocationFilters,
 } from "../reducers/user";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 import { Ionicons } from "@expo/vector-icons";
@@ -29,7 +30,7 @@ export default function HomeScreen({ navigation }) {
   const [suggestionsList, setSuggestionsList] = useState([]);
   const user = useSelector((state) => state.user.value);
   // console.log("user: ", user);
-  console.log("user.citySearched: ", user.citySearched);
+  console.log("user.filters: ", user.filters);
 
   const dispatch = useDispatch();
 
@@ -58,16 +59,17 @@ export default function HomeScreen({ navigation }) {
             dispatch(addCurrentLocation(coordinates));
             console.log("user coordinates: ", coordinates);
 
-            // // Set the city name in user reducer
-            // let geoLocationInfo = await Location.reverseGeocodeAsync({
-            //   latitude: coordinates.latitude,
-            //   longitude: coordinates.longitude,
-            // });
+            // Set the city name in user reducer
+            let geoLocationInfo = await Location.reverseGeocodeAsync({
+              latitude: coordinates.latitude,
+              longitude: coordinates.longitude,
+            });
 
-            // if (geoLocationInfo.length > 0) {
-            //   const city = geoLocationInfo[0].city;
-            //   dispatch(setCity(city));
-            // }
+            if (geoLocationInfo.length > 0) {
+              const city = geoLocationInfo[0].city;
+              dispatch(addCurrentCity(city));
+              console.log("user city: ", city);
+            }
 
             fetch(
               `${BACKEND_ADDRESS}/activities/geoloc/${user.token}/${coordinates.latitude}/${coordinates.longitude}`
@@ -189,7 +191,13 @@ export default function HomeScreen({ navigation }) {
                 onChangeText={(value) => searchCity(value)}
                 onSelectItem={(item) =>
                   item &&
-                  dispatch(setCitySearched(item)) &&
+                  dispatch(
+                    setLocationFilters({
+                      cityFilter: item.cityName,
+                      longitudeFilter: item.coords[0],
+                      latitudeFilter: item.coords[1],
+                    })
+                  ) &&
                   navigation.navigate("ListResults")
                 }
                 dataSet={suggestionsList}
@@ -291,7 +299,7 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     alignItems: "center",
-    marginTop: 20,
+    marginTop: 50,
   },
   search: {
     flexDirection: "row",
