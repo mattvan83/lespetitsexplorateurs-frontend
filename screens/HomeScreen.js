@@ -31,6 +31,7 @@ const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 
 export default function HomeScreen({ navigation }) {
   const [suggestionsList, setSuggestionsList] = useState([]);
+  const [errorMsg, setErrorMsg] = useState("");
   const user = useSelector((state) => state.user.value);
   const organizers = useSelector((state) => state.organizers.value);
   // console.log("user: ", user);
@@ -135,8 +136,12 @@ export default function HomeScreen({ navigation }) {
                 // console.log("data.result: ", data.result);
                 // console.log("data.error: ", data.error);
                 // console.log("data.activities: ", data.activities);
-                data.result && dispatch(importActivities(data.activities));
-                !data.result && dispatch(importActivities([]));
+                data.result &&
+                  dispatch(importActivities(data.activities)) &&
+                  setErrorMsg("");
+                !data.result &&
+                  dispatch(importActivities([])) &&
+                  setErrorMsg(data.error);
               });
 
             // console.log(user.preferences.scopePreference);
@@ -330,6 +335,11 @@ export default function HomeScreen({ navigation }) {
             ) : (
               <Text style={globalStyles.title3}>Bientôt</Text>
             )}
+            {errorMsg ? (
+              <TextInput style={styles.errorMsg}>{errorMsg}</TextInput>
+            ) : (
+              <></>
+            )}
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -387,6 +397,12 @@ const styles = StyleSheet.create({
   },
   listActivities: {
     height: "100%",
+  },
+  errorMsg: {
+    marginTop: 24,
+    marginLeft: 20,
+    color: "red",
+    fontWeight: "bold",
   },
   scrollView: {
     justifyContent: "center",

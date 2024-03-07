@@ -30,6 +30,7 @@ export default function ListResultsScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
   const userFilters = useSelector((state) => state.user.value.filters);
   const [suggestionsList, setSuggestionsList] = useState([]);
+  const [errorMsg, setErrorMsg] = useState("");
 
   console.log("user.filters: ", userFilters);
 
@@ -67,8 +68,12 @@ export default function ListResultsScreen({ navigation }) {
         // console.log("data.result: ", data.result);
         // console.log("data.error: ", data.error);
         // console.log("data.activities: ", data.activities);
-        data.result && dispatch(importActivities(data.activities));
-        !data.result && dispatch(importActivities([]));
+        data.result &&
+          dispatch(importActivities(data.activities)) &&
+          setErrorMsg("");
+        !data.result &&
+          dispatch(importActivities([])) &&
+          setErrorMsg(data.error);
       });
   }, [userFilters]);
 
@@ -139,8 +144,12 @@ export default function ListResultsScreen({ navigation }) {
           // console.log("data.result: ", data.result);
           // console.log("data.error: ", data.error);
           // console.log("data.activities: ", data.activities);
-          data.result && dispatch(importActivities(data.activities));
-          !data.result && dispatch(importActivities([]));
+          data.result &&
+            dispatch(importActivities(data.activities)) &&
+            setErrorMsg("");
+          !data.result &&
+            dispatch(importActivities([])) &&
+            setErrorMsg(data.error);
         });
     }
   };
@@ -241,6 +250,11 @@ export default function ListResultsScreen({ navigation }) {
 
         <View style={styles.body}>
           <View style={styles.listActivities}>
+            {errorMsg ? (
+              <TextInput style={styles.errorMsg}>{errorMsg}</TextInput>
+            ) : (
+              <></>
+            )}
             <ScrollView
               showsVerticalScrollIndicator={false}
               contentContainerStyle={styles.scrollView}
@@ -288,6 +302,12 @@ const styles = StyleSheet.create({
   },
   listActivities: {
     height: "100%",
+  },
+  errorMsg: {
+    marginTop: 24,
+    marginLeft: 20,
+    color: "red",
+    fontWeight: "bold",
   },
   scrollView: {
     paddingBottom: 20,
