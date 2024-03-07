@@ -99,14 +99,14 @@ export default function HomeScreen({ navigation }) {
               priceFilter,
               scopeFilter,
             } = user.filters;
-            console.log(
-              categoryFilter,
-              dateFilter,
-              momentFilter,
-              ageFilter,
-              priceFilter,
-              scopeFilter
-            );
+            // console.log(
+            //   categoryFilter,
+            //   dateFilter,
+            //   momentFilter,
+            //   ageFilter,
+            //   priceFilter,
+            //   scopeFilter
+            // );
 
             // console.log(
             //   user.token,
@@ -127,28 +127,31 @@ export default function HomeScreen({ navigation }) {
                   dateFilter,
                   momentFilter,
                   ageFilter,
-                  priceFilter,
                 },
               }),
             })
               .then((response) => response.json())
               .then((data) => {
+                // console.log("data.result: ", data.result);
+                // console.log("data.error: ", data.error);
+                // console.log("data.activities: ", data.activities);
                 data.result && dispatch(importActivities(data.activities));
+                !data.result && dispatch(importActivities([]));
               });
 
-            console.log(user.preferences.scopePreference);
-            console.log(coordinates.longitude);
-            console.log(coordinates.latitude);
-            console.log(
-              `${BACKEND_ADDRESS}/organizers/geoloc/${user.preferences.scopePreference}/${coordinates.longitude}/${coordinates.latitude}`
-            );
+            // console.log(user.preferences.scopePreference);
+            // console.log(coordinates.longitude);
+            // console.log(coordinates.latitude);
+            // console.log(
+            //   `${BACKEND_ADDRESS}/organizers/geoloc/${user.preferences.scopePreference}/${coordinates.longitude}/${coordinates.latitude}`
+            // );
             fetch(
               `${BACKEND_ADDRESS}/organizers/geoloc/${user.preferences.scopePreference}/${coordinates.longitude}/${coordinates.latitude}`
             )
               .then((response) => response.json())
               .then((data) => {
-                console.log(data);
-                data.result && console.log(data);
+                // console.log(data);
+                // data.result && console.log(data);
                 data.result && dispatch(loadOrganizers(data.organizers));
               });
           }

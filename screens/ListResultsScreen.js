@@ -19,12 +19,12 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   addCurrentLocation,
   importActivities,
-  setCitySearched,
+  setLocationFilters,
 } from "../reducers/user";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 import { Ionicons } from "@expo/vector-icons";
 
-const BACKEND_ADDRESS = "http://192.168.1.111:3000";
+const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 
 export default function ListResultsScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
@@ -36,12 +36,39 @@ export default function ListResultsScreen({ navigation }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    fetch(
-      `${BACKEND_ADDRESS}/activities/geoloc/${user.token}/${user.filters.latitudeFilter}/${user.filters.longitudeFilter}`
-    )
+    // Get user filters
+    const {
+      categoryFilter,
+      dateFilter,
+      momentFilter,
+      ageFilter,
+      priceFilter,
+      scopeFilter,
+    } = user.filters;
+
+    fetch(`${BACKEND_ADDRESS}/activities/geoloc`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        token: user.token,
+        latitude: user.filters.latitudeFilter,
+        longitude: user.filters.longitudeFilter,
+        scope: scopeFilter,
+        filters: {
+          categoryFilter,
+          dateFilter,
+          momentFilter,
+          ageFilter,
+        },
+      }),
+    })
       .then((response) => response.json())
       .then((data) => {
+        // console.log("data.result: ", data.result);
+        // console.log("data.error: ", data.error);
+        // console.log("data.activities: ", data.activities);
         data.result && dispatch(importActivities(data.activities));
+        !data.result && dispatch(importActivities([]));
       });
   }, [userFilters]);
 
@@ -73,14 +100,47 @@ export default function ListResultsScreen({ navigation }) {
 
   const handleSelectItem = (item) => {
     if (item) {
-      dispatch(setCitySearched(item));
+      dispatch(
+        setLocationFilters({
+          cityFilter: item.cityName,
+          longitudeFilter: item.coords[0],
+          latitudeFilter: item.coords[1],
+        })
+      );
 
-      fetch(
-        `${BACKEND_ADDRESS}/activities/geoloc/${user.token}/${item.coords[1]}/${item.coords[0]}`
-      )
+      // Get user filters
+      const {
+        categoryFilter,
+        dateFilter,
+        momentFilter,
+        ageFilter,
+        priceFilter,
+        scopeFilter,
+      } = user.filters;
+
+      fetch(`${BACKEND_ADDRESS}/activities/geoloc`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          token: user.token,
+          latitude: item.coords[1],
+          longitude: item.coords[0],
+          scope: scopeFilter,
+          filters: {
+            categoryFilter,
+            dateFilter,
+            momentFilter,
+            ageFilter,
+          },
+        }),
+      })
         .then((response) => response.json())
         .then((data) => {
+          // console.log("data.result: ", data.result);
+          // console.log("data.error: ", data.error);
+          // console.log("data.activities: ", data.activities);
           data.result && dispatch(importActivities(data.activities));
+          !data.result && dispatch(importActivities([]));
         });
     }
   };
