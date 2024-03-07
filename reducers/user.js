@@ -7,6 +7,7 @@ const initialState = {
     latitude: null,
     longitude: null,
     activities: [],
+    userActivities: [],
     filters: {
       categoryFilter: [],
       dateFilter: [],
@@ -114,6 +115,12 @@ export const userSlice = createSlice({
       state.value.citySearched.latitude = null;
       state.value.citySearched.longitude = null;
     },
+    loadUserActivities: (state, action) => {
+      state.value.userActivities = action.payload;
+    },
+    deleteUserActivity: (state, action) => {
+      state.value.userActivities = state.value.userActivities.filter(activity => activity.id !== action.payload);
+    },
   },
 });
 
@@ -128,5 +135,7 @@ export const {
   resetPreferences,
   setCitySearched,
   resetCitySearched,
+  loadUserActivities,
+  deleteUserActivity,
 } = userSlice.actions;
 export default userSlice.reducer;

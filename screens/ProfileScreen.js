@@ -118,15 +118,6 @@ export default function ProfileScreen({ navigation }) {
         </ScrollView>
 
 
-        {/* A supprimer quand je l'aurais sur la page explorer */}
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Filters')}
-          style={styles.filtersButton}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.textButton}>Filtres</Text>
-        </TouchableOpacity>
-
       </View>
       <View style={styles.bottom}>
         <TouchableOpacity
@@ -167,22 +158,6 @@ const styles = StyleSheet.create({
   filters: {
     marginLeft: 20,
   },
-  // a supprimer plus tard 
-  filtersButton: {
-    width: 100,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: '#EBEDFF',
-    borderRadius: 100,
-    padding: 6,
-  },
-  textButton: {
-    color: '#5669FF',
-    fontWeight: 'bold',
-    fontSize: 16
-  },
-
   slider: {
     width: '90%',
     height: 40,

@@ -2,6 +2,8 @@ import { StyleSheet, Text, Image, View, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteUserActivity } from "../reducers/user";
 
 const imageMapping = {
   localImage1: require("../assets/test/activity1.png"),
@@ -11,17 +13,30 @@ const imageMapping = {
 };
 
 export default function CardEditDelete({
+  activityId,
   imagePath,
   activityDate,
   activityName,
   activityLocation,
-  isFavorite,
   activityDistance,
 }) {
   // Check if the image is in the mapping
   const isLocalAsset = imageMapping.hasOwnProperty(imagePath);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.value);
 
-  // console.log(activityDistance);
+  const handleDeleteSubmit = () => {
+    fetch(`${BACKEND_ADDRESS}/activities/`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ activityId: activityId, token: user.token }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data)
+        data.result && dispatch(deleteUserActivity(activityId))
+      })
+  }
 
   return (
     <View style={styles.cardContainer}>
@@ -46,7 +61,7 @@ export default function CardEditDelete({
         <TouchableOpacity activeOpacity={0.8} style={styles.edit}>
           <AntDesign name="edit" size={24} color="#5669FF" />
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.8} style={styles.delete}>
+        <TouchableOpacity activeOpacity={0.8} style={styles.delete} onPress={() => handleDeleteSubmit()}>
           <MaterialCommunityIcons name="delete-forever" size={24} color="#5669FF" />
         </TouchableOpacity>
       </View>
@@ -87,7 +102,7 @@ const styles = StyleSheet.create({
   },
   activityDate: {
     fontWeight: "bold",
-    color: "#5669FF",
+    color: "#F59762",
     fontSize: 12,
   },
   edit: {

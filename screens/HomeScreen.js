@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     alignItems: "center",
-    marginTop: 20,
+    marginTop: 50,
   },
   search: {
     flexDirection: "row",

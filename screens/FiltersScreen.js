@@ -94,7 +94,7 @@ export default function FiltersScreen({ navigation }) {
     setSelectedLongitude(null);
     setSelectedLatitude(null);
     setSelectedCity(null);
-    setScope(25);
+    setScope(50);
 
     dispatch(resetFilters());
   }

@@ -8,25 +8,28 @@ import {
   ScrollView,
 } from "react-native";
 import globalStyles from '../globalStyles';
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { loadUserActivities } from '../reducers/user';
 import CardEditDelete from '../components/CardEditDelete';
 
 const BACKEND_ADDRESS = "http://192.168.1.22:3000";
 
 export default function ActivitiesScreen({ navigation }) {
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
-  const [activities, setActivities] = useState([]);
 
   useEffect(() => {
     fetch(`${BACKEND_ADDRESS}/activities/allactivities/${user.token}`)
       .then((response) => response.json())
       .then((data) => {
-        data.result && setActivities(data.activities);
+        data.result && dispatch(loadUserActivities(data.activities));
       })
   }, [])
 
-  const activitiesList = activities.map((activity, i) => {
+  console.log(user.activities)
+
+  const activitiesList = user.userActivities.map((activity, i) => {
     const inputDate = new Date(activity.date);
     const options = {
       weekday: "long", // full weekday name
@@ -41,13 +44,13 @@ export default function ActivitiesScreen({ navigation }) {
       .toUpperCase();
 
     return <CardEditDelete key={i} imagePath={activity.imgUrl}
+      activityId={activity.id}
       activityDate={formattedDate}
       activityName={activity.name}
       activityLocation={`${activity.postalCode}, ${activity.city}`}
       isFavorite={activity.isLiked}
       activityDistance={0} />
   })
-
 
   const handleSubmit = () => {
     navigation.navigate("ActivityPart1");
