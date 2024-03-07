@@ -27,8 +27,6 @@ export default function ActivitiesScreen({ navigation }) {
       })
   }, [])
 
-  console.log(user.activities)
-
   const activitiesList = user.userActivities.map((activity, i) => {
     const inputDate = new Date(activity.date);
     const options = {

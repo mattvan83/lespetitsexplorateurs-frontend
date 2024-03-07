@@ -13,6 +13,7 @@ const globalStyles = StyleSheet.create({
     color: "#120D26",
     marginTop: 80,
     marginLeft: 20,
+    marginBottom: 16,
   },
   title3: {
     fontSize: 24,

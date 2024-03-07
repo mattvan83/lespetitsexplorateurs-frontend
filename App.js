@@ -30,9 +30,10 @@ import { configureStore } from "@reduxjs/toolkit";
 import { AutocompleteDropdownContextProvider } from "react-native-autocomplete-dropdown";
 
 import user from "./reducers/user";
+import organizers from "./reducers/organizers";
 
 const store = configureStore({
-  reducer: { user },
+  reducer: { user, organizers },
 });
 
 const Stack = createNativeStackNavigator();

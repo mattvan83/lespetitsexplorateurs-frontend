@@ -15,11 +15,13 @@ import globalStyles from "../globalStyles";
 import { useEffect, useState } from "react";
 import * as Location from "expo-location";
 import { useDispatch, useSelector } from "react-redux";
+import { loadOrganizers } from '../reducers/organizers';
 import {
   addCurrentLocation,
   importActivities,
   setCitySearched,
 } from "../reducers/user";
+import Organizers from '../components/Organizers';
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 import { Ionicons } from '@expo/vector-icons';
 
@@ -28,6 +30,7 @@ const BACKEND_ADDRESS = "http://192.168.1.22:3000";
 export default function HomeScreen({ navigation }) {
   const [suggestionsList, setSuggestionsList] = useState([]);
   const user = useSelector((state) => state.user.value);
+  const organizers = useSelector((state) => state.organizers.value);
   // console.log("user: ", user);
   console.log("user.citySearched: ", user.citySearched);
 
@@ -76,6 +79,18 @@ export default function HomeScreen({ navigation }) {
               .then((data) => {
                 data.result && dispatch(importActivities(data.activities));
               });
+
+              console.log(user.preferences.scopePreference)
+              console.log(coordinates.longitude)
+              console.log(coordinates.latitude)
+              console.log(`${BACKEND_ADDRESS}/organizers/geoloc/${user.preferences.scopePreference}/${coordinates.longitude}/${coordinates.latitude}`)
+            fetch(`${BACKEND_ADDRESS}/organizers/geoloc/${user.preferences.scopePreference}/${coordinates.longitude}/${coordinates.latitude}`)
+              .then((response) => response.json())
+              .then((data) => {
+                console.log(data)
+                data.result && console.log(data)
+                data.result && dispatch(loadOrganizers(data.organizers));
+              });
           }
         } catch (error) {
           console.error("Error obtaining user coordinates: ", error);
@@ -92,6 +107,13 @@ export default function HomeScreen({ navigation }) {
             .then((response) => response.json())
             .then((data) => {
               data.result && dispatch(importActivities(data.activities));
+            });
+
+          fetch(`${BACKEND_ADDRESS}/organizers/nogeoloc`)
+            .then((response) => response.json())
+            .then((data) => {
+              data.result && console.log(data)
+              data.result && dispatch(loadOrganizers(data.organizers));
             });
         }
       }, delay);
@@ -134,6 +156,11 @@ export default function HomeScreen({ navigation }) {
   const handlePressFilters = () => {
     navigation.navigate("Filters");
   };
+
+  console.log(organizers)
+  const organizersList = organizers.map((data,i) => {
+    return <Organizers key={i} {...data} />
+  })
 
   const activities = user.activities.map((activity, i) => {
     const inputDate = new Date(activity.date);
@@ -184,7 +211,7 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.searchContainer}>
           <View style={styles.search}>
             <View style={styles.searchBar}>
-            <Ionicons name="location-outline" size={24} color="#D0CFD4" />
+              <Ionicons name="location-outline" size={24} color="#D0CFD4" />
               <AutocompleteDropdown
                 onChangeText={(value) => searchCity(value)}
                 onSelectItem={(item) =>
@@ -215,15 +242,15 @@ export default function HomeScreen({ navigation }) {
               />
             </View>
             <TouchableOpacity
-            onPress={() => handlePressFilters()}
-            style={styles.filtersButton}
-            activeOpacity={0.8}
-          >
-            <Ionicons name="filter" size={24} color="#D0CFD4" />
-            {/* <Text style={styles.textButton}>Filtres</Text> */}
-          </TouchableOpacity>
+              onPress={() => handlePressFilters()}
+              style={styles.filtersButton}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="filter" size={24} color="#D0CFD4" />
+              {/* <Text style={styles.textButton}>Filtres</Text> */}
+            </TouchableOpacity>
           </View>
-          
+
         </View>
         <View style={styles.body}>
           <View style={styles.listActivities}>
@@ -239,7 +266,15 @@ export default function HomeScreen({ navigation }) {
             >
               {activities}
             </ScrollView>
+
+            <Text style={globalStyles.title3}>Organisateurs</Text>
+            <ScrollView horizontal={true} style={styles.organizers}>
+              {organizersList}
+            </ScrollView>
+
           </View>
+
+
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -252,6 +287,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     alignItems: "center",
     width: "100%",
+  },
+  organizers: {
+    marginLeft: 10,
+    gap: 8,
   },
   header: {
     flex: 0.25,

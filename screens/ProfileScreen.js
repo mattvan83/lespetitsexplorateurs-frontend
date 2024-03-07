@@ -73,7 +73,7 @@ export default function ProfileScreen({ navigation }) {
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-      <View style={styles.filtersContainer}>
+      <ScrollView style={styles.filtersContainer}>
         <Text style={globalStyles.title2}>Mon profil</Text>
         <TouchableOpacity
           onPress={() => handleLogOut()}
@@ -90,6 +90,11 @@ export default function ProfileScreen({ navigation }) {
           style={styles.profileImg}
           source={require('../assets/Images/avatar.jpg')}
         />
+
+        <Text style={globalStyles.title4}>Âges des enfants</Text>
+        <ScrollView horizontal={true} style={styles.filters} >
+          {ageList}
+        </ScrollView>
 
         <Text style={globalStyles.title4}>Localisation</Text>
         <InputLocalisation setSelectedCity={setSelectedCity} selectedCity={selectedCity} setSelectedLongitude={setSelectedLongitude} setSelectedLatitude={setSelectedLatitude} />
@@ -112,13 +117,8 @@ export default function ProfileScreen({ navigation }) {
           <Text style={styles.textSlider}>50km</Text>
         </View>
 
-        <Text style={globalStyles.title4}>Âges des enfants</Text>
-        <ScrollView horizontal={true} style={styles.filters} >
-          {ageList}
-        </ScrollView>
 
-
-      </View>
+      </ScrollView>
       <View style={styles.bottom}>
         <TouchableOpacity
           onPress={() => handleSetPreferences()}
