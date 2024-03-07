@@ -5,8 +5,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 import globalStyles from '../globalStyles';
-import { useDispatch, useSelector } from 'react-redux';
-import { setPreferences, resetPreferences } from '../reducers/user';
+import { useDispatch } from 'react-redux';
+import { addActivityInfoScreen2 } from '../reducers/activities';
 import { useState } from 'react';
 import FilterTextCategory from "../components/FilterTextCategory";
 import { handleFilterButtonClick } from '../modules/handleFilterButtonClick';
@@ -14,7 +14,6 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.value);
   const [selectedAges, setSelectedAges] = useState([]);
 
   const ageCategory = ["3-12 mois", "1-3 ans", "3-6 ans", "6-10 ans", "10+ ans"];
@@ -25,11 +24,11 @@ export default function ProfileScreen({ navigation }) {
 
   const ageList = ageCategory.map((category, i) => {
     const isActive = selectedAges.includes(category);
-    return <FilterTextCategory key={i} category={category} handleCategoryList={handleAgeList} isActive={isActive} />
+    return <FilterTextCategory key={i} category={category} style={styles.box} handleCategoryList={handleAgeList} isActive={isActive} />
   })
 
   const handleContinue = () => {
-    //dispatch(setPreferences({ agePreference: selectedAges, locationPreference: selectedLocation, scopePreference: scope}));
+    dispatch(addActivityInfoScreen2({ concernedAges: selectedAges }));
     navigation.navigate('ActivityPart3');
   }
 
@@ -44,7 +43,7 @@ export default function ProfileScreen({ navigation }) {
           {ageList}
         </View>
 
-        <View style={styles.bottom}>
+        <View style={styles.bottom} >
           <TouchableOpacity
               onPress={() => handleContinue()}
               style={styles.button}

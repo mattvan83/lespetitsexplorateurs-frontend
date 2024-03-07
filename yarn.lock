@@ -3829,6 +3829,11 @@ expo-asset@~9.0.2:
     invariant "^2.2.4"
     md5-file "^3.2.3"
 
+expo-calendar@~12.2.1:
+  version "12.2.1"
+  resolved "https://registry.yarnpkg.com/expo-calendar/-/expo-calendar-12.2.1.tgz#5601eafb38186d177d95c07ed96dc691cb6619d4"
+  integrity sha512-lVE0Hcz2DuDIwg6mqUAEgu/WEW6JHCbcA+utgcNsCi/TzyuUV0UUhJMllvESPZu3LE5Stm75yDPQfeL31MLMxw==
+
 expo-constants@~15.4.0:
   version "15.4.5"
   resolved "https://registry.yarnpkg.com/expo-constants/-/expo-constants-15.4.5.tgz#81756a4c4e1c020f840a419cd86a124a6d1fb35b"

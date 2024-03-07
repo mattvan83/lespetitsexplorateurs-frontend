@@ -6,8 +6,8 @@ import {
   Modal,
 } from "react-native";
 import globalStyles from '../globalStyles';
-import { useDispatch, useSelector } from 'react-redux';
-import { setPreferences, resetPreferences } from '../reducers/user';
+import { useDispatch } from 'react-redux';
+import { addActivityInfoScreen4 } from '../reducers/activities';
 import { useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -17,24 +17,21 @@ export default function ProfileScreen({ navigation }) {
   const [time, setTime] = useState(new Date());
 
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.value);
   
   const onChangeDate = (e, selectedDate) => {
     setDate(selectedDate);
   }
-  console.log(date);
+
   const onChangeTime = (e, selectedTime) => {
     setDate((selectedTime));
   }
-  console.log(time);
 
   const handleContinue = () => {
       const combinedDateTime = new Date(date);
       combinedDateTime.setUTCHours(time.getUTCHours(), time.getUTCMinutes());
 
       const formattedDateTime = combinedDateTime.toISOString();
-      console.log(formattedDateTime);
-    //dispatch(setPreferences({ agePreference: selectedAges, locationPreference: selectedLocation, scopePreference: scope}));
+    dispatch(addActivityInfoScreen4({ date: formattedDateTime }));
     navigation.navigate('ActivityPart5');
   }
 
