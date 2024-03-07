@@ -24,6 +24,7 @@
     "@react-navigation/native-stack": "6",
     "@reduxjs/toolkit": "^2.2.1",
     "expo": "~50.0.8",
+    "expo-calendar": "~12.2.1",
     "expo-location": "16.5.5",
     "expo-status-bar": "~1.11.1",
     "express-fileupload": "^1.4.3",

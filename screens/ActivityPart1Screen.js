@@ -9,22 +9,22 @@ import {
   Platform,
 } from "react-native";
 import globalStyles from '../globalStyles';
-import { useDispatch, useSelector } from 'react-redux';
-import { setPreferences, resetPreferences } from '../reducers/user';
+import { useDispatch } from 'react-redux';
+import { addActivityInfoScreen1 } from '../reducers/activities';
 import { useState } from 'react';
 import FilterCategoryMedium from "../components/FilterCategoryMedium";
 import { handleFilterButtonClick } from '../modules/handleFilterButtonClick';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
+
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.value);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [activityName, setActivityName] = useState('');
   const [activityDescription, setActivityDescription] = useState('');
 
   const handleContinue = () => {
-    //dispatch(setPreferences({ agePreference: selectedAges, locationPreference: selectedLocation, scopePreference: scope}));
+    dispatch(addActivityInfoScreen1({ name: activityName, description: activityDescription, category: selectedCategories}));
     navigation.navigate('ActivityPart2');
   }
 

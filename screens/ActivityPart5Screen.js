@@ -6,37 +6,54 @@ import {
 } from "react-native";
 import globalStyles from '../globalStyles';
 import { useDispatch, useSelector } from 'react-redux';
-import { setPreferences, resetPreferences } from '../reducers/user';
+import { addActivityInfoScreen5 } from '../reducers/activities';
 import { useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 export default function ProfileScreen({ navigation }) {
   const formData = new FormData();
-  
+
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.value);
-  const [uploadedImage, setUploadedImage] = useState([]);
+  const activities = useSelector((state) => state.activities.value);
+  console.log(activities);
+  const [uploadedImage, setUploadedImage] = useState("");
 
   const handleAddImage = () => {
-    console.log('add image')
+    console.log('add image');
+
+    /*formData.append('photoFromFront', {
+      uri: 'file://...',
+      name: 'photo.jpg',
+      type: 'image/jpeg',
+     });
+
+    fetch('http://.../upload', {
+    method: 'POST',
+    body: formData,
+    }).then((response) => response.json())
+    .then((data) => {
+
+    });*/
   }
 
   const handleCreate = () => {
-    //dispatch(setPreferences({ agePreference: selectedAges, locationPreference: selectedLocation, scopePreference: scope}));
+    if (uploadedImage === "") {
+      setUploadedImage("../assets/Images/ludotheque.jpeg");
+    }
+    dispatch(addActivityInfoScreen5({ image: uploadedImage }));
     
     
-    /*Fetch route POST /activities
-    fetch('http://192.168.1.111:3000/activities', {
+    //Fetch route POST /activities
+    fetch('http://172.20.10.8:3000/activities/newActivity', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, description, category, concernedAges, address, postalCode, city, locationName, date, image }),
+        body: JSON.stringify({ activities }),
       })
         .then((response) => response.json())
-        .then((data) => {
-          data.result && dispatch(login({ token: data.token, username: data.username }));
-          //reset tout à 0 vider l'état: set(''), vider le reduxstore??
+        .then((activity) => {
+          activity.result;
           navigation.navigate("TabNavigator", { screen: "Activité" });
-        });*/
+        });
   }
 
 

@@ -24,7 +24,7 @@ const EMAIL_REGEX =
 // const { BACKEND_ADDRESS } = process.env;
 // console.log(process.env.BACKEND_ADDRESS);
 
-const BACKEND_ADDRESS = "http://192.168.1.111:3000";
+const BACKEND_ADDRESS = "http://172.20.10.8:3000";
 
 export default function SignupScreen({ navigation }) {
   const dispatch = useDispatch();
