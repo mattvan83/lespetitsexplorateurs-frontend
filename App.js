@@ -23,6 +23,7 @@ import FavoriteScreen from "./screens/FavoriteScreen";
 import ActivitiesScreen from "./screens/ActivitiesScreen";
 import MessagingScreen from "./screens/MessagingScreen";
 import ProfileScreen from "./screens/ProfileScreen";
+import NewOrganizerScreen from './screens/NewOrganizerScreen';
 
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
@@ -84,6 +85,7 @@ export default function App() {
             <Stack.Screen name="Filters" component={FiltersScreen} />
             <Stack.Screen name="ListResults" component={ListResultsScreen} />
             <Stack.Screen name="MapResults" component={MapResultsScreen} />
+            <Stack.Screen name="NewOrganizer" component={NewOrganizerScreen} />
             <Stack.Screen
               name="ActivitySheet"
               component={ActivitySheetScreen}

@@ -63,6 +63,7 @@ export default function SigninScreen({ navigation }) {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
     >
       <Image
         style={styles.img}
@@ -140,13 +141,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     alignItems: "center",
+    justifyContent: 'center',
   },
   img: {
     width: 150,
     height: 150,
     borderRadius: 100,
-    marginTop: 100,
-    margin: 50,
+    marginBottom: 50,
     alignSelf: "center",
   },
   title: {
