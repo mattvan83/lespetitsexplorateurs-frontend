@@ -10,7 +10,7 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import globalStyles from "../globalStyles";
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -20,12 +20,17 @@ const BACKEND_ADDRESS = "http://192.168.1.22:3000";
 
 export default function NewOrganizerScreen({ navigation }) {
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.value);
   const [name, setName] = useState("");
   const [title, setTitle] = useState("");
   const [about, setAbout] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [city, setCity] = useState("");
   const [address, setAddress] = useState("");
+  //A MODIFIER
+  const [longitude, setLongitude] = useState(0);
+  const [latitude, setLatitude] = useState(0);
+  //
   const [inputError, setInputError] = useState("");
   const [photo, setPhoto] = useState("");
   const [photoType, setPhotoType] = useState('image/jpeg');
@@ -37,21 +42,30 @@ export default function NewOrganizerScreen({ navigation }) {
     //   console.log('error champ vide')
     // } else {
 
-      const formData = new FormData();
+    const formData = new FormData();
 
-      formData.append('photoFromFront', {
-        uri: photo,
-        name: 'photo.jpg',
-        type: photoType,
+    formData.append('photoFromFront', {
+      uri: photo,
+      name: 'photo.jpg',
+      type: photoType,
+    });
+    formData.append('name', name);
+    formData.append('title', title);
+    formData.append('about', about);
+    formData.append('postalCode', postalCode);
+    formData.append('city', city);
+    formData.append('address', address);
+    formData.append('longitude', longitude);
+    formData.append('latitude', latitude);
+
+    fetch(`${BACKEND_ADDRESS}/users/newOrganizer/${user.token}`, {
+      method: 'POST',
+      body: formData,
+    }).then((response) => response.json())
+      .then((data) => {
+        console.log(data)
+        navigation.navigate("TabNavigator", { screen: "Explorer" });
       });
-console.log(`${BACKEND_ADDRESS}/users/newOrganizer`)
-      fetch(`${BACKEND_ADDRESS}/users/newOrganizer`, {
-        method: 'POST',
-        body: formData,
-      }).then((response) => response.json())
-        .then((data) => {
-          console.log(data)
-        });
     // }
   };
 
