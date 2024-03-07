@@ -4,6 +4,7 @@ const initialState = {
   value: {
     token: null,
     username: null,
+    cityName: null,
     latitude: null,
     longitude: null,
     activities: [],
@@ -17,22 +18,14 @@ const initialState = {
       cityFilter: null,
       latitudeFilter: null,
       longitudeFilter: null,
-      scopeFilter: null
+      scopeFilter: 50,
     },
     preferences: {
       agePreference: [],
       cityPreference: null,
       latitudePreference: null,
       longitudePreference: null,
-      scopePreference: 50
-    },
-   citySearched: {
-      cityName: null,
-      postalCode: null,
-      department: null,
-      region: null,
-      latitude: null,
-      longitude: null,
+      scopePreference: 50,
     },
   },
 };
@@ -55,6 +48,9 @@ export const userSlice = createSlice({
       state.value.latitude = action.payload.latitude;
       state.value.longitude = action.payload.longitude;
     },
+    addCurrentCity: (state, action) => {
+      state.value.cityName = action.payload;
+    },
     importActivities: (state, action) => {
       state.value.activities = action.payload;
     },
@@ -69,12 +65,12 @@ export const userSlice = createSlice({
       state.value.filters.latitudeFilter = action.payload.latitudeFilter;
       state.value.filters.scopeFilter = action.payload.scopeFilter;
     },
-    setLocationFilters:  (state, action) => {
+    setLocationFilters: (state, action) => {
       state.value.filters.cityFilter = action.payload.cityFilter;
       state.value.filters.longitudeFilter = action.payload.longitudeFilter;
       state.value.filters.latitudeFilter = action.payload.latitudeFilter;
     },
-    resetFilters:  (state, action) => {
+    resetFilters: (state, action) => {
       state.value.filters.categoryFilter = [];
       state.value.filters.dateFilter = [];
       state.value.filters.momentFilter = [];
@@ -85,41 +81,36 @@ export const userSlice = createSlice({
       state.value.filters.latitudeFilter = null;
       state.value.filters.scopeFilter = null;
     },
-    setPreferences:  (state, action) => {
-      state.value.preferences.agePreference= action.payload.agePreference;
+    setPreferences: (state, action) => {
+      state.value.preferences.agePreference = action.payload.agePreference;
       state.value.preferences.cityPreference = action.payload.cityPreference;
-      state.value.preferences.latitudePreference = action.payload.latitudePreference;
-      state.value.preferences.longitudePreference = action.payload.longitudePreference;
+      state.value.preferences.latitudePreference =
+        action.payload.latitudePreference;
+      state.value.preferences.longitudePreference =
+        action.payload.longitudePreference;
       state.value.preferences.scopePreference = action.payload.scopePreference;
     },
-    resetPreferences:  (state, action) => {
-      state.value.preferences.agePreference= [];
+    setLocationPreferences: (state, action) => {
+      state.value.preferences.cityPreference = action.payload.cityPreference;
+      state.value.preferences.longitudePreference =
+        action.payload.longitudePreference;
+      state.value.preferences.latitudePreference =
+        action.payload.latitudePreference;
+    },
+    resetPreferences: (state, action) => {
+      state.value.preferences.agePreference = [];
       state.value.preferences.cityPreference = null;
       state.value.preferences.latitudePreference = null;
       state.value.preferences.longitudePreference = null;
       state.value.preferences.scopePreference = null;
     },
-    setCitySearched: (state, action) => {
-      state.value.citySearched.cityName = action.payload.cityName;
-      state.value.citySearched.postalCode = action.payload.postalCode;
-      state.value.citySearched.department = action.payload.department;
-      state.value.citySearched.region = action.payload.region;
-      state.value.citySearched.latitude = action.payload.coords[1];
-      state.value.citySearched.longitude = action.payload.coords[0];
-    },
-    resetCitySearched: (state, action) => {
-      state.value.citySearched.cityName = null;
-      state.value.citySearched.postalCode = null;
-      state.value.citySearched.department = null;
-      state.value.citySearched.region = null;
-      state.value.citySearched.latitude = null;
-      state.value.citySearched.longitude = null;
-    },
     loadUserActivities: (state, action) => {
       state.value.userActivities = action.payload;
     },
     deleteUserActivity: (state, action) => {
-      state.value.userActivities = state.value.userActivities.filter(activity => activity.id !== action.payload);
+      state.value.userActivities = state.value.userActivities.filter(
+        (activity) => activity.id !== action.payload
+      );
     },
   },
 });
@@ -128,10 +119,13 @@ export const {
   login,
   logout,
   addCurrentLocation,
+  addCurrentCity,
   importActivities,
   setFilters,
-  setLocationFilters, resetFilters,
+  setLocationFilters,
+  resetFilters,
   setPreferences,
+  setLocationPreferences,
   resetPreferences,
   setCitySearched,
   resetCitySearched,

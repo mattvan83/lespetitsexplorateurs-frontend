@@ -15,24 +15,27 @@ import globalStyles from "../globalStyles";
 import { useEffect, useState } from "react";
 import * as Location from "expo-location";
 import { useDispatch, useSelector } from "react-redux";
-import { loadOrganizers } from '../reducers/organizers';
+import { loadOrganizers } from "../reducers/organizers";
 import {
   addCurrentLocation,
+  addCurrentCity,
   importActivities,
-  setCitySearched,
+  setLocationFilters,
+  setLocationPreferences,
 } from "../reducers/user";
-import Organizers from '../components/Organizers';
+import Organizers from "../components/Organizers";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from "@expo/vector-icons";
 
-const BACKEND_ADDRESS = "http://192.168.1.22:3000";
+const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 
 export default function HomeScreen({ navigation }) {
   const [suggestionsList, setSuggestionsList] = useState([]);
   const user = useSelector((state) => state.user.value);
   const organizers = useSelector((state) => state.organizers.value);
   // console.log("user: ", user);
-  console.log("user.citySearched: ", user.citySearched);
+  console.log("user.filters: ", user.filters);
+  console.log("user.preferences: ", user.preferences);
 
   const dispatch = useDispatch();
 
@@ -55,40 +58,97 @@ export default function HomeScreen({ navigation }) {
           isPositionObtained = true;
 
           if (isPositionObtained) {
-            console.log("User coordinates available");
+            // console.log("User coordinates available");
 
             // Set the geo-localization coordinates in user reducer
             dispatch(addCurrentLocation(coordinates));
             console.log("user coordinates: ", coordinates);
 
-            // // Set the city name in user reducer
-            // let geoLocationInfo = await Location.reverseGeocodeAsync({
-            //   latitude: coordinates.latitude,
-            //   longitude: coordinates.longitude,
-            // });
+            // Set the city name in user reducer
+            let geoLocationInfo = await Location.reverseGeocodeAsync({
+              latitude: coordinates.latitude,
+              longitude: coordinates.longitude,
+            });
 
-            // if (geoLocationInfo.length > 0) {
-            //   const city = geoLocationInfo[0].city;
-            //   dispatch(setCity(city));
-            // }
+            if (geoLocationInfo.length > 0) {
+              const city = geoLocationInfo[0].city;
+              dispatch(addCurrentCity(city));
+              console.log("user city: ", city);
 
-            fetch(
-              `${BACKEND_ADDRESS}/activities/geoloc/${user.token}/${coordinates.latitude}/${coordinates.longitude}`
-            )
+              // Set location details in user preferences if not defined
+              if (
+                !user.preferences.latitudePreference &&
+                !user.preferences.longitudePreference
+              ) {
+                dispatch(
+                  setLocationPreferences({
+                    cityPreference: city,
+                    latitudePreference: coordinates.latitude,
+                    longitudePreference: coordinates.longitude,
+                  })
+                );
+              }
+            }
+
+            // Get user filters
+            const {
+              categoryFilter,
+              dateFilter,
+              momentFilter,
+              ageFilter,
+              priceFilter,
+              scopeFilter,
+            } = user.filters;
+            console.log(
+              categoryFilter,
+              dateFilter,
+              momentFilter,
+              ageFilter,
+              priceFilter,
+              scopeFilter
+            );
+
+            // console.log(
+            //   user.token,
+            //   coordinates.latitude,
+            //   coordinates.longitude
+            // );
+
+            fetch(`${BACKEND_ADDRESS}/activities/geoloc`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                token: user.token,
+                latitude: coordinates.latitude,
+                longitude: coordinates.longitude,
+                scope: scopeFilter,
+                filters: {
+                  categoryFilter,
+                  dateFilter,
+                  momentFilter,
+                  ageFilter,
+                  priceFilter,
+                },
+              }),
+            })
               .then((response) => response.json())
               .then((data) => {
                 data.result && dispatch(importActivities(data.activities));
               });
 
-              console.log(user.preferences.scopePreference)
-              console.log(coordinates.longitude)
-              console.log(coordinates.latitude)
-              console.log(`${BACKEND_ADDRESS}/organizers/geoloc/${user.preferences.scopePreference}/${coordinates.longitude}/${coordinates.latitude}`)
-            fetch(`${BACKEND_ADDRESS}/organizers/geoloc/${user.preferences.scopePreference}/${coordinates.longitude}/${coordinates.latitude}`)
+            console.log(user.preferences.scopePreference);
+            console.log(coordinates.longitude);
+            console.log(coordinates.latitude);
+            console.log(
+              `${BACKEND_ADDRESS}/organizers/geoloc/${user.preferences.scopePreference}/${coordinates.longitude}/${coordinates.latitude}`
+            );
+            fetch(
+              `${BACKEND_ADDRESS}/organizers/geoloc/${user.preferences.scopePreference}/${coordinates.longitude}/${coordinates.latitude}`
+            )
               .then((response) => response.json())
               .then((data) => {
-                console.log(data)
-                data.result && console.log(data)
+                console.log(data);
+                data.result && console.log(data);
                 data.result && dispatch(loadOrganizers(data.organizers));
               });
           }
@@ -112,7 +172,7 @@ export default function HomeScreen({ navigation }) {
           fetch(`${BACKEND_ADDRESS}/organizers/nogeoloc`)
             .then((response) => response.json())
             .then((data) => {
-              data.result && console.log(data)
+              data.result && console.log(data);
               data.result && dispatch(loadOrganizers(data.organizers));
             });
         }
@@ -157,10 +217,11 @@ export default function HomeScreen({ navigation }) {
     navigation.navigate("Filters");
   };
 
-  const organizersMax10 = organizers.length > 10 ? organizers.slice(0,10) : organizers
-  const organizersList = organizersMax10.map((data,i) => {
-    return <Organizers key={i} {...data} />
-  })
+  const organizersMax10 =
+    organizers.length > 10 ? organizers.slice(0, 10) : organizers;
+  const organizersList = organizersMax10.map((data, i) => {
+    return <Organizers key={i} {...data} />;
+  });
 
   const activities = user.activities.map((activity, i) => {
     const inputDate = new Date(activity.date);
@@ -188,8 +249,8 @@ export default function HomeScreen({ navigation }) {
           activity.imgUrl.includes(1)
             ? "localImage1"
             : activity.imgUrl.includes(2)
-              ? "localImage2"
-              : "localImage3"
+            ? "localImage2"
+            : "localImage3"
         }
         activityDate={formattedDate}
         activityName={activity.name}
@@ -216,11 +277,19 @@ export default function HomeScreen({ navigation }) {
                 onChangeText={(value) => searchCity(value)}
                 onSelectItem={(item) =>
                   item &&
-                  dispatch(setCitySearched(item)) &&
+                  dispatch(
+                    setLocationFilters({
+                      cityFilter: item.cityName,
+                      longitudeFilter: item.coords[0],
+                      latitudeFilter: item.coords[1],
+                    })
+                  ) &&
                   navigation.navigate("ListResults")
                 }
                 dataSet={suggestionsList}
-                suggestionsListMaxHeight={Dimensions.get("window").height * 0.45}
+                suggestionsListMaxHeight={
+                  Dimensions.get("window").height * 0.45
+                }
                 onClear={onClearPress}
                 textInputProps={{
                   placeholder: "Rechercher un lieu...",
@@ -233,7 +302,7 @@ export default function HomeScreen({ navigation }) {
                 containerStyle={styles.dropdownContainer}
                 suggestionsListContainerStyle={styles.suggestionListContainer}
                 rightButtonsContainerStyle={styles.rightButtonsContainerStyle}
-                emptyResultText='Recherche infructueuse'
+                emptyResultText="Recherche infructueuse"
                 suggestionsListTextStyle={{
                   color: "#120D26",
                   fontSize: 12,
@@ -246,11 +315,10 @@ export default function HomeScreen({ navigation }) {
               style={styles.filtersButton}
               activeOpacity={0.8}
             >
-              <Ionicons name="filter" size={24} color="#D0CFD4" />
+              <Ionicons name="filter" size={24} color="#4A43EC" />
               {/* <Text style={styles.textButton}>Filtres</Text> */}
             </TouchableOpacity>
           </View>
-
         </View>
         <View style={styles.body}>
           <View style={styles.listActivities}>
@@ -271,10 +339,7 @@ export default function HomeScreen({ navigation }) {
             <ScrollView horizontal={true} style={styles.organizers}>
               {organizersList}
             </ScrollView>
-
           </View>
-
-
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -305,7 +370,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#EBEDFF",
     borderRadius: 100,
-    justifyContent: 'center',
+    justifyContent: "center",
     padding: 6,
   },
   textButton: {
@@ -360,7 +425,7 @@ const styles = StyleSheet.create({
     width: "90%",
     fontSize: 16,
     marginLeft: 10,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     marginLeft: 5,
   },
   suggestionListContainer: {
@@ -368,6 +433,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.95)",
   },
   rightButtonsContainerStyle: {
-    backgroundColor: 'white',
-  }
+    backgroundColor: "white",
+  },
 });

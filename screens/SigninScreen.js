@@ -21,7 +21,7 @@ const EMAIL_REGEX =
 // const { BACKEND_ADDRESS } = process.env;
 // console.log(BACKEND_ADDRESS);
 
-const BACKEND_ADDRESS = "http://172.20.10.8:3000";
+const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 
 export default function SigninScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -42,12 +42,20 @@ export default function SigninScreen({ navigation }) {
         .then((data) => {
           if (data.result) {
             dispatch(login({ token: data.token, username: data.username }));
-            dispatch(setPreferences({ agePreference: data.userPreferences.concernedAges, cityPreference: data.userPreferences.city, latitudePreference: data.userPreferences.latitude, longitudePreference: data.userPreferences.longitude, scopePreference: data.userPreferences.radius }));
+            dispatch(
+              setPreferences({
+                agePreference: data.userPreferences.concernedAges,
+                cityPreference: data.userPreferences.city,
+                latitudePreference: data.userPreferences.latitude,
+                longitudePreference: data.userPreferences.longitude,
+                scopePreference: data.userPreferences.radius,
+              })
+            );
             setEmail("");
             setPassword("");
             navigation.navigate("TabNavigator", { screen: "Explorer" });
           } else {
-            setAuthentificationError(true)
+            setAuthentificationError(true);
           }
         });
     } else {
@@ -63,7 +71,7 @@ export default function SigninScreen({ navigation }) {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
     >
       <Image
         style={styles.img}
@@ -141,7 +149,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     alignItems: "center",
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   img: {
     width: 150,

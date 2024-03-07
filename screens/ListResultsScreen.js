@@ -22,32 +22,28 @@ import {
   setCitySearched,
 } from "../reducers/user";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from "@expo/vector-icons";
 
 const BACKEND_ADDRESS = "http://192.168.1.111:3000";
 
 export default function ListResultsScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
   const userFilters = useSelector((state) => state.user.value.filters);
-  const userCitySearched = useSelector(
-    (state) => state.user.value.citySearched
-  );
   const [suggestionsList, setSuggestionsList] = useState([]);
 
-  console.log("user.citySearched: ", userCitySearched);
   console.log("user.filters: ", userFilters);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     fetch(
-      `${BACKEND_ADDRESS}/activities/geoloc/${user.token}/${user.citySearched.latitude}/${user.citySearched.longitude}`
+      `${BACKEND_ADDRESS}/activities/geoloc/${user.token}/${user.filters.latitudeFilter}/${user.filters.longitudeFilter}`
     )
       .then((response) => response.json())
       .then((data) => {
         data.result && dispatch(importActivities(data.activities));
       });
-  }, [userCitySearched]);
+  }, [userFilters]);
 
   const searchCity = (query) => {
     // Prevent search with an empty query
@@ -123,8 +119,8 @@ export default function ListResultsScreen({ navigation }) {
           activity.imgUrl.includes(1)
             ? "localImage1"
             : activity.imgUrl.includes(2)
-              ? "localImage2"
-              : "localImage3"
+            ? "localImage2"
+            : "localImage3"
         }
         activityDate={formattedDate}
         activityName={activity.name}
@@ -151,7 +147,9 @@ export default function ListResultsScreen({ navigation }) {
                 onChangeText={(value) => searchCity(value)}
                 onSelectItem={(item) => handleSelectItem(item)}
                 dataSet={suggestionsList}
-                suggestionsListMaxHeight={Dimensions.get("window").height * 0.45}
+                suggestionsListMaxHeight={
+                  Dimensions.get("window").height * 0.45
+                }
                 onClear={onClearPress}
                 textInputProps={{
                   placeholder: "Rechercher un lieu...",
@@ -216,7 +214,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#EBEDFF",
     borderRadius: 100,
-    justifyContent: 'center',
+    justifyContent: "center",
     padding: 6,
   },
   textButton: {
@@ -239,7 +237,7 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     alignItems: "center",
-    marginTop: 20,
+    marginTop: 50,
   },
   search: {
     flexDirection: "row",
@@ -270,7 +268,7 @@ const styles = StyleSheet.create({
     width: "90%",
     fontSize: 16,
     marginLeft: 10,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     marginLeft: 5,
   },
   suggestionListContainer: {
@@ -278,6 +276,6 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.95)",
   },
   rightButtonsContainerStyle: {
-    backgroundColor: 'white',
-  }
+    backgroundColor: "white",
+  },
 });

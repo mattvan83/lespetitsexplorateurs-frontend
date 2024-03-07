@@ -8,16 +8,15 @@ import {
   Switch,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Keyboard
+  Keyboard,
 } from "react-native";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 import globalStyles from "../globalStyles";
-import { AntDesign } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-
+import { AntDesign } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const EMAIL_REGEX =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -25,7 +24,7 @@ const EMAIL_REGEX =
 // const { BACKEND_ADDRESS } = process.env;
 // console.log(process.env.BACKEND_ADDRESS);
 
-const BACKEND_ADDRESS = "http://172.20.10.8:3000";
+const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 
 export default function SignupScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -36,7 +35,7 @@ export default function SignupScreen({ navigation }) {
   const [showPassword, setShowPassword] = useState(false);
   // For the switch button
   const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
   const handleSubmit = () => {
     if (EMAIL_REGEX.test(email)) {
@@ -47,12 +46,12 @@ export default function SignupScreen({ navigation }) {
       })
         .then((response) => response.json())
         .then((data) => {
-          if(data.result){
+          if (data.result) {
             dispatch(login({ token: data.token, username }));
             // Whereas user wants to create a organizer profile, navigation differs
-            console.log(isEnabled)
-            if(isEnabled){
-              navigation.navigate("NewOrganizer")
+            console.log(isEnabled);
+            if (isEnabled) {
+              navigation.navigate("NewOrganizer");
             } else {
               navigation.navigate("TabNavigator", { screen: "Explorer" });
             }
@@ -74,7 +73,7 @@ export default function SignupScreen({ navigation }) {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
     >
       <Image
         style={styles.img}
@@ -130,19 +129,21 @@ export default function SignupScreen({ navigation }) {
         </View>
 
         <View style={styles.switchContainer}>
-          <Switch style={styles.switchButton}
-            trackColor={{ false: '#767577', true: '#FDC400' }}
-            thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
+          <Switch
+            style={styles.switchButton}
+            trackColor={{ false: "#767577", true: "#FDC400" }}
+            thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
             ios_backgroundColor="#E7E7E9"
             onValueChange={toggleSwitch}
             value={isEnabled}
           />
           <View>
             <Text>Je veux créer un profil organisateur</Text>
-            <Text style={styles.subtitles}>Vous pourrez en créer un plus tard</Text>
+            <Text style={styles.subtitles}>
+              Vous pourrez en créer un plus tard
+            </Text>
           </View>
         </View>
-
       </View>
 
       <View style={styles.bottom}>
@@ -158,9 +159,7 @@ export default function SignupScreen({ navigation }) {
           onPress={() => navigation.navigate("Signin")}
           activeOpacity={0.8}
         >
-          <Text>
-            Déjà inscrit ? Connectez-vous ici
-          </Text>
+          <Text>Déjà inscrit ? Connectez-vous ici</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
@@ -172,7 +171,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     alignItems: "center",
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   img: {
     width: 150,
@@ -226,8 +225,8 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   switchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center'
+    flexDirection: "row",
+    alignItems: "center",
   },
   switchButton: {
     margin: 10,
@@ -235,6 +234,6 @@ const styles = StyleSheet.create({
   subtitles: {
     fontSize: 12,
     color: "#D0CFD4",
-    fontStyle: 'italic'
+    fontStyle: "italic",
   },
 });
