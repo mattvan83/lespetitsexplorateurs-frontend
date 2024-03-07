@@ -28,8 +28,8 @@ const globalStyles = StyleSheet.create({
     color: "#29253C",
     marginTop: 24,
     marginLeft: 20,
-    alignSelf: 'left',
     marginBottom: 4,
+    textAlign: 'left'
   },
 
   // FORMS
@@ -63,7 +63,7 @@ const globalStyles = StyleSheet.create({
     height: 56,
     color: "#747688",
     fontSize: 14,
-    marginLeft: 10,
+    marginLeft: 4,
     marginTop: 8,
     marginBottom: 8,
   },
