@@ -157,8 +157,8 @@ export default function HomeScreen({ navigation }) {
     navigation.navigate("Filters");
   };
 
-  console.log(organizers)
-  const organizersList = organizers.map((data,i) => {
+  const organizersMax10 = organizers.length > 10 ? organizers.slice(0,10) : organizers
+  const organizersList = organizersMax10.map((data,i) => {
     return <Organizers key={i} {...data} />
   })
 
