@@ -17,7 +17,7 @@ const initialState = {
       cityFilter: null,
       latitudeFilter: null,
       longitudeFilter: null,
-      scopeFilter: null,
+      scopeFilter: 50,
     },
     preferences: {
       agePreference: [],
@@ -89,6 +89,13 @@ export const userSlice = createSlice({
         action.payload.longitudePreference;
       state.value.preferences.scopePreference = action.payload.scopePreference;
     },
+    setLocationPreferences: (state, action) => {
+      state.value.preferences.cityPreference = action.payload.cityPreference;
+      state.value.preferences.longitudePreference =
+        action.payload.longitudePreference;
+      state.value.preferences.latitudePreference =
+        action.payload.latitudePreference;
+    },
     resetPreferences: (state, action) => {
       state.value.preferences.agePreference = [];
       state.value.preferences.cityPreference = null;
@@ -109,6 +116,7 @@ export const {
   setLocationFilters,
   resetFilters,
   setPreferences,
+  setLocationPreferences,
   resetPreferences,
 } = userSlice.actions;
 export default userSlice.reducer;

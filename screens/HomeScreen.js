@@ -20,6 +20,7 @@ import {
   addCurrentCity,
   importActivities,
   setLocationFilters,
+  setLocationPreferences,
 } from "../reducers/user";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 import { Ionicons } from "@expo/vector-icons";
@@ -31,6 +32,7 @@ export default function HomeScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
   // console.log("user: ", user);
   console.log("user.filters: ", user.filters);
+  console.log("user.preferences: ", user.preferences);
 
   const dispatch = useDispatch();
 
@@ -53,7 +55,7 @@ export default function HomeScreen({ navigation }) {
           isPositionObtained = true;
 
           if (isPositionObtained) {
-            console.log("User coordinates available");
+            // console.log("User coordinates available");
 
             // Set the geo-localization coordinates in user reducer
             dispatch(addCurrentLocation(coordinates));
@@ -69,11 +71,63 @@ export default function HomeScreen({ navigation }) {
               const city = geoLocationInfo[0].city;
               dispatch(addCurrentCity(city));
               console.log("user city: ", city);
+
+              // Set location details in user preferences if not defined
+              if (
+                !user.preferences.latitudePreference &&
+                !user.preferences.longitudePreference
+              ) {
+                dispatch(
+                  setLocationPreferences({
+                    cityPreference: city,
+                    latitudePreference: coordinates.latitude,
+                    longitudePreference: coordinates.longitude,
+                  })
+                );
+              }
             }
 
-            fetch(
-              `${BACKEND_ADDRESS}/activities/geoloc/${user.token}/${coordinates.latitude}/${coordinates.longitude}`
-            )
+            // Get user filters
+            const {
+              categoryFilter,
+              dateFilter,
+              momentFilter,
+              ageFilter,
+              priceFilter,
+              scopeFilter,
+            } = user.filters;
+            console.log(
+              categoryFilter,
+              dateFilter,
+              momentFilter,
+              ageFilter,
+              priceFilter,
+              scopeFilter
+            );
+
+            // console.log(
+            //   user.token,
+            //   coordinates.latitude,
+            //   coordinates.longitude
+            // );
+
+            fetch(`${BACKEND_ADDRESS}/activities/geoloc`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                token: user.token,
+                latitude: coordinates.latitude,
+                longitude: coordinates.longitude,
+                scope: scopeFilter,
+                filters: {
+                  categoryFilter,
+                  dateFilter,
+                  momentFilter,
+                  ageFilter,
+                  priceFilter,
+                },
+              }),
+            })
               .then((response) => response.json())
               .then((data) => {
                 data.result && dispatch(importActivities(data.activities));
