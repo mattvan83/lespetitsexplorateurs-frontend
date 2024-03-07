@@ -73,7 +73,7 @@ export default function ProfileScreen({ navigation }) {
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-      <View style={styles.filtersContainer}>
+      <ScrollView style={styles.filtersContainer}>
         <Text style={globalStyles.title2}>Mon profil</Text>
         <TouchableOpacity
           onPress={() => handleLogOut()}
@@ -90,6 +90,11 @@ export default function ProfileScreen({ navigation }) {
           style={styles.profileImg}
           source={require('../assets/Images/avatar.jpg')}
         />
+
+        <Text style={globalStyles.title4}>Âges des enfants</Text>
+        <ScrollView horizontal={true} style={styles.filters} >
+          {ageList}
+        </ScrollView>
 
         <Text style={globalStyles.title4}>Localisation</Text>
         <InputLocalisation setSelectedCity={setSelectedCity} selectedCity={selectedCity} setSelectedLongitude={setSelectedLongitude} setSelectedLatitude={setSelectedLatitude} />
@@ -112,22 +117,8 @@ export default function ProfileScreen({ navigation }) {
           <Text style={styles.textSlider}>50km</Text>
         </View>
 
-        <Text style={globalStyles.title4}>Âges des enfants</Text>
-        <ScrollView horizontal={true} style={styles.filters} >
-          {ageList}
-        </ScrollView>
 
-
-        {/* A supprimer quand je l'aurais sur la page explorer */}
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Filters')}
-          style={styles.filtersButton}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.textButton}>Filtres</Text>
-        </TouchableOpacity>
-
-      </View>
+      </ScrollView>
       <View style={styles.bottom}>
         <TouchableOpacity
           onPress={() => handleSetPreferences()}
@@ -167,22 +158,6 @@ const styles = StyleSheet.create({
   filters: {
     marginLeft: 20,
   },
-  // a supprimer plus tard 
-  filtersButton: {
-    width: 100,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: '#EBEDFF',
-    borderRadius: 100,
-    padding: 6,
-  },
-  textButton: {
-    color: '#5669FF',
-    fontWeight: 'bold',
-    fontSize: 16
-  },
-
   slider: {
     width: '90%',
     height: 40,

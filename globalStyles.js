@@ -13,6 +13,7 @@ const globalStyles = StyleSheet.create({
     color: "#120D26",
     marginTop: 80,
     marginLeft: 20,
+    marginBottom: 16,
   },
   title3: {
     fontSize: 24,
@@ -24,14 +25,15 @@ const globalStyles = StyleSheet.create({
   title4: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#120D26",
+    color: "#29253C",
     marginTop: 24,
     marginLeft: 20,
+    alignSelf: 'left',
+    marginBottom: 4,
   },
 
   // FORMS
   labelInput: {
-    textAlign: "left",
     marginLeft: 20,
     marginTop: 15,
   },
@@ -55,6 +57,15 @@ const globalStyles = StyleSheet.create({
     color: "#747688",
     fontSize: 14,
     marginLeft: 10,
+  },
+  inputMultiline: {
+    width: "90%",
+    height: 56,
+    color: "#747688",
+    fontSize: 14,
+    marginLeft: 10,
+    marginTop: 8,
+    marginBottom: 8,
   },
 });
 

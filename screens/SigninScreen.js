@@ -28,6 +28,7 @@ export default function SigninScreen({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [authentificationError, setAuthentificationError] = useState(Boolean);
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = () => {
@@ -39,11 +40,15 @@ export default function SigninScreen({ navigation }) {
       })
         .then((response) => response.json())
         .then((data) => {
-          data.result && dispatch(login({ token: data.token, username: data.username }));
-          data.result && dispatch(setPreferences({ agePreference: data.userPreferences.concernedAges, cityPreference: data.userPreferences.city, latitudePreference: data.userPreferences.latitude, longitudePreference: data.userPreferences.longitude, scopePreference: data.userPreferences.radius}));
-          setEmail("");
-          setPassword("");
-          navigation.navigate("TabNavigator", { screen: "Explorer" });
+          if (data.result) {
+            dispatch(login({ token: data.token, username: data.username }));
+            dispatch(setPreferences({ agePreference: data.userPreferences.concernedAges, cityPreference: data.userPreferences.city, latitudePreference: data.userPreferences.latitude, longitudePreference: data.userPreferences.longitude, scopePreference: data.userPreferences.radius }));
+            setEmail("");
+            setPassword("");
+            navigation.navigate("TabNavigator", { screen: "Explorer" });
+          } else {
+            setAuthentificationError(true)
+          }
         });
     } else {
       setEmailError(true);
@@ -58,6 +63,7 @@ export default function SigninScreen({ navigation }) {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
     >
       <Image
         style={styles.img}
@@ -69,6 +75,11 @@ export default function SigninScreen({ navigation }) {
         {emailError && (
           <View>
             <Text style={styles.error}>Email invalide</Text>
+          </View>
+        )}
+        {authentificationError && (
+          <View>
+            <Text style={styles.error}>Email ou mot de passe invalide</Text>
           </View>
         )}
         <View style={globalStyles.border}>
@@ -130,13 +141,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     alignItems: "center",
+    justifyContent: 'center',
   },
   img: {
     width: 150,
     height: 150,
     borderRadius: 100,
-    marginTop: 100,
-    margin: 50,
+    marginBottom: 50,
     alignSelf: "center",
   },
   title: {

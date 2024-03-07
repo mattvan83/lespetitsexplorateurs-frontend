@@ -5,6 +5,7 @@ import {
   View,
   Platform,
   Image,
+  Switch,
   TouchableOpacity,
   KeyboardAvoidingView,
   Keyboard
@@ -33,6 +34,9 @@ export default function SignupScreen({ navigation }) {
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  // For the switch button
+  const [isEnabled, setIsEnabled] = useState(false);
+  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
   const handleSubmit = () => {
     if (EMAIL_REGEX.test(email)) {
@@ -43,11 +47,19 @@ export default function SignupScreen({ navigation }) {
       })
         .then((response) => response.json())
         .then((data) => {
-          data.result && dispatch(login({ token: data.token, username }));
+          if(data.result){
+            dispatch(login({ token: data.token, username }));
+            // Whereas user wants to create a organizer profile, navigation differs
+            console.log(isEnabled)
+            if(isEnabled){
+              navigation.navigate("NewOrganizer")
+            } else {
+              navigation.navigate("TabNavigator", { screen: "Explorer" });
+            }
+          }
           setEmail("");
           setPassword("");
           setUsername("");
-          navigation.navigate("TabNavigator", { screen: "Explorer" });
         });
     } else {
       setEmailError(true);
@@ -62,6 +74,7 @@ export default function SignupScreen({ navigation }) {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
     >
       <Image
         style={styles.img}
@@ -115,6 +128,21 @@ export default function SignupScreen({ navigation }) {
             onPress={toggleShowPassword}
           />
         </View>
+
+        <View style={styles.switchContainer}>
+          <Switch style={styles.switchButton}
+            trackColor={{ false: '#767577', true: '#FDC400' }}
+            thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
+            ios_backgroundColor="#E7E7E9"
+            onValueChange={toggleSwitch}
+            value={isEnabled}
+          />
+          <View>
+            <Text>Je veux créer un profil organisateur</Text>
+            <Text style={styles.subtitles}>Vous pourrez en créer un plus tard</Text>
+          </View>
+        </View>
+
       </View>
 
       <View style={styles.bottom}>
@@ -144,13 +172,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
     alignItems: "center",
+    justifyContent: 'center',
   },
   img: {
     width: 150,
     height: 150,
     borderRadius: 100,
-    marginTop: 100,
-    margin: 50,
+    marginBottom: 50,
     alignSelf: "center",
   },
   title: {
@@ -196,5 +224,17 @@ const styles = StyleSheet.create({
     color: "#747688",
     fontSize: 14,
     marginLeft: 10,
+  },
+  switchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  switchButton: {
+    margin: 10,
+  },
+  subtitles: {
+    fontSize: 12,
+    color: "#D0CFD4",
+    fontStyle: 'italic'
   },
 });

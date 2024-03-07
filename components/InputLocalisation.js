@@ -61,6 +61,10 @@ export default function InputLocalisation({ setSelectedCity, selectedCity, setSe
             suggestionsListContainerStyle={styles.suggestionListContainer}
             rightButtonsContainerStyle={styles.rightButtonsContainerStyle}
             emptyResultText='Recherche infructueuse'
+            suggestionsListTextStyle={{
+              color: "#120D26",
+              fontSize: 12,
+            }}
             closeOnSubmit
           />
         </View>
