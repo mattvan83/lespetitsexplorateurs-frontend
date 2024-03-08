@@ -163,45 +163,49 @@ export default function ListResultsScreen({ navigation }) {
     navigation.navigate("Filters");
   };
 
-  const activities = user.activities.map((activity, i) => {
-    const inputDate = new Date(activity.date);
-
-    const options = {
-      weekday: "long", // full weekday name
-      day: "numeric", // day of the month
-      month: "long", // full month name
-      hour: "numeric",
-      minute: "numeric",
-    };
-
-    const formattedDate = inputDate
-      .toLocaleString("fr-FR", options)
-      .replace(":", "h")
-      .toUpperCase();
-
-    // console.log(formattedDate);
-
-    return (
-      <Card
-        key={i}
-        id={activity.id}
-        imagePath={
-          activity.imgUrl.includes(1)
-            ? "localImage1"
-            : activity.imgUrl.includes(2)
-            ? "localImage2"
-            : "localImage3"
-        }
-        activityDate={formattedDate}
-        activityName={activity.name}
-        activityLocation={`${activity.postalCode}, ${activity.city}`}
-        isFavorite={activity.isLiked}
-        activityDistance={
-          user.latitude && user.longitude ? activity.distance : null
-        }
-      />
-    );
+  const activitiesList = user.activities.map((activity, i) => {
+    return (<Card key={i} activity={activity} />);
   });
+
+  // const activities = user.activities.map((activity, i) => {
+  //   const inputDate = new Date(activity.date);
+
+  //   const options = {
+  //     weekday: "long", // full weekday name
+  //     day: "numeric", // day of the month
+  //     month: "long", // full month name
+  //     hour: "numeric",
+  //     minute: "numeric",
+  //   };
+
+  //   const formattedDate = inputDate
+  //     .toLocaleString("fr-FR", options)
+  //     .replace(":", "h")
+  //     .toUpperCase();
+
+  //   // console.log(formattedDate);
+
+  //   return (
+  //     <Card
+  //       key={i}
+  //       id={activity.id}
+  //       imagePath={
+  //         activity.imgUrl.includes(1)
+  //           ? "localImage1"
+  //           : activity.imgUrl.includes(2)
+  //           ? "localImage2"
+  //           : "localImage3"
+  //       }
+  //       activityDate={formattedDate}
+  //       activityName={activity.name}
+  //       activityLocation={`${activity.postalCode}, ${activity.city}`}
+  //       isFavorite={activity.isLiked}
+  //       activityDistance={
+  //         user.latitude && user.longitude ? activity.distance : null
+  //       }
+  //     />
+  //   );
+  // });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -277,7 +281,7 @@ export default function ListResultsScreen({ navigation }) {
               showsVerticalScrollIndicator={false}
               contentContainerStyle={styles.scrollView}
             >
-              {activities}
+              {activitiesList}
             </ScrollView>
           </View>
           <View style={styles.mapButtonContainer}>
