@@ -7,7 +7,7 @@ import {
 import globalStyles from '../globalStyles';
 import { useDispatch } from 'react-redux';
 import { addActivityInfoScreen2 } from '../reducers/activities';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import FilterTextCategory from "../components/FilterTextCategory";
 import { handleFilterButtonClick } from '../modules/handleFilterButtonClick';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -15,7 +15,12 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
   const [selectedAges, setSelectedAges] = useState([]);
+  const [showError, setShowError] = useState(false);
 
+  /*useEffect(() => {
+    setSelectedAges([]);
+  }, []);*/
+  
   const ageCategory = ["3-12 mois", "1-3 ans", "3-6 ans", "6-10 ans", "10+ ans"];
 
   const handleAgeList = (category) => {
@@ -28,8 +33,12 @@ export default function ProfileScreen({ navigation }) {
   })
 
   const handleContinue = () => {
-    dispatch(addActivityInfoScreen2({ concernedAges: selectedAges }));
-    navigation.navigate('ActivityPart3');
+    if (selectedAges.length !== 0) {
+      dispatch(addActivityInfoScreen2({ concernedAges: selectedAges }));
+      navigation.navigate('ActivityPart3');
+    } else {
+      setShowError(true);
+    }
   }
 
   return (
@@ -51,6 +60,11 @@ export default function ProfileScreen({ navigation }) {
             >
               <Text style={styles.textButton}>Continuer</Text>
             </TouchableOpacity>
+            {showError && (
+            <Text style={styles.error}>
+              Tous les champs sont requis.
+            </Text>
+          )}
       </View>
       </View>
   );
@@ -78,6 +92,11 @@ const styles = StyleSheet.create({
   },
   filters: {
     marginLeft: 20,
+  },
+  error: {
+    color: 'red',
+    fontWeight: 'bold',
+    margin: 15,
   },
   // a supprimer plus tard 
   filtersButton: {

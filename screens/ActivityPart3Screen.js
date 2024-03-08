@@ -19,10 +19,15 @@ export default function ProfileScreen({ navigation }) {
   const [activityPostalCode, setActivityPostalCode] = useState('');
   const [activityCity, setActivityCity] = useState('');
   const [activityPlace, setActivityPlace] = useState('');
+  const [showError, setShowError] = useState(false);
 
   const handleContinue = () => {
-    dispatch(addActivityInfoScreen3({ address: activityAddress, postalCode: activityPostalCode, city: activityCity, locationName: activityPlace }));
-    navigation.navigate('ActivityPart4');
+    if (activityAddress !== '' && activityPostalCode !== '' && activityCity !== '') {
+      dispatch(addActivityInfoScreen3({ address: activityAddress, postalCode: activityPostalCode, city: activityCity, locationName: activityPlace }));
+      navigation.navigate('ActivityPart4');
+    } else {
+      setShowError(true);
+    }
   }
 
 
@@ -49,6 +54,7 @@ export default function ProfileScreen({ navigation }) {
         <View style={globalStyles.border} marginLeft={20} width={150}>
           <TextInput
             placeholder="Code postal"
+            maxLength={5}
             autoCapitalize="none"
             keyboardType="number-pad"
             onChangeText={(value) => setActivityPostalCode(value)}
@@ -90,6 +96,11 @@ export default function ProfileScreen({ navigation }) {
         >
           <Text style={styles.textButton}>Continuer</Text>
         </TouchableOpacity>
+        {showError && (
+        <Text style={styles.error}>
+          Les champs "Adresse", "Code postal" et "Ville" sont requis.
+        </Text>
+      )}
       </View>
     </KeyboardAvoidingView>
   );
@@ -117,6 +128,11 @@ const styles = StyleSheet.create({
   },
   filters: {
     marginLeft: 20,
+  },
+  error: {
+    color: 'red',
+    fontWeight: 'bold',
+    margin: 15,
   },
   // a supprimer plus tard 
   filtersButton: {

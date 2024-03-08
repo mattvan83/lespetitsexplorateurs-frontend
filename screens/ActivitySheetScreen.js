@@ -62,9 +62,9 @@ export default function ActivitySheetScreen({ navigation }) {
   //Constante pour la mise en place du fetch / récupération des infos côté front - useEffect pour appeler qu'une seule fois au chargement du composant
   //à remplacer grâce au useSelector une fois les autres pages accessibles?
   useEffect(() => {
-    const activityId = '65e77175e8a90dd96d5b277c'
+    const activityId = '65eb01628798bc2760a14b87'
 
-    fetch(`http://192.168.1.111:3000/activities/${activityId}`)
+    fetch(`http://172.20.10.8:3000/activities/${activityId}`)
       .then(response => response.json())
       .then(data => {
           console.log('Activity details : ', data);
@@ -74,7 +74,7 @@ export default function ActivitySheetScreen({ navigation }) {
           const organizerId = data.organizer.replace(/'/g, '');
           console.log(organizerId);
 
-          fetch(`http://192.168.1.111:3000/users/${organizerId}`)
+          fetch(`http://172.20.10.8:3000/users/${organizerId}`)
           .then(response => response.json())
           .then(data => {
           console.log('Organizer info : ', data);

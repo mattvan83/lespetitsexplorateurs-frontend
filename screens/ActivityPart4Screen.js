@@ -15,6 +15,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 export default function ProfileScreen({ navigation }) {
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
+  const [showError, setShowError] = useState(false);
 
   const dispatch = useDispatch();
   
@@ -23,16 +24,22 @@ export default function ProfileScreen({ navigation }) {
   }
 
   const onChangeTime = (e, selectedTime) => {
-    setDate((selectedTime));
+    setTime((selectedTime));
   }
 
   const handleContinue = () => {
       const combinedDateTime = new Date(date);
-      combinedDateTime.setUTCHours(time.getUTCHours(), time.getUTCMinutes());
+      combinedDateTime.setHours(time.getHours(), time.getMinutes());
 
       const formattedDateTime = combinedDateTime.toISOString();
-    dispatch(addActivityInfoScreen4({ date: formattedDateTime }));
-    navigation.navigate('ActivityPart5');
+      const currentDateTime = new Date().toISOString();
+
+      if (formattedDateTime !== currentDateTime) {
+        dispatch(addActivityInfoScreen4({ date: formattedDateTime }));
+        navigation.navigate('ActivityPart5');
+      } else {
+        setShowError(true);
+      }
   }
 
   
@@ -69,6 +76,11 @@ export default function ProfileScreen({ navigation }) {
             >
               <Text style={styles.textButton}>Continuer</Text>
             </TouchableOpacity>
+            {showError && (
+        <Text style={styles.error}>
+          Tous les champs sont requis.
+        </Text>
+      )}
       </View>
       </View>
   );
@@ -112,6 +124,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 15,
+  },
+  error: {
+    color: 'red',
+    fontWeight: 'bold',
+    margin: 15,
   },
   // a supprimer plus tard 
   filtersButton: {

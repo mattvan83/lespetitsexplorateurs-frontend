@@ -19,23 +19,28 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
   const [activityName, setActivityName] = useState('');
   const [activityDescription, setActivityDescription] = useState('');
+  const [showError, setShowError] = useState(false);
 
   const handleContinue = () => {
-    dispatch(addActivityInfoScreen1({ name: activityName, description: activityDescription, category: selectedCategories}));
-    navigation.navigate('ActivityPart2');
+    if (activityName !== '' && activityDescription !== '' && selectedCategory !== '') {
+      dispatch(addActivityInfoScreen1({ name: activityName, description: activityDescription, category: selectedCategory}));
+      navigation.navigate('ActivityPart2');
+    } else {
+      setShowError(true);
+    }
   }
 
   const categories = ['Sport', 'Musique', 'Créativité', 'Motricité', 'Éveil'];
   
   const handleCategoryList = (category)=> {
-    handleFilterButtonClick(category, selectedCategories, setSelectedCategories);
+    setSelectedCategory(category);
   }
 
   const categoryList = categories.map((category, i) => {
-    const isActive = selectedCategories.includes(category);
+    const isActive = selectedCategory === category;
     return <FilterCategoryMedium key={i} category={category} handleCategoryList={handleCategoryList} isActive={isActive} />
   })
 
@@ -63,7 +68,7 @@ export default function ProfileScreen({ navigation }) {
         <Text style={globalStyles.title4}>Description</Text>
         <View style={globalStyles.border} marginLeft={20} height={200}>
           <TextInput
-            placeholder="Décrivez l'activité"
+            placeholder="Décrivez l'activité en quelques mots"
             autoCapitalize="none"
             keyboardType="default"
             onChangeText={(value) => setActivityDescription(value)}
@@ -86,6 +91,11 @@ export default function ProfileScreen({ navigation }) {
         >
           <Text style={styles.textButton}>Continuer</Text>
         </TouchableOpacity>
+        {showError && (
+        <Text style={styles.error}>
+          Tous les champs sont requis.
+        </Text>
+      )}
       </View>
     </KeyboardAvoidingView>
   );
@@ -113,6 +123,11 @@ const styles = StyleSheet.create({
   },
   filters: {
     marginLeft: 20,
+  },
+  error: {
+    color: 'red',
+    fontWeight: 'bold',
+    margin: 15,
   },
   // a supprimer plus tard 
   filtersButton: {
