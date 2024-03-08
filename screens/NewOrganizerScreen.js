@@ -32,40 +32,62 @@ export default function NewOrganizerScreen({ navigation }) {
   const [latitude, setLatitude] = useState(0);
   //
   const [inputError, setInputError] = useState("");
+  // const [postalCodeError, setPostalCodeError] = useState("")
   const [photo, setPhoto] = useState("");
   const [photoType, setPhotoType] = useState('image/jpeg');
 
+  // const POSTALCODE_REGEX = /^(?:0[1-9]|[1-8]\d|9[0-8])\d{3}$/;
+
   const handleSubmit = () => {
-    // If one of the input fields is empty
-    // if (name === '' || title === '' || about === '' || postalCode === '' || city === '' || address === '') {
-    //   setInputError(true);
-    //   console.log('error champ vide')
+    // if (POSTALCODE_REGEX.test(postalCode)) {
+
+      // If one of the input fields is empty
+      // if (name === '' || title === '' || about === '' || postalCode === '' || city === '' || address === '') {
+      //   setInputError(true);
+      //   console.log('error champ vide')
+      // } else {
+
+      if (photo != "") {
+        const formData = new FormData();
+
+        formData.append('photoFromFront', {
+          uri: photo,
+          name: 'photo.jpg',
+          type: photoType,
+        });
+
+        fetch(`${BACKEND_ADDRESS}/users/newOrganizerPhoto/${user.token}`, {
+          method: 'POST',
+          body: formData,
+        }).then((response) => response.json())
+          .then((data) => {
+            console.log(data)
+          });
+      }
+
+
+      fetch(`${BACKEND_ADDRESS}/users/newOrganizer/${user.token}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name,
+          title: title,
+          about: about,
+          postalCode: postalCode,
+          city: city,
+          address: address,
+          longitude: longitude,
+          latitude: latitude,
+        }),
+      }).then((response) => response.json())
+        .then((data) => {
+          console.log(data)
+          navigation.navigate("TabNavigator", { screen: "Explorer" });
+        });
+      // }
+
     // } else {
-
-    const formData = new FormData();
-
-    formData.append('photoFromFront', {
-      uri: photo,
-      name: 'photo.jpg',
-      type: photoType,
-    });
-    formData.append('name', name);
-    formData.append('title', title);
-    formData.append('about', about);
-    formData.append('postalCode', postalCode);
-    formData.append('city', city);
-    formData.append('address', address);
-    formData.append('longitude', longitude);
-    formData.append('latitude', latitude);
-
-    fetch(`${BACKEND_ADDRESS}/users/newOrganizer/${user.token}`, {
-      method: 'POST',
-      body: formData,
-    }).then((response) => response.json())
-      .then((data) => {
-        console.log(data)
-        navigation.navigate("TabNavigator", { screen: "Explorer" });
-      });
+    //   setPostalCodeError(true);
     // }
   };
 
@@ -172,6 +194,11 @@ export default function NewOrganizerScreen({ navigation }) {
             <Text style={styles.error}>Remplissez bien tous les champs !</Text>
           </View>
         )}
+        {/* {postalCodeError && (
+          <View>
+            <Text style={styles.error}>Oops, le code postal contient une coquille</Text>
+          </View>
+        )} */}
         <View style={styles.bottom}>
           <TouchableOpacity
             onPress={() => handleSubmit()}
