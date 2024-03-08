@@ -12,11 +12,11 @@ import {
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import globalStyles from "../globalStyles";
-import { Ionicons } from '@expo/vector-icons';
-import { MaterialIcons } from '@expo/vector-icons';
-import * as ImagePicker from 'expo-image-picker';
+import { Ionicons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
 
-const BACKEND_ADDRESS = "http://192.168.1.22:3000";
+const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 
 export default function NewOrganizerScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -32,59 +32,60 @@ export default function NewOrganizerScreen({ navigation }) {
   const [latitude, setLatitude] = useState(0);
   //
   const [inputError, setInputError] = useState("");
-  const [postalCodeError, setPostalCodeError] = useState("")
+  const [postalCodeError, setPostalCodeError] = useState("");
   const [photo, setPhoto] = useState("");
-  const [photoType, setPhotoType] = useState('image/jpeg');
+  const [photoType, setPhotoType] = useState("image/jpeg");
 
   const POSTALCODE_REGEX = /^(?:0[1-9]|[1-8]\d|9[0-8])\d{3}$/;
 
   const handleSubmit = () => {
     // if (POSTALCODE_REGEX.test(postalCode)) {
 
-      // If one of the input fields is empty
-      // if (name === '' || title === '' || about === '' || postalCode === '' || city === '' || address === '') {
-      //   setInputError(true);
-      //   console.log('error champ vide')
-      // } else {
+    // If one of the input fields is empty
+    // if (name === '' || title === '' || about === '' || postalCode === '' || city === '' || address === '') {
+    //   setInputError(true);
+    //   console.log('error champ vide')
+    // } else {
 
-      if (photo != "") {
-        const formData = new FormData();
+    if (photo != "") {
+      const formData = new FormData();
 
-        formData.append('photoFromFront', {
-          uri: photo,
-          name: 'photo.jpg',
-          type: photoType,
-        });
+      formData.append("photoFromFront", {
+        uri: photo,
+        name: "photo.jpg",
+        type: photoType,
+      });
 
-        fetch(`${BACKEND_ADDRESS}/users/newOrganizerPhoto/${user.token}`, {
-          method: 'POST',
-          body: formData,
-        }).then((response) => response.json())
-          .then((data) => {
-            console.log(data)
-          });
-      }
-
-
-      fetch(`${BACKEND_ADDRESS}/users/newOrganizer/${user.token}`, {
+      fetch(`${BACKEND_ADDRESS}/users/newOrganizerPhoto/${user.token}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: name,
-          title: title,
-          about: about,
-          postalCode: postalCode,
-          city: city,
-          address: address,
-          longitude: longitude,
-          latitude: latitude,
-        }),
-      }).then((response) => response.json())
+        body: formData,
+      })
+        .then((response) => response.json())
         .then((data) => {
-          console.log(data)
-          navigation.navigate("TabNavigator", { screen: "Explorer" });
+          console.log(data);
         });
-      // }
+    }
+
+    fetch(`${BACKEND_ADDRESS}/users/newOrganizer/${user.token}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: name,
+        title: title,
+        about: about,
+        postalCode: postalCode,
+        city: city,
+        address: address,
+        longitude: longitude,
+        latitude: latitude,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        navigation.navigate("TabNavigator", { screen: "Explorer" });
+      });
+    // }
 
     // } else {
     //   setPostalCodeError(true);
@@ -93,9 +94,10 @@ export default function NewOrganizerScreen({ navigation }) {
 
   const handleChoosePhoto = async () => {
     (async () => {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== 'granted') {
-        console.error('Permission d\'accès à la galerie refusée');
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        console.error("Permission d'accès à la galerie refusée");
       }
     })();
 
@@ -116,16 +118,28 @@ export default function NewOrganizerScreen({ navigation }) {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 24 : 0}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 24 : 0}
     >
       <ScrollView style={styles.scrollview}>
         <Text style={globalStyles.title2}>Création profil organisateur</Text>
-        <MaterialIcons name={"cancel"} size={36} color="#5669FF" style={styles.iconCancel} onPress={() => navigation.navigate("TabNavigator", { screen: "Explorer" })} />
+        <MaterialIcons
+          name={"cancel"}
+          size={36}
+          color="#5669FF"
+          style={styles.iconCancel}
+          onPress={() =>
+            navigation.navigate("TabNavigator", { screen: "Explorer" })
+          }
+        />
 
         <View style={styles.scrollContainer}>
-
           <TouchableOpacity onPress={handleChoosePhoto} style={styles.img}>
-            {photo && <Image source={{ uri: photo }} style={{ width: 150, height: 150, borderRadius: 100 }} />}
+            {photo && (
+              <Image
+                source={{ uri: photo }}
+                style={{ width: 150, height: 150, borderRadius: 100 }}
+              />
+            )}
             {!photo && <Ionicons name="camera" size={64} color="#BBC3FF" />}
             {!photo && <Text style={styles.text}>Choisir une photo</Text>}
           </TouchableOpacity>
@@ -217,14 +231,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   scrollview: {
-    width: '100%',
+    width: "100%",
   },
   scrollContainer: {
-    alignItems: 'center',
-    width: '100%'
+    alignItems: "center",
+    width: "100%",
   },
   img: {
     width: 150,
@@ -233,14 +247,14 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 20,
     alignSelf: "center",
-    backgroundColor: '#EEF0FF',
+    backgroundColor: "#EEF0FF",
     borderRadius: 100,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   text: {
     fontSize: 10,
-    color: '#9AA5FF',
+    color: "#9AA5FF",
   },
   title: {
     fontSize: 24,
@@ -255,8 +269,8 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginLeft: 10,
     marginBottom: 8,
-    textAlign: 'left',
-    width: '90%'
+    textAlign: "left",
+    width: "90%",
   },
   button: {
     padding: 10,
@@ -296,7 +310,7 @@ const styles = StyleSheet.create({
     color: "#EB5757",
     width: "90%",
     alignSelf: "center",
-    textAlign: 'center',
+    textAlign: "center",
   },
   input: {
     width: "90%",
@@ -307,6 +321,6 @@ const styles = StyleSheet.create({
   iconCancel: {
     position: "absolute",
     top: 80,
-    right: 20
+    right: 20,
   },
 });
