@@ -9,17 +9,12 @@ import {
   Share,
   Alert,
 } from "react-native";
-import { Svg, Rect, Defs, Pattern, Use } from 'react-native-svg';
-import { Path } from 'react-native-svg';
-import { Image as SVGImage } from 'react-native-svg';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { useState, useEffect } from "react";
 import { Ionicons } from '@expo/vector-icons';
 
 const BACKEND_ADDRESS = "http://192.168.1.22:3000";
 
 export default function ActivitySheetScreen({ navigation, route: { params: { activity } }}) {
-  const [activityInfo, setActivityInfo] = useState('');
 
   const handleShare = async () => {
     console.log('share');

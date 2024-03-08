@@ -32,11 +32,11 @@ export default function NewOrganizerScreen({ navigation }) {
   const [latitude, setLatitude] = useState(0);
   //
   const [inputError, setInputError] = useState("");
-  // const [postalCodeError, setPostalCodeError] = useState("")
+  const [postalCodeError, setPostalCodeError] = useState("")
   const [photo, setPhoto] = useState("");
   const [photoType, setPhotoType] = useState('image/jpeg');
 
-  // const POSTALCODE_REGEX = /^(?:0[1-9]|[1-8]\d|9[0-8])\d{3}$/;
+  const POSTALCODE_REGEX = /^(?:0[1-9]|[1-8]\d|9[0-8])\d{3}$/;
 
   const handleSubmit = () => {
     // if (POSTALCODE_REGEX.test(postalCode)) {
