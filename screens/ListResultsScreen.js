@@ -24,6 +24,7 @@ import {
 } from "../reducers/user";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 import { Ionicons } from "@expo/vector-icons";
+// import Button from "../components/Button";
 
 const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 
@@ -279,6 +280,16 @@ export default function ListResultsScreen({ navigation }) {
               {activities}
             </ScrollView>
           </View>
+          <View style={styles.mapButtonContainer}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("MapResults")}
+              style={styles.mapButton}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="map-outline" size={24} color="#fff" />
+              <Text style={styles.textMapButton}>Carte</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -339,7 +350,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   scrollView: {
-    paddingBottom: 20,
+    paddingBottom: 70,
   },
   card: {
     marginRight: 100,
@@ -391,5 +402,28 @@ const styles = StyleSheet.create({
   },
   rightButtonsContainerStyle: {
     backgroundColor: "white",
+  },
+  mapButtonContainer: {
+    position: "absolute",
+    alignItems: "center",
+    width: "100%",
+    bottom: 25,
+  },
+  mapButton: {
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+    // height: 58,
+    backgroundColor: "#5669FF",
+    borderRadius: 15,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "32%",
+  },
+  textMapButton: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#fff",
+    // textTransform: "uppercase",
   },
 });
