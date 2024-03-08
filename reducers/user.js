@@ -9,6 +9,7 @@ const initialState = {
     longitude: null,
     activities: [],
     userActivities: [],
+    favoriteActivities: [],
     filters: {
       categoryFilter: [],
       dateFilter: [],
@@ -119,6 +120,9 @@ export const userSlice = createSlice({
       state.value.userActivities = state.value.userActivities.filter(
         (activity) => activity.id !== action.payload
       );
+    },
+    loadFavoriteActivities: (state, action) => {
+      state.value.favoriteActivities = action.payload;
     },
     setErrorMsg: (state, action) => {
       state.value.errorMsg = action.payload;

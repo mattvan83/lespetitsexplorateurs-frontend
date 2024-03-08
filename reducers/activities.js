@@ -34,15 +34,15 @@ export const activitiesSlice = createSlice({
         state.value.category = action.payload.category;
     },
     addActivityInfoScreen2: (state, action) => {
-        state.value.concernedAges.push(action.payload.concernedAges);
+        state.value.concernedAges = action.payload.concernedAges;
     },
     addActivityInfoScreen3: (state, action) => {
         state.value.address = action.payload.address;
         state.value.postalCode = action.payload.postalCode;
         state.value.city = action.payload.city;
         state.value.locationName = action.payload.locationName;
-        state.value.latitude = action.payload.latitude;
-        state.value.longitude = action.payload.longitude;
+        //state.value.latitude = action.payload.latitude;
+        //state.value.longitude = action.payload.longitude;
     },
     addActivityInfoScreen4: (state, action) => {
         state.value.date = action.payload.date;

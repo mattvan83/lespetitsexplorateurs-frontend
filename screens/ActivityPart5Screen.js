@@ -47,20 +47,36 @@ export default function ProfileScreen({ navigation }) {
     if (uploadedImage === "") {
       setUploadedImage("../assets/Images/ludotheque.jpeg");
     }
+    const token = user.token;
     dispatch(addActivityInfoScreen5({ image: uploadedImage }));
-    
-    
-    //Fetch route POST /activities
-    fetch('http://172.20.10.8:3000/activities/newActivity', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ activities }),
-      })
-        .then((response) => response.json())
-        .then((activity) => {
-          activity.result;
-          navigation.navigate("TabNavigator", { screen: "Activité" });
-        });
+      //.then(() => {
+        //Fetch route POST /activities
+        fetch(`http://172.20.10.8:3000/activities/newActivity/${token}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              token: user.token,
+              name: activities.name,
+              description: activities.description,
+              category: activities.category,
+              concernedAges: activities.concernedAges,
+              address: activities.address,
+              postalCode: activities.postalCode,
+              locationName: activities.locationName,
+              city: activities.city,
+              date: activities.date,
+              image: activities.image, 
+            }),
+          })
+            .then((response) => response.json())
+            .then((activity) => {
+              if (activity.result) {
+                navigation.navigate("TabNavigator", { screen: "Activité" });
+              } else {
+                console.error("The activity haven't been created", activity.error);
+              }
+            });
+      //});
   }
 
 
