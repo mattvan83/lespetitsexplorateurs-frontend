@@ -1,7 +1,6 @@
 import {
   StyleSheet,
   Text,
-  TextInput,
   View,
   TouchableOpacity,
   SafeAreaView,
@@ -33,6 +32,8 @@ export default function HomeScreen({ navigation }) {
   const [suggestionsList, setSuggestionsList] = useState([]);
   const user = useSelector((state) => state.user.value);
   const organizers = useSelector((state) => state.organizers.value);
+  const [activities, setActivities] = useState([])
+
   // console.log("user: ", user);
   console.log("user.filters: ", user.filters);
   console.log("user.preferences: ", user.preferences);
@@ -134,21 +135,12 @@ export default function HomeScreen({ navigation }) {
               .then((response) => response.json())
               .then((data) => {
                 data.result && dispatch(importActivities(data.activities));
+                data.result && setActivities(data.activities);
               });
 
-            console.log(user.preferences.scopePreference);
-            console.log(coordinates.longitude);
-            console.log(coordinates.latitude);
-            console.log(
-              `${BACKEND_ADDRESS}/organizers/geoloc/${user.preferences.scopePreference}/${coordinates.longitude}/${coordinates.latitude}`
-            );
-            fetch(
-              `${BACKEND_ADDRESS}/organizers/geoloc/${user.preferences.scopePreference}/${coordinates.longitude}/${coordinates.latitude}`
-            )
+            fetch(`${BACKEND_ADDRESS}/organizers/geoloc/${user.preferences.scopePreference}/${coordinates.longitude}/${coordinates.latitude}`)
               .then((response) => response.json())
               .then((data) => {
-                console.log(data);
-                data.result && console.log(data);
                 data.result && dispatch(loadOrganizers(data.organizers));
               });
           }
@@ -223,44 +215,8 @@ export default function HomeScreen({ navigation }) {
     return <Organizers key={i} {...data} />;
   });
 
-  const activities = user.activities.map((activity, i) => {
-    const inputDate = new Date(activity.date);
-
-    const options = {
-      weekday: "long", // full weekday name
-      day: "numeric", // day of the month
-      month: "long", // full month name
-      hour: "numeric",
-      minute: "numeric",
-    };
-
-    const formattedDate = inputDate
-      .toLocaleString("fr-FR", options)
-      .replace(":", "h")
-      .toUpperCase();
-
-    // console.log(formattedDate);
-
-    return (
-      <Card
-        key={i}
-        id={activity.id}
-        imagePath={
-          activity.imgUrl.includes(1)
-            ? "localImage1"
-            : activity.imgUrl.includes(2)
-            ? "localImage2"
-            : "localImage3"
-        }
-        activityDate={formattedDate}
-        activityName={activity.name}
-        activityLocation={`${activity.postalCode}, ${activity.city}`}
-        isFavorite={activity.isLiked}
-        activityDistance={
-          user.latitude && user.longitude ? activity.distance : null
-        }
-      ></Card>
-    );
+  const activitiesList = activities.map((activity, i) => {
+    return ( <Card key={i} activity={activity} /> );
   });
 
   return (
@@ -332,7 +288,7 @@ export default function HomeScreen({ navigation }) {
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.scrollView}
             >
-              {activities}
+              {activitiesList}
             </ScrollView>
 
             <Text style={globalStyles.title3}>Organisateurs</Text>

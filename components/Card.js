@@ -1,66 +1,53 @@
 import { StyleSheet, Text, Image, View, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 
-const imageMapping = {
-  localImage1: require("../assets/test/activity1.png"),
-  localImage2: require("../assets/test/activity2.png"),
-  localImage3: require("../assets/test/activity3.png"),
-  localImage4: require("../assets/Images/eveil-musical.png"),
-};
+export default function Card({activity}) {
+  const navigation = useNavigation();
+  const user = useSelector((state) => state.user.value);
+  //A SUPPRIMER PLUS TARD
+  let isFavorite = false;
 
-export default function Card({
-  imagePath,
-  activityDate,
-  activityName,
-  activityLocation,
-  isFavorite,
-  activityDistance,
-}) {
-  // Check if the image is in the mapping
-  const isLocalAsset = imageMapping.hasOwnProperty(imagePath);
+  const inputDate = new Date(activity.date);
 
-  // console.log(activityDistance);
+  const options = {
+    weekday: "long", // full weekday name
+    day: "numeric", // day of the month
+    month: "long", // full month name
+    hour: "numeric",
+    minute: "numeric",
+  };
+
+  const formattedDate = inputDate.toLocaleString("fr-FR", options).replace(":", "h").toUpperCase();
 
   return (
     <View style={styles.cardContainer}>
-      <View style={styles.card}>
-        <Image
-          style={styles.img}
-          source={isLocalAsset ? imageMapping[imagePath] : { uri: imagePath }}
-        />
+      <TouchableOpacity activeOpacity={0.8} style={styles.card} onPress={() => navigation.navigate('ActivitySheet', {activity})}>
+        <Image style={styles.img} source={{ uri: activity.imgUrl }} />
         <View style={styles.details}>
           <View style={styles.dateFavoriteContainer}>
-            <Text style={styles.activityDate}>{activityDate}</Text>
+            <Text style={styles.activityDate}>{formattedDate}</Text>
             <TouchableOpacity activeOpacity={0.8} style={styles.favorite}>
               {!isFavorite ? (
-                <Icon
-                  style={styles.heartIcon}
-                  name="heart-outline"
-                  size={20}
-                  color="#EB5757"
-                />
+                <Icon style={styles.heartIcon} name="heart-outline" size={20} color="#EB5757"/>
               ) : (
-                <Icon
-                  style={styles.heartIcon}
-                  name="heart"
-                  size={20}
-                  color="#EB5757"
-                />
+                <Icon style={styles.heartIcon} name="heart" size={20} color="#EB5757" />
               )}
             </TouchableOpacity>
           </View>
 
-          <Text style={styles.activityName}>{activityName}</Text>
+          <Text style={styles.activityName}>{activity.name}</Text>
           <View style={styles.locationContainer}>
-            <Text style={styles.activityLocation}>{activityLocation}</Text>
-            {activityDistance ? (
-              <Text style={styles.activityLocation}>{activityDistance} KM</Text>
+            <Text style={styles.activityLocation}>{`${activity.postalCode}, ${activity.city}`}</Text>
+            {/* {activityDistance ? (
+              <Text style={styles.activityLocation}>{user.latitude && user.longitude ? activity.distance : null} KM</Text>
             ) : (
               <></>
-            )}
+            )} */}
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -84,30 +71,22 @@ const styles = StyleSheet.create({
     shadowRadius: 25,
     shadowOpacity: 0.07,
     elevation: 5, // Pour Android
-    // borderColor: "red",
-    // borderWidth: 1,
   },
   img: {
     height: 92,
     width: 82,
     borderRadius: 8,
-    // borderColor: "blue",
-    // borderWidth: 1,
   },
   details: {
     gap: 4,
     height: 82,
     width: 215,
     justifyContent: "space-between",
-    // borderColor: "green",
-    // borderWidth: 1,
   },
   dateFavoriteContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    // borderColor: "green",
-    // borderWidth: 1,
   },
   activityDate: {
     fontWeight: "bold",
@@ -117,21 +96,15 @@ const styles = StyleSheet.create({
   favorite: {
     width: 24,
     height: 24,
-    // borderColor: "yellow",
-    // borderWidth: 1,
   },
   activityName: {
     fontWeight: "bold",
     color: "#120D26",
     fontSize: 20,
-    // borderColor: "red",
-    // borderWidth: 1,
   },
   locationContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    // borderColor: "yellow",
-    // borderWidth: 1,
   },
   activityLocation: {
     color: "#888693",

@@ -2,39 +2,46 @@ import {
   StyleSheet,
   Text,
   View,
+  Image,
   TouchableOpacity,
 } from "react-native";
-import globalStyles from '../globalStyles';
-import { useDispatch, useSelector } from 'react-redux';
-import { addActivityInfoScreen5 } from '../reducers/activities';
+// import globalStyles from '../globalStyles';
+// import { useDispatch, useSelector } from 'react-redux';
+// import { setPreferences, resetPreferences } from '../reducers/user';
 import { useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import * as ImagePicker from 'expo-image-picker';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function ProfileScreen({ navigation }) {
+  const [photo, setPhoto] = useState();
+  const [photoType, setPhotoType] = useState('image/jpeg');
+
   const formData = new FormData();
+  
+  // const dispatch = useDispatch();
+  // const user = useSelector((state) => state.user.value);
 
-  const dispatch = useDispatch();
-  const activities = useSelector((state) => state.activities.value);
-  console.log(activities);
-  const [uploadedImage, setUploadedImage] = useState("");
+  const handleChoosePhoto = async () => {
+    (async () => {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        console.error('Permission d\'accès à la galerie refusée');
+      }
+    })();
 
-  const handleAddImage = () => {
-    console.log('add image');
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
 
-    /*formData.append('photoFromFront', {
-      uri: 'file://...',
-      name: 'photo.jpg',
-      type: 'image/jpeg',
-     });
-
-    fetch('http://.../upload', {
-    method: 'POST',
-    body: formData,
-    }).then((response) => response.json())
-    .then((data) => {
-
-    });*/
-  }
+    if (!result.canceled) {
+      setPhoto(result.assets[0].uri);
+      setPhotoType(result.assets[0].mimeType);
+    }
+  };
 
   const handleCreate = () => {
     if (uploadedImage === "") {
@@ -69,10 +76,11 @@ export default function ProfileScreen({ navigation }) {
           <Text style={styles.importantText}>Veillez à ce que les visages soient floutés !</Text>
         </View>
         
-        <View style={styles.chooseImage}>
-          <FontAwesome name={'image'} color={'#5669FF'} size={40} style={styles.iconBckgd} onPress={handleAddImage}/>
-          <Text style={styles.greyText}>Choisir une image</Text>
-        </View>
+        <TouchableOpacity onPress={handleChoosePhoto} style={styles.img}>
+            {photo && <Image source={{ uri: photo }} style={{ width: 150, height: 150, borderRadius: 15 }} />}
+            {!photo && <Ionicons name="camera" size={64} color="#BBC3FF" />}
+            {!photo && <Text style={styles.textImg}>Choisir une photo</Text>}
+          </TouchableOpacity>
 
         <View style={styles.bottom}>
           <TouchableOpacity
@@ -92,7 +100,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   arrow: {
-    marginTop: 35,
+    marginTop: 50,
     marginLeft: 20,
   },
   title2: {
@@ -102,18 +110,21 @@ const styles = StyleSheet.create({
     marginTop: 45,
     marginLeft: 20,
   },
-  chooseImage: {
-    display: 'flex',
-    height: 108,
-    width: 153,
-    borderColor: 'grey',
+  textImg: {
+    fontSize: 10,
+    color: '#9AA5FF',
+  },
+  img: {
+    width: 150,
+    height: 150,
+    margin: 20,
+    backgroundColor: '#EEF0FF',
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
     borderWidth: 2,
     borderStyle: 'dashed',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 15,
-    margin: 20,
+    borderColor: '#BBC3FF'
   },
   greyText: {
     color: 'grey',

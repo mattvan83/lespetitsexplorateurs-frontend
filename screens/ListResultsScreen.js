@@ -22,9 +22,10 @@ import {
   setCitySearched,
 } from "../reducers/user";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons } from '@expo/vector-icons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-const BACKEND_ADDRESS = "http://192.168.1.111:3000";
+const BACKEND_ADDRESS = "http://192.168.1.22:3000";
 
 export default function ListResultsScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
@@ -139,6 +140,8 @@ export default function ListResultsScreen({ navigation }) {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}
       >
+        <FontAwesome name={'arrow-left'} color={'black'} size={24} style={styles.arrow} onPress={() => navigation.navigate("TabNavigator", { screen: "Explorer" })} />
+    
         <View style={styles.searchContainer}>
           <View style={styles.search}>
             <View style={styles.searchBar}>
@@ -208,6 +211,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     // backgroundColor: "#4A43EC",
     width: "100%",
+  },
+  arrow: {
+    marginTop: 35,
+    marginLeft: 20,
+    alignSelf:'flex-start',
   },
   filtersButton: {
     width: 70,

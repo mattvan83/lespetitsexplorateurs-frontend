@@ -1,21 +1,18 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-export default function Organizers( props ) {
-
-    // const handleSubmit = ( props ) => {
-    //     handleCategoryList(category);
-    // }
-
+export default function Organizers(organizer) {
+    const navigation = useNavigation();
     return (
         <View style={styles.container}>
             <TouchableOpacity
-                onPress={() => handleSubmit()}
+                onPress={() => navigation.navigate('OrganizerProfile', {organizer})}
                 style={styles.button}
                 activeOpacity={0.8}
             >
                 <Image style={styles.organizerImgProfile} source={require('../assets/Images/presque-pieds-nus.jpeg')}/>
             </TouchableOpacity>
-            <Text style={styles.textButton}>{props.name}</Text>
+            <Text style={styles.textButton}>{organizer.name}</Text>
         </View>
     );
 }
