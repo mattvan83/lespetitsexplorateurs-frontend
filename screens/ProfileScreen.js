@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   setPreferences,
   resetPreferences,
-  setLocationFilters,
+  setPreferencesFilters,
 } from "../reducers/user";
 import { useState } from "react";
 import { logout } from "../reducers/user";
@@ -48,12 +48,20 @@ export default function ProfileScreen({ navigation }) {
   };
 
   const ageCategory = [
-    "3_12months",
-    "1_3years",
-    "3_6years",
-    "6_10years",
-    "10+years",
+    "3-12 mois",
+    "1-3 ans",
+    "3-6 ans",
+    "6-10 ans",
+    "10+ ans",
   ];
+
+  const ageMapping = {
+    "3-12 mois": "3_12months",
+    "1-3 ans": "1_3years",
+    "3-6 ans": "3_6years",
+    "6-10 ans": "6_10years",
+    "10+ ans": "10+years",
+  };
 
   const handleAgeList = (category) => {
     handleFilterButtonClick(category, selectedAges, setSelectedAges);
@@ -75,12 +83,16 @@ export default function ProfileScreen({ navigation }) {
     console.log(selectedCity);
     console.log(selectedLongitude);
     console.log(selectedLatitude);
+
+    // Mapping between frontend and backend age
+    const mappedSelectedAges = selectedAges.map((age) => ageMapping[age]);
+
     fetch(`${BACKEND_ADDRESS}/users/updatePreferences`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         token: user.token,
-        concernedAges: selectedAges,
+        concernedAges: mappedSelectedAges,
         radius: scope,
         city: selectedCity,
         longitude: selectedLongitude,
@@ -101,10 +113,12 @@ export default function ProfileScreen({ navigation }) {
           );
         data.result &&
           dispatch(
-            setLocationFilters({
-              cityFilter: selectedCity,
-              latitudeFilter: selectedLatitude,
-              longitudeFilter: selectedLongitude,
+            setPreferencesFilters({
+              agePreference: selectedAges,
+              cityPreference: selectedCity,
+              latitudePreference: selectedLatitude,
+              longitudePreference: selectedLongitude,
+              scopePreference: scope,
             })
           );
         // navigation.navigate("TabNavigator", { screen: "Explorer" });
