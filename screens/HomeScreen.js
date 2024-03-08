@@ -8,6 +8,7 @@ import {
   Platform,
   ScrollView,
   Dimensions,
+  TextInput,
 } from "react-native";
 import Card from "../components/Card";
 import globalStyles from "../globalStyles";
@@ -203,12 +204,6 @@ export default function HomeScreen({ navigation }) {
               }
             }
 
-            // console.log(user.preferences.scopePreference);
-            // console.log(coordinates.longitude);
-            // console.log(coordinates.latitude);
-            // console.log(
-            //   `${BACKEND_ADDRESS}/organizers/geoloc/${user.preferences.scopePreference}/${coordinates.longitude}/${coordinates.latitude}`
-            // );
             fetch(
               `${BACKEND_ADDRESS}/organizers/geoloc/${user.preferences.scopePreference}/${coordinates.longitude}/${coordinates.latitude}`
             )
@@ -237,7 +232,6 @@ export default function HomeScreen({ navigation }) {
           fetch(`${BACKEND_ADDRESS}/organizers/nogeoloc`)
             .then((response) => response.json())
             .then((data) => {
-              data.result && console.log(data);
               data.result && dispatch(loadOrganizers(data.organizers));
             });
         }
@@ -247,6 +241,7 @@ export default function HomeScreen({ navigation }) {
       return () => clearTimeout(timeoutId);
     })();
   }, []);
+
 
   const searchCity = (query) => {
     // Prevent search with an empty query
@@ -282,8 +277,7 @@ export default function HomeScreen({ navigation }) {
     navigation.navigate("Filters");
   };
 
-  const organizersMax10 =
-    organizers.length > 10 ? organizers.slice(0, 10) : organizers;
+  const organizersMax10 = organizers.length > 10 ? organizers.slice(0, 10) : organizers;
   const organizersList = organizersMax10.map((data, i) => {
     return <Organizers key={i} {...data} />;
   });

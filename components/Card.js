@@ -3,6 +3,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 
+
 export default function Card({ activity} ) {
   const navigation = useNavigation();
   const user = useSelector((state) => state.user.value);

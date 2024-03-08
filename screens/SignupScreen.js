@@ -55,10 +55,11 @@ export default function SignupScreen({ navigation }) {
             } else {
               navigation.navigate("TabNavigator", { screen: "Explorer" });
             }
+            setEmail("");
+            setPassword("");
+            setUsername("");
           }
-          setEmail("");
-          setPassword("");
-          setUsername("");
+          console.log(data.result)
         });
     } else {
       setEmailError(true);

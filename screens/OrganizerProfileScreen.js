@@ -5,12 +5,13 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   ScrollView,
-  Platform
+  Platform,
+  Image
 } from "react-native";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import globalStyles from "../globalStyles";
 
 export default function OrganizerProfileScreen({ navigation, route: { params: { organizer } } }) {
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -19,7 +20,8 @@ export default function OrganizerProfileScreen({ navigation, route: { params: { 
     >
       <FontAwesome style={styles.iconReturnButton} name={'arrow-left'} color={'black'} size={20} onPress={() => navigation.goBack()} />
         <View style={styles.img}>
-          {organizer.imgURL && <Image source={{ uri: organizer.imgUrl }} style={{ width: 150, height: 150, borderRadius: 100 }} />}
+          {organizer.imgUrl && <Image source={{ uri: organizer.imgUrl }} style={{ width: 150, height: 150, borderRadius: 100 }} />}
+          {!organizer.imgUrl && <Text style={styles.initiale}>{organizer.name.slice(0,1)}</Text>}
         </View>
 
         <Text style={styles.title}>{organizer.name}</Text>
@@ -54,6 +56,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     margin: 20,
     lineHeight: 22,
+  },
+  initiale : {
+    fontSize: 68,
+    fontWeight: 'bold',
+    color: '#BBC3FF',
   },
   title: {
     fontSize: 24,
