@@ -3,7 +3,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 
-export default function Card({activity}) {
+export default function Card({ activity} ) {
   const navigation = useNavigation();
   const user = useSelector((state) => state.user.value);
   //A SUPPRIMER PLUS TARD
@@ -18,6 +18,7 @@ export default function Card({activity}) {
     hour: "numeric",
     minute: "numeric",
   };
+
 
   const formattedDate = inputDate.toLocaleString("fr-FR", options).replace(":", "h").toUpperCase();
 

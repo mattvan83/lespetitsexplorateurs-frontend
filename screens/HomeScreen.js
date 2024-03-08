@@ -144,6 +144,7 @@ export default function HomeScreen({ navigation }) {
                     data.result &&
                       dispatch(importActivities(data.activities)) &&
                       dispatch(setErrorMsg(null));
+
                     !data.result &&
                       dispatch(importActivities([])) &&
                       dispatch(setErrorMsg(data.error));
