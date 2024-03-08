@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
   },
   filtersContainer: {
     flex: 1,
-    height: '70%',
+    height: "70%",
   },
   profileImg: {
     width: 100,

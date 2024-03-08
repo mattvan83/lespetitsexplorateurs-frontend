@@ -51,7 +51,7 @@ export default function ProfileScreen({ navigation }) {
     dispatch(addActivityInfoScreen5({ image: uploadedImage }));
       //.then(() => {
         //Fetch route POST /activities
-        fetch(`http://172.20.10.8:3000/activities/newActivity/${token}`, {
+        fetch(`http://192.168.1.22:3000/activities/newActivity/${token}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
