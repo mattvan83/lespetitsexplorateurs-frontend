@@ -88,7 +88,7 @@ export default function SigninScreen({ navigation }) {
             placeholder="jane.doe@gmail.com"
             autoCapitalize="none"
             keyboardType="email-address"
-            autoComplete="email"
+            // autoComplete="email"
             onChangeText={(value) => setEmail(value)}
             value={email}
             style={globalStyles.input}

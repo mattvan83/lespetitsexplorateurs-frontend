@@ -49,4 +49,8 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16
       },
+      button: {
+        width: '100%',
+        alignItems: 'center'
+      }
 });

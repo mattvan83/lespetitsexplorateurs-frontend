@@ -139,7 +139,8 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   filtersContainer: {
-    flex: 0.9,
+    flex: 1,
+    height: '70%',
   },
   profileImg: {
     width: 100,

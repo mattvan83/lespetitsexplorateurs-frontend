@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   arrow: {
-    marginTop: 35,
+    marginTop: 50,
     marginLeft: 20,
   },
   title2: {

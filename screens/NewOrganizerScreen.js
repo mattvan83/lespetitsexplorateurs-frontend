@@ -90,8 +90,6 @@ export default function NewOrganizerScreen({ navigation }) {
     }
   };
 
-  console.log(photo)
-
   return (
     <KeyboardAvoidingView
       style={styles.container}
