@@ -25,6 +25,8 @@ export default function CardEditDelete({
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
 
+  const BACKEND_ADDRESS = "http://172.20.10.8:3000";
+
   const handleDeleteSubmit = () => {
     fetch(`${BACKEND_ADDRESS}/activities/`, {
       method: "DELETE",

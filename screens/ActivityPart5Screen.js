@@ -6,8 +6,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 // import globalStyles from '../globalStyles';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { setPreferences, resetPreferences } from '../reducers/user';
+import { useDispatch, useSelector } from 'react-redux';
+import { addActivityInfoScreen5 } from '../reducers/activities';
 import { useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import * as ImagePicker from 'expo-image-picker';
@@ -19,8 +19,9 @@ export default function ProfileScreen({ navigation }) {
 
   const formData = new FormData();
   
-  // const dispatch = useDispatch();
-  // const user = useSelector((state) => state.user.value);
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.value);
+  const activities = useSelector((state) => state.activities.value);
 
   const handleChoosePhoto = async () => {
     (async () => {
@@ -44,11 +45,8 @@ export default function ProfileScreen({ navigation }) {
   };
 
   const handleCreate = () => {
-    if (uploadedImage === "") {
-      setUploadedImage("../assets/Images/ludotheque.jpeg");
-    }
     const token = user.token;
-    dispatch(addActivityInfoScreen5({ image: uploadedImage }));
+    dispatch(addActivityInfoScreen5({ image: photo }));
       //.then(() => {
         //Fetch route POST /activities
         fetch(`http://172.20.10.8:3000/activities/newActivity/${token}`, {
