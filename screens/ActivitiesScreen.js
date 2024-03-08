@@ -13,7 +13,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { loadUserActivities, deleteUserActivity } from '../reducers/user';
 import CardEditDelete from '../components/CardEditDelete';
 
-const BACKEND_ADDRESS = "http://172.20.10.8:3000";
+const BACKEND_ADDRESS = "http://192.168.1.22:3000";
 
 export default function ActivitiesScreen({ navigation }) {
   const dispatch = useDispatch();

@@ -9,15 +9,17 @@ export default function Card({activity}) {
   //A SUPPRIMER PLUS TARD
   let isFavorite = false;
 
-  const inputDate = new Date(activity.date);
+  // const inputDate = new Date(activity.date);
 
-  const options = {
-    weekday: "long", // full weekday name
-    day: "numeric", // day of the month
-    month: "long", // full month name
-    hour: "numeric",
-    minute: "numeric",
-  };
+  // const options = {
+  //   weekday: "long", // full weekday name
+  //   day: "numeric", // day of the month
+  //   month: "long", // full month name
+  //   hour: "numeric",
+  //   minute: "numeric",
+  // };
+
+  console.log(activity)
 
   const formattedDate = inputDate.toLocaleString("fr-FR", options).replace(":", "h").toUpperCase();
 
@@ -27,7 +29,7 @@ export default function Card({activity}) {
         <Image style={styles.img} source={{ uri: activity.imgUrl }} />
         <View style={styles.details}>
           <View style={styles.dateFavoriteContainer}>
-            <Text style={styles.activityDate}>{formattedDate}</Text>
+            {/* <Text style={styles.activityDate}>{formattedDate}</Text> */}
             <TouchableOpacity activeOpacity={0.8} style={styles.favorite}>
               {!isFavorite ? (
                 <Icon style={styles.heartIcon} name="heart-outline" size={20} color="#EB5757"/>

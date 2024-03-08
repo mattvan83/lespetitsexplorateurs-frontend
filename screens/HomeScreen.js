@@ -27,7 +27,7 @@ import Organizers from "../components/Organizers";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 import { Ionicons } from "@expo/vector-icons";
 
-const BACKEND_ADDRESS = "http://192.168.1.20:3000";
+const BACKEND_ADDRESS = "http://192.168.1.22:3000";
 
 export default function HomeScreen({ navigation }) {
   const [suggestionsList, setSuggestionsList] = useState([]);
