@@ -22,6 +22,7 @@ import {
   importActivities,
   setLocationFilters,
   setLocationPreferences,
+  setErrorMsg,
 } from "../reducers/user";
 import Organizers from "../components/Organizers";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
@@ -31,12 +32,12 @@ const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 
 export default function HomeScreen({ navigation }) {
   const [suggestionsList, setSuggestionsList] = useState([]);
-  const [errorMsg, setErrorMsg] = useState("");
   const user = useSelector((state) => state.user.value);
   const organizers = useSelector((state) => state.organizers.value);
   // console.log("user: ", user);
-  console.log("user.filters: ", user.filters);
-  console.log("user.preferences: ", user.preferences);
+  // console.log("user.filters: ", user.filters);
+  // console.log("user.preferences: ", user.preferences);
+  console.log("user.errorMsg: ", user.errorMsg);
 
   const dispatch = useDispatch();
 
@@ -138,10 +139,10 @@ export default function HomeScreen({ navigation }) {
                 // console.log("data.activities: ", data.activities);
                 data.result &&
                   dispatch(importActivities(data.activities)) &&
-                  setErrorMsg("");
+                  dispatch(setErrorMsg(null));
                 !data.result &&
                   dispatch(importActivities([])) &&
-                  setErrorMsg(data.error);
+                  dispatch(setErrorMsg(data.error));
               });
 
             // console.log(user.preferences.scopePreference);
@@ -335,8 +336,8 @@ export default function HomeScreen({ navigation }) {
             ) : (
               <Text style={globalStyles.title3}>Bientôt</Text>
             )}
-            {errorMsg ? (
-              <TextInput style={styles.errorMsg}>{errorMsg}</TextInput>
+            {user.errorMsg ? (
+              <TextInput style={styles.errorMsg}>{user.errorMsg}</TextInput>
             ) : (
               <></>
             )}
@@ -412,8 +413,14 @@ const styles = StyleSheet.create({
     marginRight: 100,
   },
   searchContainer: {
-    alignItems: "center",
-    marginTop: 50,
+    // marginTop: 50,
+    flex: 0.2,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "flex-end",
+    backgroundColor: "#4A43EC",
+    width: "100%",
+    paddingBottom: 20,
   },
   search: {
     flexDirection: "row",

@@ -22,7 +22,7 @@ import InputLocalisation from "../components/InputLocalisation";
 import FilterTextCategory from "../components/FilterTextCategory";
 import { handleFilterButtonClick } from "../modules/handleFilterButtonClick";
 
-BACKEND_ADDRESS = "http://192.168.1.111:3000";
+const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -107,7 +107,8 @@ export default function ProfileScreen({ navigation }) {
               longitudeFilter: selectedLongitude,
             })
           );
-        navigation.navigate("TabNavigator", { screen: "Explorer" });
+        // navigation.navigate("TabNavigator", { screen: "Explorer" });
+        navigation.navigate("ListResults");
       });
   };
 

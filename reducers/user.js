@@ -27,6 +27,7 @@ const initialState = {
       longitudePreference: null,
       scopePreference: 50,
     },
+    errorMsg: null,
   },
 };
 
@@ -112,6 +113,9 @@ export const userSlice = createSlice({
         (activity) => activity.id !== action.payload
       );
     },
+    setErrorMsg: (state, action) => {
+      state.value.errorMsg = action.payload;
+    },
   },
 });
 
@@ -131,5 +135,6 @@ export const {
   resetCitySearched,
   loadUserActivities,
   deleteUserActivity,
+  setErrorMsg,
 } = userSlice.actions;
 export default userSlice.reducer;

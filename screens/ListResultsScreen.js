@@ -20,6 +20,7 @@ import {
   addCurrentLocation,
   importActivities,
   setLocationFilters,
+  setErrorMsg,
 } from "../reducers/user";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 import { Ionicons } from "@expo/vector-icons";
@@ -30,7 +31,6 @@ export default function ListResultsScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
   const userFilters = useSelector((state) => state.user.value.filters);
   const [suggestionsList, setSuggestionsList] = useState([]);
-  const [errorMsg, setErrorMsg] = useState("");
 
   console.log("user.filters: ", userFilters);
 
@@ -70,10 +70,10 @@ export default function ListResultsScreen({ navigation }) {
         // console.log("data.activities: ", data.activities);
         data.result &&
           dispatch(importActivities(data.activities)) &&
-          setErrorMsg("");
+          dispatch(setErrorMsg(null));
         !data.result &&
           dispatch(importActivities([])) &&
-          setErrorMsg(data.error);
+          dispatch(setErrorMsg(data.error));
       });
   }, [userFilters]);
 
@@ -146,10 +146,10 @@ export default function ListResultsScreen({ navigation }) {
           // console.log("data.activities: ", data.activities);
           data.result &&
             dispatch(importActivities(data.activities)) &&
-            setErrorMsg("");
+            dispatch(setErrorMsg(null));
           !data.result &&
             dispatch(importActivities([])) &&
-            setErrorMsg(data.error);
+            dispatch(setErrorMsg(data.error));
         });
     }
   };
@@ -208,50 +208,67 @@ export default function ListResultsScreen({ navigation }) {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}
       >
-        <View style={styles.searchContainer}>
-          <View style={styles.search}>
-            <View style={styles.searchBar}>
-              <Ionicons name="location-outline" size={24} color="#D0CFD4" />
-              <AutocompleteDropdown
-                onChangeText={(value) => searchCity(value)}
-                onSelectItem={(item) => handleSelectItem(item)}
-                dataSet={suggestionsList}
-                suggestionsListMaxHeight={
-                  Dimensions.get("window").height * 0.45
-                }
-                onClear={onClearPress}
-                textInputProps={{
-                  placeholder: "Rechercher un lieu...",
-                  style: {
-                    color: "#120D26",
-                    paddingLeft: 20,
-                  },
-                }}
-                inputContainerStyle={styles.inputContainer}
-                containerStyle={styles.dropdownContainer}
-                suggestionsListContainerStyle={styles.suggestionListContainer}
-                suggestionsListTextStyle={{
-                  color: "#120D26",
-                  fontSize: 12,
-                }}
-                closeOnSubmit
-              />
-            </View>
+        <View style={styles.header}>
+          <View style={styles.topHeader}>
             <TouchableOpacity
-              onPress={() => handlePressFilters()}
-              style={styles.filtersButton}
+              onPress={() =>
+                navigation.navigate("TabNavigator", { screen: "Explorer" })
+              }
+              style={styles.goBackButton}
               activeOpacity={0.8}
             >
-              <Ionicons name="filter" size={24} color="#4A43EC" />
-              {/* <Text style={styles.textButton}>Filtres</Text> */}
+              <Ionicons name="arrow-back-outline" size={24} color="black" />
             </TouchableOpacity>
+            <TextInput style={styles.titleHeader}>
+              Evènements proches du lieu de votre choix
+            </TextInput>
+          </View>
+
+          <View style={styles.searchContainer}>
+            <View style={styles.search}>
+              <View style={styles.searchBar}>
+                <Ionicons name="location-outline" size={24} color="#D0CFD4" />
+                <AutocompleteDropdown
+                  onChangeText={(value) => searchCity(value)}
+                  onSelectItem={(item) => handleSelectItem(item)}
+                  dataSet={suggestionsList}
+                  suggestionsListMaxHeight={
+                    Dimensions.get("window").height * 0.45
+                  }
+                  onClear={onClearPress}
+                  textInputProps={{
+                    placeholder: "Rechercher un lieu...",
+                    style: {
+                      color: "#120D26",
+                      paddingLeft: 20,
+                    },
+                  }}
+                  inputContainerStyle={styles.inputContainer}
+                  containerStyle={styles.dropdownContainer}
+                  suggestionsListContainerStyle={styles.suggestionListContainer}
+                  suggestionsListTextStyle={{
+                    color: "#120D26",
+                    fontSize: 12,
+                  }}
+                  closeOnSubmit
+                />
+              </View>
+              <TouchableOpacity
+                onPress={() => handlePressFilters()}
+                style={styles.filtersButton}
+                activeOpacity={0.8}
+              >
+                <Ionicons name="filter" size={24} color="#4A43EC" />
+                {/* <Text style={styles.textButton}>Filtres</Text> */}
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
 
         <View style={styles.body}>
           <View style={styles.listActivities}>
-            {errorMsg ? (
-              <TextInput style={styles.errorMsg}>{errorMsg}</TextInput>
+            {user.errorMsg ? (
+              <TextInput style={styles.errorMsg}>{user.errorMsg}</TextInput>
             ) : (
               <></>
             )}
@@ -276,12 +293,24 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   header: {
-    flex: 0.25,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
+    flex: 0.28,
+    justifyContent: "space-between",
+    alignItems: "flex-start",
     // backgroundColor: "#4A43EC",
     width: "100%",
+    paddingTop: 50,
+  },
+  topHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 10,
+  },
+  goBackButton: {
+    marginHorizontal: 20,
+  },
+  titleHeader: {
+    fontWeight: "bold",
+    width: "80%",
   },
   filtersButton: {
     width: 70,
@@ -297,7 +326,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   body: {
-    flex: 0.8,
+    flex: 1,
     width: "100%",
   },
   listActivities: {
@@ -316,8 +345,13 @@ const styles = StyleSheet.create({
     marginRight: 100,
   },
   searchContainer: {
-    alignItems: "center",
-    marginTop: 50,
+    flex: 0.3,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "flex-end",
+    // backgroundColor: "#4A43EC",
+    width: "100%",
+    paddingBottom: 20,
   },
   search: {
     flexDirection: "row",
