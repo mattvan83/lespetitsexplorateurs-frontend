@@ -59,7 +59,7 @@ export default function SignupScreen({ navigation }) {
             setPassword("");
             setUsername("");
           }
-          console.log(data.result)
+          console.log(data.error)
         });
     } else {
       setEmailError(true);
