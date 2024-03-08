@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { login, setPreferences } from "../reducers/user";
+import { login, setPreferences, setPreferencesFilters } from "../reducers/user";
 import globalStyles from "../globalStyles";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -44,6 +44,15 @@ export default function SigninScreen({ navigation }) {
             dispatch(login({ token: data.token, username: data.username }));
             dispatch(
               setPreferences({
+                agePreference: data.userPreferences.concernedAges,
+                cityPreference: data.userPreferences.city,
+                latitudePreference: data.userPreferences.latitude,
+                longitudePreference: data.userPreferences.longitude,
+                scopePreference: data.userPreferences.radius,
+              })
+            );
+            dispatch(
+              setPreferencesFilters({
                 agePreference: data.userPreferences.concernedAges,
                 cityPreference: data.userPreferences.city,
                 latitudePreference: data.userPreferences.latitude,

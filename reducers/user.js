@@ -27,6 +27,7 @@ const initialState = {
       longitudePreference: null,
       scopePreference: 50,
     },
+    errorMsg: null,
   },
 };
 
@@ -70,6 +71,13 @@ export const userSlice = createSlice({
       state.value.filters.longitudeFilter = action.payload.longitudeFilter;
       state.value.filters.latitudeFilter = action.payload.latitudeFilter;
     },
+    setPreferencesFilters: (state, action) => {
+      state.value.filters.ageFilter = action.payload.agePreference;
+      state.value.filters.cityFilter = action.payload.cityPreference;
+      state.value.filters.latitudeFilter = action.payload.latitudePreference;
+      state.value.filters.longitudeFilter = action.payload.longitudePreference;
+      state.value.filters.scopeFilter = action.payload.scopePreference;
+    },
     resetFilters: (state, action) => {
       state.value.filters.categoryFilter = [];
       state.value.filters.dateFilter = [];
@@ -112,6 +120,9 @@ export const userSlice = createSlice({
         (activity) => activity.id !== action.payload
       );
     },
+    setErrorMsg: (state, action) => {
+      state.value.errorMsg = action.payload;
+    },
   },
 });
 
@@ -123,6 +134,7 @@ export const {
   importActivities,
   setFilters,
   setLocationFilters,
+  setPreferencesFilters,
   resetFilters,
   setPreferences,
   setLocationPreferences,
@@ -131,5 +143,6 @@ export const {
   resetCitySearched,
   loadUserActivities,
   deleteUserActivity,
+  setErrorMsg,
 } = userSlice.actions;
 export default userSlice.reducer;
