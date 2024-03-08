@@ -23,10 +23,10 @@ import {
   setErrorMsg,
 } from "../reducers/user";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
-import { Ionicons } from '@expo/vector-icons';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { Ionicons } from "@expo/vector-icons";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 
-const BACKEND_ADDRESS = "http://192.168.1.22:3000";
+const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 
 export default function ListResultsScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
   arrow: {
     marginTop: 35,
     marginLeft: 20,
-    alignSelf:'flex-start',
+    alignSelf: "flex-start",
   },
   filtersButton: {
     width: 70,

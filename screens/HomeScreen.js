@@ -1,6 +1,7 @@
 import {
   StyleSheet,
   Text,
+  TextInput,
   View,
   TouchableOpacity,
   SafeAreaView,
@@ -33,7 +34,7 @@ export default function HomeScreen({ navigation }) {
   const [suggestionsList, setSuggestionsList] = useState([]);
   const user = useSelector((state) => state.user.value);
   const organizers = useSelector((state) => state.organizers.value);
-  const [activities, setActivities] = useState([])
+  const [activities, setActivities] = useState([]);
 
   // console.log("user: ", user);
   // console.log("user.filters: ", user.filters);
@@ -146,6 +147,7 @@ export default function HomeScreen({ navigation }) {
                     !data.result &&
                       dispatch(importActivities([])) &&
                       dispatch(setErrorMsg(data.error));
+                    data.result && setActivities(data.activities);
                   });
               } else if (
                 user.preferences.latitudePreference &&
@@ -194,6 +196,7 @@ export default function HomeScreen({ navigation }) {
                     !data.result &&
                       dispatch(importActivities([])) &&
                       dispatch(setErrorMsg(data.error));
+                    data.result && setActivities(data.activities);
                   });
               }
             }
@@ -284,7 +287,7 @@ export default function HomeScreen({ navigation }) {
   });
 
   const activitiesList = activities.map((activity, i) => {
-    return ( <Card key={i} activity={activity} /> );
+    return <Card key={i} activity={activity} />;
   });
 
   return (
