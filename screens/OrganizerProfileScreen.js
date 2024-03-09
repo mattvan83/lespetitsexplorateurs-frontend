@@ -18,14 +18,11 @@ import Card from "../components/Card";
 export default function OrganizerProfileScreen({ navigation, route: { params: { organizer } } }) {
   const layout = useWindowDimensions();
 
-  // Routes for tabs
   const FirstRoute = () => (
     <View style={{ flex: 1 }} >
       <Text style={styles.text}>{organizer.about}</Text>
     </View>
   );
-
-  console.log(organizer.activities)
 
   const SecondRoute = () => (
     <View style={{ flex: 1 }} >
@@ -95,15 +92,6 @@ export default function OrganizerProfileScreen({ navigation, route: { params: { 
         onIndexChange={setIndex}
         initialLayout={{ width: layout.width }}
         renderTabBar={renderTabBar}
-      // renderTabBar={(props) => (
-      //   <TabBar
-      //     {...props}
-      //     style={{ backgroundColor: '#fff' }}
-      //     labelStyle={{ color: '#29253C', fontWeight: 'bold' }}
-      //     activeLabelStyle={{ color: '#5669FF' }}
-      //     activeTabStyle={{ borderBottomColor: '#5669FF' }}
-      //   />
-      // )}
       />
 
     </KeyboardAvoidingView>

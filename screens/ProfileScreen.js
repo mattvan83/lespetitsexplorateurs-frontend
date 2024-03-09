@@ -22,7 +22,7 @@ import InputLocalisation from "../components/InputLocalisation";
 import FilterTextCategory from "../components/FilterTextCategory";
 import { handleFilterButtonClick } from "../modules/handleFilterButtonClick";
 
-const BACKEND_ADDRESS = "http://192.168.1.22:3000";
+const BACKEND_ADDRESS = "http://192.168.1.23:3000";
 
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -80,10 +80,6 @@ export default function ProfileScreen({ navigation }) {
   });
 
   const handleSetPreferences = () => {
-    console.log(selectedCity);
-    console.log(selectedLongitude);
-    console.log(selectedLatitude);
-
     // Mapping between frontend and backend age
     const mappedSelectedAges = selectedAges.map((age) => ageMapping[age]);
 
@@ -133,18 +129,14 @@ export default function ProfileScreen({ navigation }) {
     >
       <ScrollView style={styles.filtersContainer}>
         <Text style={globalStyles.title2}>Mon profil</Text>
-        <TouchableOpacity onPress={() => handleLogOut()} activeOpacity={0.8}>
+
+        <View style={styles.profilNamePic}>
+          <Image source={{ uri: 'https://res.cloudinary.com/ddoqxafok/image/upload/v1710019231/qcwu39or7dzqmtiwugmr.jpg' }} style={styles.profileImg} />
+          <Text style={styles.username}>{user.username}</Text>
+          <TouchableOpacity onPress={() => handleLogOut()} activeOpacity={0.8}>
           <Text style={styles.deconnexion}>Se déconnecter</Text>
         </TouchableOpacity>
-
-        <Text style={globalStyles.title4}>Nom d'utilisateur</Text>
-        <Text style={styles.text}>{user.username}</Text>
-
-        <Text style={globalStyles.title4}>Image de profil</Text>
-        <Image
-          style={styles.profileImg}
-          source={require("../assets/Images/avatar.jpg")}
-        />
+        </View>
 
         <Text style={globalStyles.title4}>Âges des enfants</Text>
         <ScrollView horizontal={true} style={styles.filters}>
@@ -200,12 +192,22 @@ const styles = StyleSheet.create({
     flex: 1,
     height: '70%',
   },
+  profilNamePic: {
+    alignSelf: 'center',
+    marginBottom: 20,
+  },
+  username: {
+    marginTop: 16,
+    marginBottom: 8,
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
   profileImg: {
-    width: 100,
-    height: 100,
+    width: 150,
+    height: 150,
     borderRadius: 100,
     marginTop: 10,
-    marginLeft: 20,
     borderWidth: 1,
     borderColor: "#EBEDFF",
   },
