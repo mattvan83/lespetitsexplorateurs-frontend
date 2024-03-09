@@ -4,7 +4,6 @@ import {
   View,
   TouchableOpacity,
   KeyboardAvoidingView,
-  ScrollView,
   Platform,
   Image,
   useWindowDimensions,
@@ -26,9 +25,20 @@ export default function OrganizerProfileScreen({ navigation, route: { params: { 
     </View>
   );
 
+  console.log(organizer.activities)
+
   const SecondRoute = () => (
-    <View style={{ flex: 1}} >
-        {activities}
+    <View style={{ flex: 1 }} >
+      <FlatList
+        data={organizer.activities}
+        renderItem={({ item, index }) => (
+          <View style={{ marginBottom: index === organizer.activities.length - 1 ? 50 : 0 }}> 
+            <Card key={item._id} activity={item} display="vertical" />
+          </View>
+        )} 
+        keyExtractor={item => item._id}
+        style={styles.flatlist}
+      />
     </View>
   );
 
@@ -56,17 +66,13 @@ export default function OrganizerProfileScreen({ navigation, route: { params: { 
           ]}
           onPress={() => setIndex(i)}
         >
-          <Text style={{ color: index === i ? '#5669FF' : '#747688', fontWeight: 'bold', textTransform: 'uppercase' }}>
+          <Text style={{ color: index === i ? '#5669FF' : '#29253C', fontWeight: 'bold', textTransform: 'uppercase' }}>
             {route.title}
           </Text>
         </TouchableOpacity>
       ))}
     </View>
   );
-
-  const activities = organizer.activities.map((activity, i) => {
-    return <Card key={i} activity={activity} display="vertical" />
-  })
 
   return (
     <KeyboardAvoidingView
@@ -77,7 +83,7 @@ export default function OrganizerProfileScreen({ navigation, route: { params: { 
       <FontAwesome style={styles.iconReturnButton} name={'arrow-left'} color={'black'} size={20} onPress={() => navigation.goBack()} />
       <View style={styles.img}>
         {organizer.imgUrl && <Image source={{ uri: organizer.imgUrl }} style={{ width: 150, height: 150, borderRadius: 100 }} />}
-        {organizer.imgUrl==="" && <Text style={styles.initiale}>{organizer.name.slice(0, 1)}</Text>}
+        {organizer.imgUrl === "" && <Text style={styles.initiale}>{organizer.name.slice(0, 1)}</Text>}
       </View>
 
       <Text style={styles.title}>{organizer.name}</Text>
@@ -112,6 +118,11 @@ const styles = StyleSheet.create({
   iconReturnButton: {
     marginTop: 80,
     marginLeft: 20,
+  },
+  flatlist: {
+    width: '100%',
+    padding: 8,
+    gap: 8,
   },
   img: {
     width: 150,
