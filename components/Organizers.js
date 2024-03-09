@@ -10,7 +10,8 @@ export default function Organizers(organizer) {
                 style={styles.button}
                 activeOpacity={0.8}
             >
-                <Image style={styles.organizerImgProfile} source={require('../assets/Images/presque-pieds-nus.jpeg')}/>
+                 {organizer.imgUrl && <Image source={{ uri: organizer.imgUrl }} style={styles.organizerImgProfile} />}
+                 {organizer.imgUrl==="" && <Text style={styles.initiale}>{organizer.name.slice(0, 1)}</Text>}
             </TouchableOpacity>
             <Text style={styles.textButton}>{organizer.name}</Text>
         </View>
@@ -38,12 +39,16 @@ const styles = StyleSheet.create({
         margin: 10,
         width: 100,
         height: 100,
-        borderWidth: 1,
-        borderColor: '#A1A1AA',
         borderRadius: 100,
         justifyContent: 'center',
         alignItems: 'center',
+        backgroundColor: '#fcdac7',
     },
+    initiale: {
+        fontSize: 68,
+        fontWeight: 'bold',
+        color: '#F59762',
+      },
     organizerImgProfile : {
         height: 100,
         width: 100,

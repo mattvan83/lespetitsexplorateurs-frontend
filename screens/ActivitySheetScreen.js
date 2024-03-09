@@ -14,7 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 const BACKEND_ADDRESS = "http://192.168.1.22:3000";
 
-export default function ActivitySheetScreen({ navigation, route: { params: { activity } }}) {
+export default function ActivitySheetScreen({ navigation, route: { params: { activity } } }) {
 
   const handleShare = async () => {
     console.log('share');
@@ -132,7 +132,10 @@ export default function ActivitySheetScreen({ navigation, route: { params: { act
         </View>
 
         <View style={styles.orgaDiv}>
-          <Image style={styles.photoOrg} source={{ uri: activity.organizerImgUrl }} />
+          <View style={styles.img}>
+            {activity.organizerImgUrl && <Image style={styles.photoOrg} source={{ uri: activity.organizerImgUrl }} />}
+            {activity.organizerImgUrl === "" && <Text style={styles.initiale}>{activity.organizer.slice(0, 1)}</Text>}
+          </View>
           <View marginLeft={20}>
             <Text style={styles.bold}>{activity.organizer}</Text>
             <Text style={styles.small}>Organisateur</Text>
@@ -220,12 +223,6 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     marginLeft: 25,
   },
-  photoOrg: {
-    width: 48,
-    height: 48,
-    borderRadius: 100,
-    marginLeft: 25,
-  },
   div: {
     display: 'flex',
     height: 55,
@@ -303,5 +300,26 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
     textTransform: 'uppercase',
+  },
+  photoOrg: {
+    width: 48,
+    height: 48,
+    borderRadius: 100,
+  },
+  img: {
+    width: 48,
+    height: 48,
+    borderRadius: 100,
+    marginLeft: 25,
+    alignSelf: "center",
+    backgroundColor: '#EEF0FF',
+    borderRadius: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  initiale: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: '#BBC3FF',
   },
 });

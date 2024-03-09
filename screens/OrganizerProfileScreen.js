@@ -7,11 +7,13 @@ import {
   ScrollView,
   Platform,
   Image,
-  useWindowDimensions
+  useWindowDimensions,
+  FlatList
 } from "react-native";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import { useState } from 'react';
+import Card from "../components/Card";
 
 
 export default function OrganizerProfileScreen({ navigation, route: { params: { organizer } } }) {
@@ -25,7 +27,9 @@ export default function OrganizerProfileScreen({ navigation, route: { params: { 
   );
 
   const SecondRoute = () => (
-    <View style={{ flex: 1 }} />
+    <View style={{ flex: 1}} >
+        {activities}
+    </View>
   );
 
   const renderScene = SceneMap({
@@ -46,19 +50,23 @@ export default function OrganizerProfileScreen({ navigation, route: { params: { 
           key={i}
           style={[
             styles.tabButton,
-            { backgroundColor : '#fff'},
-            { borderBottomColor :  index === i ? '#EEF0FF' : '#fff' },
+            { backgroundColor: '#fff' },
+            { borderBottomColor: index === i ? '#EEF0FF' : '#fff' },
             { borderBottomWidth: 4 },
           ]}
           onPress={() => setIndex(i)}
         >
-          <Text style={{ color: index === i ? '#5669FF' : '#747688' , fontWeight: 'bold', textTransform: 'uppercase'}}>
+          <Text style={{ color: index === i ? '#5669FF' : '#747688', fontWeight: 'bold', textTransform: 'uppercase' }}>
             {route.title}
           </Text>
         </TouchableOpacity>
       ))}
     </View>
   );
+
+  const activities = organizer.activities.map((activity, i) => {
+    return <Card key={i} activity={activity} display="vertical" />
+  })
 
   return (
     <KeyboardAvoidingView
@@ -69,7 +77,7 @@ export default function OrganizerProfileScreen({ navigation, route: { params: { 
       <FontAwesome style={styles.iconReturnButton} name={'arrow-left'} color={'black'} size={20} onPress={() => navigation.goBack()} />
       <View style={styles.img}>
         {organizer.imgUrl && <Image source={{ uri: organizer.imgUrl }} style={{ width: 150, height: 150, borderRadius: 100 }} />}
-        {!organizer.imgUrl && <Text style={styles.initiale}>{organizer.name.slice(0, 1)}</Text>}
+        {organizer.imgUrl==="" && <Text style={styles.initiale}>{organizer.name.slice(0, 1)}</Text>}
       </View>
 
       <Text style={styles.title}>{organizer.name}</Text>
@@ -81,15 +89,15 @@ export default function OrganizerProfileScreen({ navigation, route: { params: { 
         onIndexChange={setIndex}
         initialLayout={{ width: layout.width }}
         renderTabBar={renderTabBar}
-        // renderTabBar={(props) => (
-        //   <TabBar
-        //     {...props}
-        //     style={{ backgroundColor: '#fff' }}
-        //     labelStyle={{ color: '#29253C', fontWeight: 'bold' }}
-        //     activeLabelStyle={{ color: '#5669FF' }}
-        //     activeTabStyle={{ borderBottomColor: '#5669FF' }}
-        //   />
-        // )}
+      // renderTabBar={(props) => (
+      //   <TabBar
+      //     {...props}
+      //     style={{ backgroundColor: '#fff' }}
+      //     labelStyle={{ color: '#29253C', fontWeight: 'bold' }}
+      //     activeLabelStyle={{ color: '#5669FF' }}
+      //     activeTabStyle={{ borderBottomColor: '#5669FF' }}
+      //   />
+      // )}
       />
 
     </KeyboardAvoidingView>

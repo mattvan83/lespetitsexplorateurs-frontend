@@ -26,7 +26,7 @@ import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 import { Ionicons } from '@expo/vector-icons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-const BACKEND_ADDRESS = "http://192.168.1.22:3000";
+const BACKEND_ADDRESS = "http://192.168.1.23:3000";
 
 export default function ListResultsScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
@@ -164,7 +164,7 @@ export default function ListResultsScreen({ navigation }) {
   };
 
   const activitiesList = user.activities.map((activity, i) => {
-    return (<Card key={i} activity={activity} />);
+    return (<Card key={i} activity={activity} display="vertical" />);
   });
 
   // const activities = user.activities.map((activity, i) => {
