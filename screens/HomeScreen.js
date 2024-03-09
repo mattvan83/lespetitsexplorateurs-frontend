@@ -10,7 +10,7 @@ import {
   Dimensions,
   TextInput,
 } from "react-native";
-import Card from "../components/Card";
+import CardBig from "../components/CardBig";
 import globalStyles from "../globalStyles";
 import { useEffect, useState } from "react";
 import * as Location from "expo-location";
@@ -283,7 +283,7 @@ export default function HomeScreen({ navigation }) {
   });
 
   const activitiesList = activities.map((activity, i) => {
-    return <Card key={i} activity={activity} display="horizontal" />;
+    return <CardBig key={i} activity={activity} display="horizontal" />;
   });
 
   return (
