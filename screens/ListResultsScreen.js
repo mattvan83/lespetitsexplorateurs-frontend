@@ -33,7 +33,7 @@ export default function ListResultsScreen({ navigation }) {
   const userFilters = useSelector((state) => state.user.value.filters);
   const [suggestionsList, setSuggestionsList] = useState([]);
 
-  console.log("user.filters: ", userFilters);
+  // console.log("user.filters: ", userFilters);
 
   const dispatch = useDispatch();
 
@@ -164,7 +164,7 @@ export default function ListResultsScreen({ navigation }) {
   };
 
   const activitiesList = user.activities.map((activity, i) => {
-    return (<Card key={i} activity={activity} />);
+    return <Card key={i} activity={activity} />;
   });
 
   // const activities = user.activities.map((activity, i) => {

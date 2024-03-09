@@ -35,7 +35,16 @@ export default function MapResultsScreen({ navigation }) {
   const [suggestionsList, setSuggestionsList] = useState([]);
   const mapViewRef = useRef(null);
 
-  console.log("user.filters: ", userFilters);
+  const initialMarkerColor = "rgba(255, 255, 255, 0.65)";
+  const pressedMarkerColor = "rgba(0, 255, 0, 0.75)";
+
+  const [markerColors, setMarkerColors] = useState(
+    user.activities.map(() => initialMarkerColor)
+  );
+  const [pressedMarkerIndex, setPressedMarkerIndex] = useState(null);
+
+  // console.log("user.filters: ", userFilters);
+  // console.log("markerColors: ", markerColors);
 
   const dispatch = useDispatch();
 
@@ -192,6 +201,29 @@ export default function MapResultsScreen({ navigation }) {
     }
   };
 
+  const handleMarkerPress = (index) => {
+    // console.log("Change background marker color");
+    const newColors = [...markerColors];
+
+    // Reset the color of the previously pressed marker
+    if (pressedMarkerIndex !== null) {
+      newColors[pressedMarkerIndex] = initialMarkerColor;
+    }
+
+    // Set the color of the currently pressed marker
+    newColors[index] = pressedMarkerColor;
+
+    setMarkerColors(newColors);
+    setPressedMarkerIndex(index);
+  };
+
+  const handleMapPress = () => {
+    // Reset all markers to the initial color
+    setMarkerColors(user.activities.map(() => initialMarkerColor));
+    // Reset pressedMarkerIndex
+    setPressedMarkerIndex(null);
+  };
+
   const activityMarkers = user.activities.map((activity, i) => {
     const inputDate = new Date(activity.date);
 
@@ -231,22 +263,31 @@ export default function MapResultsScreen({ navigation }) {
       default:
         console.log(`${activity.category} not found`);
     }
-    // console.log(`${icon} found`);
+
+    // console.log(`markerColors[${i}]: `, markerColors[i]);
 
     return (
       <Marker
-        style={styles.marker}
-        key={activity.id}
+        key={i}
+        style={styles.customMarker}
+        id={activity.id}
         coordinate={{
           latitude: activity.latitude,
           longitude: activity.longitude,
         }}
         title={activity.name}
-        description={String(activity.distance)}
+        description={`${activity.distance} km`}
+        onPress={() => handleMarkerPress(i)}
       >
-        <View style={styles.customMarker}>
-          <Ionicons name={icon} size={28} />
-        </View>
+        <TouchableOpacity
+          style={[
+            styles.customMarkerIcon,
+            { backgroundColor: markerColors[i] },
+          ]}
+          activeOpacity={0.8}
+        >
+          <Ionicons name={icon} size={24} color={"#4A43EC"} />
+        </TouchableOpacity>
       </Marker>
     );
   });
@@ -318,6 +359,7 @@ export default function MapResultsScreen({ navigation }) {
             style={styles.map}
             initialRegion={initialRegion}
             showsUserLocation
+            onPress={handleMapPress}
           >
             <Marker
               coordinate={{
@@ -327,6 +369,7 @@ export default function MapResultsScreen({ navigation }) {
               title={userFilters.cityFilter}
               description="Super ville"
               pinColor="#fecb2d"
+              onPress={() => handleMapPress()} // Reset all marker colors when clicking on this marker
             />
             {activityMarkers}
           </MapView>
@@ -461,8 +504,15 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255, 255, 255, 0.65)",
   },
   customMarker: {
-    backgroundColor: "transparent",
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
+  },
+  customMarkerIcon: {
+    // backgroundColor: initialMarkerColor,
     alignItems: "center",
     justifyContent: "center",
+    borderRadius: 5,
+    padding: 4,
   },
 });
