@@ -9,11 +9,12 @@ import {
   Platform,
   ScrollView,
   Dimensions,
+  Button,
 } from "react-native";
 // import SearchBar from "../components/SearchBar";
 import Card from "../components/Card";
 import globalStyles from "../globalStyles";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import * as Location from "expo-location";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -32,10 +33,52 @@ export default function MapResultsScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
   const userFilters = useSelector((state) => state.user.value.filters);
   const [suggestionsList, setSuggestionsList] = useState([]);
+  const mapViewRef = useRef(null);
 
   console.log("user.filters: ", userFilters);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    // Get user filters
+    const {
+      categoryFilter,
+      dateFilter,
+      momentFilter,
+      ageFilter,
+      priceFilter,
+      scopeFilter,
+    } = user.filters;
+
+    fetch(`${BACKEND_ADDRESS}/activities/geoloc`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        token: user.token,
+        latitude: user.filters.latitudeFilter,
+        longitude: user.filters.longitudeFilter,
+        scope: scopeFilter,
+        filters: {
+          categoryFilter,
+          dateFilter,
+          momentFilter,
+          ageFilter,
+        },
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // console.log("data.result: ", data.result);
+        // console.log("data.error: ", data.error);
+        // console.log("data.activities: ", data.activities);
+        data.result &&
+          dispatch(importActivities(data.activities)) &&
+          dispatch(setErrorMsg(null));
+        !data.result &&
+          dispatch(importActivities([])) &&
+          dispatch(setErrorMsg(data.error));
+      });
+  }, [userFilters]);
 
   const searchCity = (query) => {
     // Prevent search with an empty query
@@ -122,45 +165,72 @@ export default function MapResultsScreen({ navigation }) {
     navigation.navigate("Filters");
   };
 
-  const activities = user.activities.map((activity, i) => {
-    const inputDate = new Date(activity.date);
+  // Coordinates of the center point
+  const centerLatitude = user.filters.latitudeFilter; // Example latitude
+  const centerLongitude = user.filters.longitudeFilter; // Example longitude
 
-    const options = {
-      weekday: "long", // full weekday name
-      day: "numeric", // day of the month
-      month: "long", // full month name
-      hour: "numeric",
-      minute: "numeric",
-    };
+  // Radius in kilometers
+  const radiusInKm = 55;
 
-    const formattedDate = inputDate
-      .toLocaleString("fr-FR", options)
-      .replace(":", "h")
-      .toUpperCase();
+  // Calculate bounding box coordinates
+  const oneDegreeOfLatitudeInKm = 111.32;
+  const latitudeDelta = radiusInKm / oneDegreeOfLatitudeInKm;
+  const longitudeDelta =
+    radiusInKm /
+    (oneDegreeOfLatitudeInKm * Math.cos(centerLatitude * (Math.PI / 180)));
 
-    // console.log(formattedDate);
+  const initialRegion = {
+    latitude: centerLatitude,
+    longitude: centerLongitude,
+    latitudeDelta,
+    longitudeDelta,
+  };
 
-    return (
-      <Card
-        key={i}
-        id={activity.id}
-        imagePath={
-          activity.imgUrl.includes(1)
-            ? "localImage1"
-            : activity.imgUrl.includes(2)
-            ? "localImage2"
-            : "localImage3"
-        }
-        activityDate={formattedDate}
-        activityName={activity.name}
-        activityLocation={`${activity.postalCode}, ${activity.city}`}
-        isFavorite={activity.isLiked}
-        activityDistance={
-          user.latitude && user.longitude ? activity.distance : null
-        }
-      />
-    );
-  });
+  const reFocusMap = () => {
+    if (mapViewRef.current) {
+      mapViewRef.current.animateToRegion(initialRegion, 1000); // Adjust the duration as needed
+    }
+  };
+
+  // const activities = user.activities.map((activity, i) => {
+  //   const inputDate = new Date(activity.date);
+
+  //   const options = {
+  //     weekday: "long", // full weekday name
+  //     day: "numeric", // day of the month
+  //     month: "long", // full month name
+  //     hour: "numeric",
+  //     minute: "numeric",
+  //   };
+
+  //   const formattedDate = inputDate
+  //     .toLocaleString("fr-FR", options)
+  //     .replace(":", "h")
+  //     .toUpperCase();
+
+  //   // console.log(formattedDate);
+
+  //   return (
+  //     <Card
+  //       key={i}
+  //       id={activity.id}
+  //       imagePath={
+  //         activity.imgUrl.includes(1)
+  //           ? "localImage1"
+  //           : activity.imgUrl.includes(2)
+  //           ? "localImage2"
+  //           : "localImage3"
+  //       }
+  //       activityDate={formattedDate}
+  //       activityName={activity.name}
+  //       activityLocation={`${activity.postalCode}, ${activity.city}`}
+  //       isFavorite={activity.isLiked}
+  //       activityDistance={
+  //         user.latitude && user.longitude ? activity.distance : null
+  //       }
+  //     />
+  //   );
+  // });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -225,14 +295,28 @@ export default function MapResultsScreen({ navigation }) {
 
         <View style={styles.body}>
           <MapView
+            ref={mapViewRef}
             style={styles.map}
-            region={{
-              latitude: user.filters.latitudeFilter,
-              longitude: user.filters.longitudeFilter,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
-            }}
-          ></MapView>
+            initialRegion={initialRegion}
+            showsUserLocation
+          >
+            <Marker
+              coordinate={{
+                latitude: centerLatitude,
+                longitude: centerLongitude,
+              }}
+              title={userFilters.cityFilter}
+              description="Super ville"
+              pinColor="#fecb2d"
+            />
+          </MapView>
+          <TouchableOpacity
+            onPress={reFocusMap}
+            style={styles.refocusContainer}
+            activeOpacity={0.8}
+          >
+            <Ionicons name="location-outline" size={24} color="#fecb2d" />
+          </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -286,17 +370,11 @@ const styles = StyleSheet.create({
   map: {
     flex: 1,
   },
-  listActivities: {
-    height: "100%",
-  },
   errorMsg: {
     marginTop: 24,
     marginLeft: 20,
     color: "red",
     fontWeight: "bold",
-  },
-  scrollView: {
-    paddingBottom: 70,
   },
   card: {
     marginRight: 100,
@@ -355,21 +433,11 @@ const styles = StyleSheet.create({
     width: "100%",
     bottom: 25,
   },
-  mapButton: {
-    paddingHorizontal: 24,
-    paddingVertical: 10,
-    // height: 58,
-    backgroundColor: "#5669FF",
-    borderRadius: 15,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "32%",
-  },
-  textMapButton: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#fff",
-    // textTransform: "uppercase",
+  refocusContainer: {
+    position: "absolute",
+    top: 64,
+    right: 13,
+    padding: 6,
+    backgroundColor: "rgba(255, 255, 255, 0.65)",
   },
 });
