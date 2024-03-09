@@ -287,15 +287,19 @@ export default function HomeScreen({ navigation }) {
   });
 
   return (
-    <SafeAreaView style={styles.container}>
+    // <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.container}
       >
+        
         <View style={styles.searchContainer}>
+
+        <Text style={styles.localisation}>Localisation</Text>
+        <Text style={styles.localisationBold}>{user.filters.scopeFilter}km autour de {user.filters.cityFilter}</Text>
           <View style={styles.search}>
             <View style={styles.searchBar}>
-              <Ionicons name="location-outline" size={24} color="#D0CFD4" />
+              <Ionicons name="location-outline" size={24} color="#7887FF" />
               <AutocompleteDropdown
                 onChangeText={(value) => searchCity(value)}
                 onSelectItem={(item) =>
@@ -317,7 +321,7 @@ export default function HomeScreen({ navigation }) {
                 textInputProps={{
                   placeholder: "Rechercher un lieu...",
                   style: {
-                    color: "#120D26",
+                    color: "#5669FF",
                     paddingLeft: 20,
                   },
                 }}
@@ -370,7 +374,7 @@ export default function HomeScreen({ navigation }) {
           </View>
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    // </SafeAreaView>
   );
 }
 
@@ -378,8 +382,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
-    alignItems: "center",
     width: "100%",
+  },
+  localisation: {
+    marginTop: 50,
+    color: 'white',
+  },
+  localisationBold: {
+    marginTop: 4,
+    marginBottom: 24,
+    color: 'white',
+    fontWeight: 'bold',
   },
   organizers: {
     marginLeft: 10,
@@ -411,7 +424,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   listActivities: {
-    height: "100%",
+    // height: "100%",
   },
   errorMsg: {
     marginTop: 24,
@@ -420,21 +433,19 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   scrollView: {
-    justifyContent: "center",
     paddingHorizontal: 10,
-  },
-  card: {
-    marginRight: 100,
   },
   searchContainer: {
     // marginTop: 50,
     flex: 0.2,
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "center",
-    alignItems: "flex-end",
+    alignItems: "center",
     backgroundColor: "#4A43EC",
     width: "100%",
     paddingBottom: 20,
+    borderBottomRightRadius : 33,
+    borderBottomLeftRadius : 33,
   },
   search: {
     flexDirection: "row",
@@ -449,8 +460,9 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 5,
     borderRadius: 12,
-    borderColor: "#E4dfdf",
-    borderWidth: 1,
+    // borderColor: "#E4dfdf",
+    // borderWidth: 1,
+    backgroundColor: 'white',
   },
   input: {
     width: "90%",

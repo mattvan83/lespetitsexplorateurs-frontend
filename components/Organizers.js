@@ -23,17 +23,17 @@ const styles = StyleSheet.create({
     container: {
         marginTop: 20,
         width: 120,
-        height: 110,
         alignItems: 'center',
         marginBottom: 10,
     },
     textButton: {
-        fontSize: 14,
+        fontSize: 12,
         color: '#120D26',
         width: '85%',
         marginTop: 8,
         flexWrap: 'wrap',
-        textAlign: 'center'
+        textAlign: 'center',
+        lineHeight: 20,
     },
     button: {
         margin: 10,

@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 
 
-export default function Card({ activity, display} ) {
+export default function Card({ activity} ) {
   const navigation = useNavigation();
   const user = useSelector((state) => state.user.value);
   //A SUPPRIMER PLUS TARD
@@ -25,7 +25,7 @@ export default function Card({ activity, display} ) {
 
   return (
     <View style={styles.cardContainer}>
-      <TouchableOpacity activeOpacity={0.8} style={ display === "vertical" ? styles.cardV : styles.cardH} onPress={() => navigation.navigate('ActivitySheet', {activity})}>
+      <TouchableOpacity activeOpacity={0.8} style={styles.card} onPress={() => navigation.navigate('ActivitySheet', {activity})}>
         <Image style={styles.img} source={{ uri: activity.imgUrl }} />
         <View style={styles.details}>
           <View style={styles.dateFavoriteContainer}>
@@ -58,23 +58,7 @@ const styles = StyleSheet.create({
   cardContainer: {
     alignItems: "center",
   },
-  cardH: {
-    justifyContent: "space-evenly",
-    alignItems: "center",
-    flexDirection: "row",
-    borderRadius: 16,
-    margin: 8,
-    width: 325,
-    height: 112,
-    backgroundColor: "white",
-    //Ombre portée
-    shadowColor: "#535990",
-    shadowOffset: { width: 0, height: 8 },
-    shadowRadius: 25,
-    shadowOpacity: 0.07,
-    elevation: 5, // Pour Android
-  },
-  cardV: {
+  card: {
     justifyContent: "space-evenly",
     alignItems: "center",
     flexDirection: "row",

@@ -279,6 +279,7 @@ const styles = StyleSheet.create({
     marginLeft: 25,
     marginRight: 25,
     fontSize: 15,
+    lineHeight: 20,
   },
   buttonContainer: {
     flex: 1,

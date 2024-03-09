@@ -30,7 +30,7 @@ export default function OrganizerProfileScreen({ navigation, route: { params: { 
         data={organizer.activities}
         renderItem={({ item, index }) => (
           <View style={{ marginBottom: index === organizer.activities.length - 1 ? 50 : 0 }}> 
-            <Card key={item._id} activity={item} display="vertical" />
+            <Card key={item._id} activity={item} />
           </View>
         )} 
         keyExtractor={item => item._id}
