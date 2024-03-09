@@ -192,45 +192,64 @@ export default function MapResultsScreen({ navigation }) {
     }
   };
 
-  // const activities = user.activities.map((activity, i) => {
-  //   const inputDate = new Date(activity.date);
+  const activityMarkers = user.activities.map((activity, i) => {
+    const inputDate = new Date(activity.date);
 
-  //   const options = {
-  //     weekday: "long", // full weekday name
-  //     day: "numeric", // day of the month
-  //     month: "long", // full month name
-  //     hour: "numeric",
-  //     minute: "numeric",
-  //   };
+    const options = {
+      weekday: "long", // full weekday name
+      day: "numeric", // day of the month
+      month: "long", // full month name
+      hour: "numeric",
+      minute: "numeric",
+    };
 
-  //   const formattedDate = inputDate
-  //     .toLocaleString("fr-FR", options)
-  //     .replace(":", "h")
-  //     .toUpperCase();
+    const formattedDate = inputDate
+      .toLocaleString("fr-FR", options)
+      .replace(":", "h")
+      .toUpperCase();
 
-  //   // console.log(formattedDate);
+    // console.log(formattedDate);
 
-  //   return (
-  //     <Card
-  //       key={i}
-  //       id={activity.id}
-  //       imagePath={
-  //         activity.imgUrl.includes(1)
-  //           ? "localImage1"
-  //           : activity.imgUrl.includes(2)
-  //           ? "localImage2"
-  //           : "localImage3"
-  //       }
-  //       activityDate={formattedDate}
-  //       activityName={activity.name}
-  //       activityLocation={`${activity.postalCode}, ${activity.city}`}
-  //       isFavorite={activity.isLiked}
-  //       activityDistance={
-  //         user.latitude && user.longitude ? activity.distance : null
-  //       }
-  //     />
-  //   );
-  // });
+    let icon = null;
+
+    switch (activity.category) {
+      case "Sport":
+        icon = "tennisball";
+        break;
+      case "Musique":
+        icon = "musical-notes";
+        break;
+      case "Créativité":
+        icon = "color-palette";
+        break;
+      case "Motricité":
+        icon = "balloon";
+        break;
+      case "Éveil":
+        icon = "sparkles";
+        break;
+      default:
+        console.log(`${activity.category} not found`);
+    }
+    // console.log(`${icon} found`);
+
+    return (
+      <Marker
+        style={styles.marker}
+        key={activity.id}
+        coordinate={{
+          latitude: activity.latitude,
+          longitude: activity.longitude,
+        }}
+        title={activity.name}
+        description={String(activity.distance)}
+      >
+        <View style={styles.customMarker}>
+          <Ionicons name={icon} size={28} />
+        </View>
+      </Marker>
+    );
+  });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -309,6 +328,7 @@ export default function MapResultsScreen({ navigation }) {
               description="Super ville"
               pinColor="#fecb2d"
             />
+            {activityMarkers}
           </MapView>
           <TouchableOpacity
             onPress={reFocusMap}
@@ -439,5 +459,10 @@ const styles = StyleSheet.create({
     right: 13,
     padding: 6,
     backgroundColor: "rgba(255, 255, 255, 0.65)",
+  },
+  customMarker: {
+    backgroundColor: "transparent",
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
