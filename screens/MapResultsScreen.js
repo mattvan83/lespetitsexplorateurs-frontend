@@ -226,6 +226,8 @@ export default function MapResultsScreen({ navigation }) {
     setMarkerColors(user.activities.map(() => initialMarkerColor));
     // Reset pressedMarkerIndex
     setPressedMarkerIndex(null);
+    // Refocus map to center Location
+    reFocusMap();
   };
 
   const activityMarkers = user.activities.map((activity, i) => {
