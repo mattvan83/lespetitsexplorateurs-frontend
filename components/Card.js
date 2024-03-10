@@ -42,11 +42,11 @@ export default function Card({ activity} ) {
           <Text style={styles.activityName}>{activity.name}</Text>
           <View style={styles.locationContainer}>
             <Text style={styles.activityLocation}>{`${activity.postalCode}, ${activity.city}`}</Text>
-            {/* {activityDistance ? (
+            {activity.distance ? (
               <Text style={styles.activityLocation}>{user.latitude && user.longitude ? activity.distance : null} KM</Text>
             ) : (
               <></>
-            )} */}
+            )}
           </View>
         </View>
       </TouchableOpacity>
