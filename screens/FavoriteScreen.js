@@ -13,7 +13,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { loadFavoriteActivities } from "../reducers/user";
 import CardEditDelete from "../components/CardEditDelete";
 
-const BACKEND_ADDRESS = "http://192.168.1.20:3000";
+// const BACKEND_ADDRESS = "http://192.168.1.20:3000";
+const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
 export default function FavoriteScreen({ navigation }) {
   const dispatch = useDispatch();

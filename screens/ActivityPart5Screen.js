@@ -16,7 +16,8 @@ export default function ProfileScreen({ navigation }) {
   // const dispatch = useDispatch();
   // const user = useSelector((state) => state.user.value);
 
-  const BACKEND_ADDRESS = "http://192.168.1.20:3000";
+  // const BACKEND_ADDRESS = "http://192.168.1.20:3000";
+  const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
   const handleChoosePhoto = async () => {
     (async () => {

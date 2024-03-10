@@ -21,7 +21,8 @@ const EMAIL_REGEX =
 // const { BACKEND_ADDRESS } = process.env;
 // console.log(BACKEND_ADDRESS);
 
-const BACKEND_ADDRESS = "http://192.168.1.20:3000";
+// const BACKEND_ADDRESS = "http://192.168.1.20:3000";
+const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
 export default function SigninScreen({ navigation }) {
   const dispatch = useDispatch();

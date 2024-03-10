@@ -22,7 +22,8 @@ import InputLocalisation from "../components/InputLocalisation";
 import FilterTextCategory from "../components/FilterTextCategory";
 import { handleFilterButtonClick } from "../modules/handleFilterButtonClick";
 
-const BACKEND_ADDRESS = "http://192.168.1.20:3000";
+// const BACKEND_ADDRESS = "http://192.168.1.20:3000";
+const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();

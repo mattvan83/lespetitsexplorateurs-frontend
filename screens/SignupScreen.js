@@ -21,10 +21,8 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 const EMAIL_REGEX =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
-// const { BACKEND_ADDRESS } = process.env;
-// console.log(process.env.BACKEND_ADDRESS);
-
-const BACKEND_ADDRESS = "http://192.168.1.20:3000";
+// const BACKEND_ADDRESS = "http://192.168.1.20:3000";
+const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
 export default function SignupScreen({ navigation }) {
   const dispatch = useDispatch();

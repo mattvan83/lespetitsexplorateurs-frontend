@@ -28,7 +28,8 @@ import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker } from "react-native-maps";
 
-const BACKEND_ADDRESS = "http://192.168.1.20:3000";
+// const BACKEND_ADDRESS = "http://192.168.1.20:3000";
+const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
 export default function MapResultsScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
