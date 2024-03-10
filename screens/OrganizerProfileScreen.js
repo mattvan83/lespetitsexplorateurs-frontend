@@ -15,7 +15,9 @@ import { useState } from 'react';
 import Card from "../components/Card";
 
 
-export default function OrganizerProfileScreen({ navigation, route: { params: { organizer } } }) {
+export default function OrganizerProfileScreen({ navigation, route }) {
+  const { organizer } = route.params;
+
   const layout = useWindowDimensions();
 
   const FirstRoute = () => (
@@ -79,9 +81,10 @@ export default function OrganizerProfileScreen({ navigation, route: { params: { 
     >
       <FontAwesome style={styles.iconReturnButton} name={'arrow-left'} color={'black'} size={20} onPress={() => navigation.goBack()} />
       <View style={styles.img}>
-        {organizer.imgUrl && <Image source={{ uri: organizer.imgUrl }} style={{ width: 150, height: 150, borderRadius: 100 }} />}
-        {organizer.imgUrl === "" && <Text style={styles.initiale}>{organizer.name.slice(0, 1)}</Text>}
+        {organizer.image && <Image source={{ uri: organizer.image }} style={{ width: 150, height: 150, borderRadius: 100 }} />}
+        {organizer.image === "" && <Text style={styles.initiale}>{organizer.name.slice(0, 1)}</Text>}
       </View>
+      
 
       <Text style={styles.title}>{organizer.name}</Text>
       <Text style={styles.subtitle}>{organizer.title}</Text>

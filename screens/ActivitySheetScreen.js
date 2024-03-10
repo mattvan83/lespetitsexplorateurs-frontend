@@ -12,7 +12,7 @@ import {
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { Ionicons } from '@expo/vector-icons';
 
-const BACKEND_ADDRESS = "http://192.168.1.22:3000";
+const BACKEND_ADDRESS = "http://192.168.1.23:3000";
 
 export default function ActivitySheetScreen({ navigation, route: { params: { activity } } }) {
 
@@ -90,6 +90,14 @@ export default function ActivitySheetScreen({ navigation, route: { params: { act
   // Formater la durée
   const formattedDuration = `${durationHours}h${durationMinutes}`;
 
+  const handleClickOnOrganizer = () => {
+    fetch(`${BACKEND_ADDRESS}/organizers/${activity.organizerId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        data.result && navigation.navigate('OrganizerProfile', { organizer: data.organizer })
+      });
+  }
+
   return (
     <View style={styles.container}>
       {/* <ImageBackground resizeMode="cover" style={styles.image} source={require('../assets/Images/bebe-nageurs.jpg')}> */}
@@ -131,15 +139,23 @@ export default function ActivitySheetScreen({ navigation, route: { params: { act
           </View>
         </View>
 
-        <View style={styles.orgaDiv}>
-          <View style={styles.img}>
-            {activity.organizerImgUrl && <Image style={styles.photoOrg} source={{ uri: activity.organizerImgUrl }} />}
-            {activity.organizerImgUrl === "" && <Text style={styles.initiale}>{activity.organizer.slice(0, 1)}</Text>}
-          </View>
-          <View marginLeft={20}>
-            <Text style={styles.bold}>{activity.organizer}</Text>
-            <Text style={styles.small}>Organisateur</Text>
-          </View>
+
+        <View>
+          <TouchableOpacity
+            onPress={() => handleClickOnOrganizer()}
+            activeOpacity={0.8}
+            style={styles.orgaDiv}
+          >
+            <View style={styles.img}>
+              {activity.organizerImgUrl && <Image style={styles.photoOrg} source={{ uri: activity.organizerImgUrl }} />}
+              {activity.organizerImgUrl === "" && <Text style={styles.initiale}>{activity.organizer.slice(0, 1)}</Text>}
+            </View>
+            <View marginLeft={20}>
+              <Text style={styles.bold}>{activity.organizer}</Text>
+              <Text style={styles.small}>Organisateur</Text>
+            </View>
+          </TouchableOpacity>
+
           {/* <View style={styles.followWrite}>
             <TouchableOpacity onPress={() => handleFollow()} style={styles.btn}>
               <Text style={styles.btnOrganizer}>Suivre</Text>
@@ -165,7 +181,7 @@ export default function ActivitySheetScreen({ navigation, route: { params: { act
           <Text style={styles.textButton}>AJOUTER À L'AGENDA</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </View >
   );
 }
 
