@@ -252,7 +252,10 @@ export default function HomeScreen({ navigation }) {
       }, delay);
 
       // Cleanup the timeout when the component unmounts or when the position is obtained
-      return () => clearTimeout(timeoutId);
+      return () => {
+        clearTimeout(timeoutId);
+        console.log("Unmount HomeScreen");
+      };
     })();
   }, []);
 

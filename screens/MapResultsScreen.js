@@ -50,6 +50,13 @@ export default function MapResultsScreen({ navigation }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    // Execute when the component unmounts
+    return () => {
+      console.log("Unmount MapResultsScreen");
+    };
+  }, []);
+
+  useEffect(() => {
     // Get user filters
     const {
       categoryFilter,
@@ -88,6 +95,11 @@ export default function MapResultsScreen({ navigation }) {
           dispatch(importActivities([])) &&
           dispatch(setErrorMsg(data.error));
       });
+
+    // // Execute when the component unmounts
+    // return () => {
+    //   console.log("Unmount MapResultsScreen");
+    // };
   }, [userFilters]);
 
   const searchCity = (query) => {

@@ -15,7 +15,7 @@ import {
   resetPreferences,
   setPreferencesFilters,
 } from "../reducers/user";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { logout } from "../reducers/user";
 import Slider from "@react-native-community/slider";
 import InputLocalisation from "../components/InputLocalisation";
@@ -40,6 +40,13 @@ export default function ProfileScreen({ navigation }) {
   const [selectedLatitude, setSelectedLatitude] = useState(
     user.preferences.longitudePreference
   );
+
+  useEffect(() => {
+    // Execute when the component unmounts
+    return () => {
+      console.log("Unmount ProfileScreen");
+    };
+  }, []);
 
   const handleLogOut = () => {
     dispatch(resetPreferences());
