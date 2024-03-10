@@ -27,14 +27,12 @@ export default function FiltersScreen({ navigation }) {
   const [selectedAges, setSelectedAges] = useState(
     user.preferences.agePreference
   );
-  const [selectedCity, setSelectedCity] = useState(
-    user.preferences.cityPreference
-  );
+  const [selectedCity, setSelectedCity] = useState(user.filters.cityFilter);
   const [selectedLongitude, setSelectedLongitude] = useState(
-    user.preferences.latitudePreference
+    user.filters.longitudeFilter
   );
   const [selectedLatitude, setSelectedLatitude] = useState(
-    user.preferences.longitudePreference
+    user.filters.latitudeFilter
   );
 
   const categories = ["Sport", "Musique", "Créativité", "Motricité", "Éveil"];

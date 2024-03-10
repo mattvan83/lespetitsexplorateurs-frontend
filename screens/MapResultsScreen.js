@@ -4,6 +4,7 @@ import {
   TextInput,
   View,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   SafeAreaView,
   KeyboardAvoidingView,
   Platform,
@@ -158,10 +159,13 @@ export default function MapResultsScreen({ navigation }) {
           // console.log("data.activities: ", data.activities);
           data.result &&
             dispatch(importActivities(data.activities)) &&
-            dispatch(setErrorMsg(null));
+            dispatch(setErrorMsg(null)) &&
+            setMarkerColors(data.activities.map(() => initialMarkerColor));
           !data.result &&
             dispatch(importActivities([])) &&
-            dispatch(setErrorMsg(data.error));
+            dispatch(setErrorMsg(data.error)) &&
+            setMarkerColors([]);
+          setPressedMarkerIndex(null);
         });
     }
   };
@@ -179,7 +183,7 @@ export default function MapResultsScreen({ navigation }) {
   const centerLongitude = user.filters.longitudeFilter; // Example longitude
 
   // Radius in kilometers
-  const radiusInKm = 55;
+  const radiusInKm = user.filters.scopeFilter + 20;
 
   // Calculate bounding box coordinates
   const oneDegreeOfLatitudeInKm = 111.32;
@@ -188,7 +192,7 @@ export default function MapResultsScreen({ navigation }) {
     radiusInKm /
     (oneDegreeOfLatitudeInKm * Math.cos(centerLatitude * (Math.PI / 180)));
 
-  const initialRegion = {
+  const region = {
     latitude: centerLatitude,
     longitude: centerLongitude,
     latitudeDelta,
@@ -197,11 +201,11 @@ export default function MapResultsScreen({ navigation }) {
 
   const reFocusMap = () => {
     if (mapViewRef.current) {
-      mapViewRef.current.animateToRegion(initialRegion, 1000); // Adjust the duration as needed
+      mapViewRef.current.animateToRegion(region, 1000); // Adjust the duration as needed
     }
   };
 
-  const handleMarkerPress = (index) => {
+  const handleMarkerPress = (activity, index) => {
     // console.log("Change background marker color");
     const newColors = [...markerColors];
 
@@ -225,23 +229,6 @@ export default function MapResultsScreen({ navigation }) {
   };
 
   const activityMarkers = user.activities.map((activity, i) => {
-    const inputDate = new Date(activity.date);
-
-    const options = {
-      weekday: "long", // full weekday name
-      day: "numeric", // day of the month
-      month: "long", // full month name
-      hour: "numeric",
-      minute: "numeric",
-    };
-
-    const formattedDate = inputDate
-      .toLocaleString("fr-FR", options)
-      .replace(":", "h")
-      .toUpperCase();
-
-    // console.log(formattedDate);
-
     let icon = null;
 
     switch (activity.category) {
@@ -277,7 +264,7 @@ export default function MapResultsScreen({ navigation }) {
         }}
         title={activity.name}
         description={`${activity.distance} km`}
-        onPress={() => handleMarkerPress(i)}
+        onPress={() => handleMarkerPress(activity, i)}
       >
         <TouchableOpacity
           style={[
@@ -301,7 +288,7 @@ export default function MapResultsScreen({ navigation }) {
         <View style={styles.header}>
           <View style={styles.topHeader}>
             <TouchableOpacity
-              onPress={() => navigation.navigate("ListResults")}
+              onPress={() => navigation.goBack()}
               style={styles.goBackButton}
               activeOpacity={0.8}
             >
@@ -357,7 +344,7 @@ export default function MapResultsScreen({ navigation }) {
           <MapView
             ref={mapViewRef}
             style={styles.map}
-            initialRegion={initialRegion}
+            region={region}
             showsUserLocation
             onPress={handleMapPress}
           >
@@ -380,6 +367,11 @@ export default function MapResultsScreen({ navigation }) {
           >
             <Ionicons name="location-outline" size={24} color="#fecb2d" />
           </TouchableOpacity>
+          {pressedMarkerIndex !== null && (
+            <View style={styles.popupCardContainer}>
+              <Card activity={user.activities[pressedMarkerIndex]} />
+            </View>
+          )}
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -438,9 +430,6 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     color: "red",
     fontWeight: "bold",
-  },
-  card: {
-    marginRight: 100,
   },
   searchContainer: {
     flex: 0.3,
@@ -514,5 +503,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 5,
     padding: 4,
+  },
+  popupCardContainer: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "transparent",
+    alignItems: "center",
   },
 });

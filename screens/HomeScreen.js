@@ -91,16 +91,25 @@ export default function HomeScreen({ navigation }) {
                 "user.preferences.longitudePreference: ",
                 user.preferences.longitudePreference
               );
-              // Set location details in user preferences if not defined
+              // Set location details in user preferences if not defined -> indirectly set user location filters as default state
+              // ToDo: Call fetch PUT /updatePreferences to update partially user preferences?
               if (
-                !user.preferences.latitudePreference ||
-                !user.preferences.longitudePreference
+                user.preferences.latitudePreference === -200 ||
+                user.preferences.longitudePreference === -200
               ) {
                 dispatch(
                   setLocationPreferences({
                     cityPreference: city,
                     latitudePreference: coordinates.latitude,
                     longitudePreference: coordinates.longitude,
+                  })
+                );
+
+                dispatch(
+                  setLocationFilters({
+                    cityFilter: city,
+                    latitudeFilter: coordinates.latitude,
+                    longitudeFilter: coordinates.longitude,
                   })
                 );
 
@@ -144,7 +153,6 @@ export default function HomeScreen({ navigation }) {
                     data.result &&
                       dispatch(importActivities(data.activities)) &&
                       dispatch(setErrorMsg(null));
-
                     !data.result &&
                       dispatch(importActivities([])) &&
                       dispatch(setErrorMsg(data.error));
@@ -152,8 +160,8 @@ export default function HomeScreen({ navigation }) {
                     // data.result && setActivities(data.activities);
                   });
               } else if (
-                user.preferences.latitudePreference &&
-                user.preferences.longitudePreference
+                user.preferences.latitudePreference !== -200 &&
+                user.preferences.longitudePreference !== -200
               ) {
                 // Get user filters
                 const {

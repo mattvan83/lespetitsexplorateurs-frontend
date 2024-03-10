@@ -33,7 +33,7 @@ export default function ListResultsScreen({ navigation }) {
   const userFilters = useSelector((state) => state.user.value.filters);
   const [suggestionsList, setSuggestionsList] = useState([]);
 
-  // console.log("user.filters: ", userFilters);
+  console.log("user.filters: ", userFilters);
 
   const dispatch = useDispatch();
 
@@ -166,46 +166,6 @@ export default function ListResultsScreen({ navigation }) {
   const activitiesList = user.activities.map((activity, i) => {
     return <Card key={i} activity={activity} />;
   });
-
-  // const activities = user.activities.map((activity, i) => {
-  //   const inputDate = new Date(activity.date);
-
-  //   const options = {
-  //     weekday: "long", // full weekday name
-  //     day: "numeric", // day of the month
-  //     month: "long", // full month name
-  //     hour: "numeric",
-  //     minute: "numeric",
-  //   };
-
-  //   const formattedDate = inputDate
-  //     .toLocaleString("fr-FR", options)
-  //     .replace(":", "h")
-  //     .toUpperCase();
-
-  //   // console.log(formattedDate);
-
-  //   return (
-  //     <Card
-  //       key={i}
-  //       id={activity.id}
-  //       imagePath={
-  //         activity.imgUrl.includes(1)
-  //           ? "localImage1"
-  //           : activity.imgUrl.includes(2)
-  //           ? "localImage2"
-  //           : "localImage3"
-  //       }
-  //       activityDate={formattedDate}
-  //       activityName={activity.name}
-  //       activityLocation={`${activity.postalCode}, ${activity.city}`}
-  //       isFavorite={activity.isLiked}
-  //       activityDistance={
-  //         user.latitude && user.longitude ? activity.distance : null
-  //       }
-  //     />
-  //   );
-  // });
 
   return (
     <SafeAreaView style={styles.container}>
