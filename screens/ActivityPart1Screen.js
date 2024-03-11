@@ -56,7 +56,7 @@ export default function ProfileScreen({ navigation }) {
         <View style={globalStyles.border} marginLeft={20}>
           <TextInput
             placeholder="Nom de l'activité (max. 23 caractères)"
-            autoCapitalize="none"
+            autoCapitalize="sentences"
             keyboardType="default"
             maxLength={23}
             onChangeText={(value) => setActivityName(value)}
@@ -69,7 +69,7 @@ export default function ProfileScreen({ navigation }) {
         <View style={globalStyles.border} marginLeft={20} height={200}>
           <TextInput
             placeholder="Décrivez l'activité en quelques mots"
-            autoCapitalize="none"
+            autoCapitalize="sentences"
             keyboardType="default"
             onChangeText={(value) => setActivityDescription(value)}
             value={activityDescription}

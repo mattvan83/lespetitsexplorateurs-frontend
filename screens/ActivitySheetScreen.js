@@ -98,6 +98,7 @@ export default function ActivitySheetScreen({ navigation, route: { params: { act
       });
   }
 
+  
   return (
     <View style={styles.container}>
       {/* <ImageBackground resizeMode="cover" style={styles.image} source={require('../assets/Images/bebe-nageurs.jpg')}> */}

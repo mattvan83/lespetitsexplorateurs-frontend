@@ -5,12 +5,22 @@ import { AntDesign } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteUserActivity } from "../reducers/user";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { useNavigation } from '@react-navigation/native';
 
 const BACKEND_ADDRESS = "http://192.168.1.23:3000";
 
 export default function CardEditDelete({ activity }) {
+  const navigation = useNavigation();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
+
+  const handleClickOnActivity = () => {
+    fetch(`${BACKEND_ADDRESS}/activities/${activity.id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        data.result && navigation.navigate('ActivitySheet', { activity: data.activity })
+      });
+  }
 
   const handleDeleteSubmit = () => {
     fetch(`${BACKEND_ADDRESS}/activities/`, {
@@ -38,7 +48,7 @@ export default function CardEditDelete({ activity }) {
 
   return (
     <View style={styles.cardContainer}>
-      <View style={styles.card}>
+      <TouchableOpacity activeOpacity={0.8} style={styles.card} onPress={() => handleClickOnActivity()}>
         {activity.imgUrl && <Image style={styles.img} source={{ uri: activity.imgUrl }} />}
         {!activity.imgUrl && <View style={styles.img}><FontAwesome name={'photo'} color={'#BBC3FF'} size={28} /></View>} 
         <View style={styles.details}>
@@ -60,7 +70,7 @@ export default function CardEditDelete({ activity }) {
         <TouchableOpacity activeOpacity={0.8} style={styles.delete} onPress={() => handleDeleteSubmit()}>
           <MaterialCommunityIcons name="delete-forever" size={24} color="#5669FF" />
         </TouchableOpacity>
-      </View>
+        </TouchableOpacity>
     </View>
   );
 }

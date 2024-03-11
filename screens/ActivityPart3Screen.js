@@ -42,7 +42,7 @@ export default function ProfileScreen({ navigation }) {
         <View style={globalStyles.border} marginLeft={20}>
           <TextInput
             placeholder="Adresse précise"
-            autoCapitalize="none"
+            autoCapitalize="sentences"
             keyboardType="default"
             onChangeText={(value) => setActivityAddress(value)}
             value={activityAddress}
@@ -55,7 +55,7 @@ export default function ProfileScreen({ navigation }) {
           <TextInput
             placeholder="Code postal"
             maxLength={5}
-            autoCapitalize="none"
+            autoCapitalize="sentences"
             keyboardType="number-pad"
             onChangeText={(value) => setActivityPostalCode(value)}
             value={activityPostalCode}
@@ -66,7 +66,7 @@ export default function ProfileScreen({ navigation }) {
         <View style={globalStyles.border} marginLeft={20}>
           <TextInput
             placeholder="Ville"
-            autoCapitalize="none"
+            autoCapitalize="sentences"
             keyboardType="default"
             onChangeText={(value) => setActivityCity(value)}
             value={activityCity}
@@ -78,7 +78,7 @@ export default function ProfileScreen({ navigation }) {
         <View style={globalStyles.border} marginLeft={20}>
           <TextInput
             placeholder="ex : Gymnase, Ludothèque, Bibliothèque..."
-            autoCapitalize="none"
+            autoCapitalize="sentences"
             keyboardType="default"
             onChangeText={(value) => setActivityPlace(value)}
             value={activityPlace}
