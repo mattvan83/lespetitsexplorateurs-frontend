@@ -116,6 +116,9 @@ export const userSlice = createSlice({
     loadUserActivities: (state, action) => {
       state.value.userActivities = action.payload;
     },
+    addUserActivities: (state, action) => {
+      state.value.userActivities.push(action.payload);
+    },
     deleteUserActivity: (state, action) => {
       state.value.userActivities = state.value.userActivities.filter(
         (activity) => activity.id !== action.payload
@@ -146,6 +149,7 @@ export const {
   setCitySearched,
   resetCitySearched,
   loadUserActivities,
+  addUserActivities,
   deleteUserActivity,
   setErrorMsg,
 } = userSlice.actions;

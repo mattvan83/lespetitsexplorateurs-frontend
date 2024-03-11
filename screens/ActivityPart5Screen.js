@@ -6,8 +6,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 // import globalStyles from '../globalStyles';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { setPreferences, resetPreferences } from '../reducers/user';
+import { useDispatch, useSelector } from 'react-redux';
+import { setPreferences, resetPreferences, addUserActivities } from '../reducers/user';
 import { useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import * as ImagePicker from 'expo-image-picker';
@@ -18,9 +18,10 @@ export default function ProfileScreen({ navigation }) {
   const [photoType, setPhotoType] = useState('image/jpeg');
 
   const formData = new FormData();
-  
-  // const dispatch = useDispatch();
-  // const user = useSelector((state) => state.user.value);
+
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user.value);
+  const activities = useSelector((state) => state.activities.value);
 
   const handleChoosePhoto = async () => {
     (async () => {
@@ -44,68 +45,63 @@ export default function ProfileScreen({ navigation }) {
   };
 
   const handleCreate = () => {
-    if (uploadedImage === "") {
-      setUploadedImage("../assets/Images/ludotheque.jpeg");
-    }
     const token = user.token;
-    dispatch(addActivityInfoScreen5({ image: uploadedImage }));
-      //.then(() => {
-        //Fetch route POST /activities
-        fetch(`http://192.168.1.23:3000/activities/newActivity/${token}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-              token: user.token,
-              name: activities.name,
-              description: activities.description,
-              category: activities.category,
-              concernedAges: activities.concernedAges,
-              address: activities.address,
-              postalCode: activities.postalCode,
-              locationName: activities.locationName,
-              city: activities.city,
-              date: activities.date,
-              image: activities.image, 
-            }),
-          })
-            .then((response) => response.json())
-            .then((activity) => {
-              if (activity.result) {
-                navigation.navigate("TabNavigator", { screen: "Activité" });
-              } else {
-                console.error("The activity haven't been created", activity.error);
-              }
-            });
-      //});
+    fetch(`http://192.168.1.23:3000/activities/newActivity/${token}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token: user.token,
+        name: activities.name,
+        description: activities.description,
+        category: activities.category,
+        concernedAges: activities.concernedAges,
+        address: activities.address,
+        postalCode: activities.postalCode,
+        locationName: activities.locationName,
+        city: activities.city,
+        date: activities.date,
+        // image: activities.image, 
+      }),
+    })
+      .then((response) => response.json())
+      .then((activity) => {
+        if (activity.result) {
+          navigation.navigate("TabNavigator", { screen: "Activité" });
+          dispatch(addUserActivities(activity.activity))
+        } else {
+          console.error("The activity haven't been created", activity.error);
+        }
+      });
+    //});
   }
 
 
   return (
     <View style={styles.filtersContainer}>
-      <FontAwesome name={'arrow-left'} color={'black'} size={20} style={styles.arrow} onPress={() => navigation.goBack()}/>
-        
-        <Text style={styles.title2}>Une photo vaut 1000 mots !</Text>
-        
-        <View style={styles.text}>
-          <Text>Mettez en valeur l'activité proposée.</Text>
-          <Text>Les photos de l'activité proposée permettent aux parents d'avoir une idée du cadre proposé aux enfants.</Text>
-          <Text style={styles.importantText}>Veillez à ce que les visages soient floutés !</Text>
-        </View>
-        
-        <TouchableOpacity onPress={handleChoosePhoto} style={styles.img}>
-            {photo && <Image source={{ uri: photo }} style={{ width: 150, height: 150, borderRadius: 15 }} />}
-            {!photo && <Ionicons name="camera" size={64} color="#BBC3FF" />}
-            {!photo && <Text style={styles.textImg}>Choisir une photo</Text>}
-          </TouchableOpacity>
+      <FontAwesome name={'arrow-left'} color={'black'} size={20} style={styles.arrow} onPress={() => navigation.goBack()} />
 
-        <View style={styles.bottom}>
-          <TouchableOpacity
-              onPress={() => handleCreate()}
-              style={styles.button}
-              activeOpacity={0.8}>
-              <Text style={styles.textButton}>Créer l'activité</Text>
-          </TouchableOpacity>
-        </View>
+      <Text style={styles.title2}>Une photo vaut 1000 mots !</Text>
+
+      <View style={styles.text}>
+        <Text>Mettez en valeur l'activité proposée.</Text>
+        <Text>Les photos de l'activité proposée permettent aux parents d'avoir une idée du cadre proposé aux enfants.</Text>
+        <Text style={styles.importantText}>Veillez à ce que les visages soient floutés !</Text>
+      </View>
+
+      <TouchableOpacity onPress={handleChoosePhoto} style={styles.img}>
+        {photo && <Image source={{ uri: photo }} style={{ width: 150, height: 150, borderRadius: 15 }} />}
+        {!photo && <Ionicons name="camera" size={64} color="#BBC3FF" />}
+        {!photo && <Text style={styles.textImg}>Choisir une photo</Text>}
+      </TouchableOpacity>
+
+      <View style={styles.bottom}>
+        <TouchableOpacity
+          onPress={() => handleCreate()}
+          style={styles.button}
+          activeOpacity={0.8}>
+          <Text style={styles.textButton}>Créer l'activité</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
