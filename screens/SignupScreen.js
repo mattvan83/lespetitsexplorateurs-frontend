@@ -24,7 +24,7 @@ const EMAIL_REGEX =
 // const { BACKEND_ADDRESS } = process.env;
 // console.log(process.env.BACKEND_ADDRESS);
 
-const BACKEND_ADDRESS = "http://192.168.1.22:3000";
+const BACKEND_ADDRESS = "http://192.168.1.23:3000";
 
 export default function SignupScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -55,10 +55,11 @@ export default function SignupScreen({ navigation }) {
             } else {
               navigation.navigate("TabNavigator", { screen: "Explorer" });
             }
+            setEmail("");
+            setPassword("");
+            setUsername("");
           }
-          setEmail("");
-          setPassword("");
-          setUsername("");
+          console.log(data.error)
         });
     } else {
       setEmailError(true);

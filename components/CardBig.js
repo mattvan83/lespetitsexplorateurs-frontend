@@ -2,10 +2,9 @@ import { StyleSheet, Text, Image, View, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 
-export default function Card({ activity} ) {
+export default function CardBig({ activity } ) {
   const navigation = useNavigation();
   const user = useSelector((state) => state.user.value);
   //A SUPPRIMER PLUS TARD
@@ -20,15 +19,12 @@ export default function Card({ activity} ) {
     hour: "numeric",
     minute: "numeric",
   };
-
-
   const formattedDate = inputDate.toLocaleString("fr-FR", options).replace(":", "h").toUpperCase();
 
   return (
     <View style={styles.cardContainer}>
-      <TouchableOpacity activeOpacity={0.8} style={styles.card} onPress={() => navigation.navigate('ActivitySheet', {activity})}>
-      {activity.imgUrl && <Image style={styles.img} source={{ uri: activity.imgUrl }} />}
-        {!activity.imgUrl && <View style={styles.img}><FontAwesome name={'photo'} color={'#BBC3FF'} size={28} /></View>} 
+      <TouchableOpacity activeOpacity={0.8} style={ styles.cardH} onPress={() => navigation.navigate('ActivitySheet', {activity})}>
+        <Image style={styles.img} source={{ uri: activity.imgUrl }} />
         <View style={styles.details}>
           <View style={styles.dateFavoriteContainer}>
             <Text style={styles.activityDate}>{formattedDate}</Text>
@@ -60,16 +56,14 @@ const styles = StyleSheet.create({
   cardContainer: {
     alignItems: "center",
   },
-  card: {
-    justifyContent: "flex-start",
-    padding: 8,
-    gap: 12,
+  cardH: {
+    justifyContent: "space-evenly",
     alignItems: "center",
-    flexDirection: "row",
+    flexDirection: "column",
     borderRadius: 16,
     margin: 8,
-    width: '90%',
-    height: 112,
+    width: 237,
+    height: 255,
     backgroundColor: "white",
     //Ombre portée
     shadowColor: "#535990",
@@ -79,12 +73,9 @@ const styles = StyleSheet.create({
     elevation: 5, // Pour Android
   },
   img: {
-    height: 92,
-    width: 82,
+    height: 131,
+    width: 218,
     borderRadius: 8,
-    backgroundColor: "#EEF0FF",
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   details: {
     gap: 4,

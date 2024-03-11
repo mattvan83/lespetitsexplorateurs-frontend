@@ -116,6 +116,14 @@ export const userSlice = createSlice({
     loadUserActivities: (state, action) => {
       state.value.userActivities = action.payload;
     },
+    addUserActivity: (state, action) => {
+      state.value.userActivities.push(action.payload);
+    },
+    addUserActivityPhoto: (state, action) => {
+      const index = state.value.userActivities.findIndex(activity => activity._id === action.payload.activityId);
+      state.value.userActivities[index].imgUrl = action.payload.url;
+    
+    },
     deleteUserActivity: (state, action) => {
       state.value.userActivities = state.value.userActivities.filter(
         (activity) => activity.id !== action.payload
@@ -146,6 +154,8 @@ export const {
   setCitySearched,
   resetCitySearched,
   loadUserActivities,
+  addUserActivity,
+  addUserActivityPhoto,
   deleteUserActivity,
   setErrorMsg,
 } = userSlice.actions;

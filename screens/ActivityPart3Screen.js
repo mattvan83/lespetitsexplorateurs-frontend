@@ -8,17 +8,18 @@ import {
   Platform,
 } from "react-native";
 import globalStyles from '../globalStyles';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addActivityInfoScreen3 } from '../reducers/activities';
 import { useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
-  const [activityAddress, setActivityAddress] = useState('');
-  const [activityPostalCode, setActivityPostalCode] = useState('');
-  const [activityCity, setActivityCity] = useState('');
-  const [activityPlace, setActivityPlace] = useState('');
+  const activities = useSelector((state) => state.activities.value);
+  const [activityAddress, setActivityAddress] = useState(activities.address);
+  const [activityPostalCode, setActivityPostalCode] = useState(activities.postalCode);
+  const [activityCity, setActivityCity] = useState(activities.city);
+  const [activityPlace, setActivityPlace] = useState(activities.locationName);
   const [showError, setShowError] = useState(false);
 
   const handleContinue = () => {
@@ -42,7 +43,7 @@ export default function ProfileScreen({ navigation }) {
         <View style={globalStyles.border} marginLeft={20}>
           <TextInput
             placeholder="Adresse précise"
-            autoCapitalize="none"
+            autoCapitalize="sentences"
             keyboardType="default"
             onChangeText={(value) => setActivityAddress(value)}
             value={activityAddress}
@@ -55,7 +56,7 @@ export default function ProfileScreen({ navigation }) {
           <TextInput
             placeholder="Code postal"
             maxLength={5}
-            autoCapitalize="none"
+            autoCapitalize="sentences"
             keyboardType="number-pad"
             onChangeText={(value) => setActivityPostalCode(value)}
             value={activityPostalCode}
@@ -66,7 +67,7 @@ export default function ProfileScreen({ navigation }) {
         <View style={globalStyles.border} marginLeft={20}>
           <TextInput
             placeholder="Ville"
-            autoCapitalize="none"
+            autoCapitalize="sentences"
             keyboardType="default"
             onChangeText={(value) => setActivityCity(value)}
             value={activityCity}
@@ -78,7 +79,7 @@ export default function ProfileScreen({ navigation }) {
         <View style={globalStyles.border} marginLeft={20}>
           <TextInput
             placeholder="ex : Gymnase, Ludothèque, Bibliothèque..."
-            autoCapitalize="none"
+            autoCapitalize="sentences"
             keyboardType="default"
             onChangeText={(value) => setActivityPlace(value)}
             value={activityPlace}

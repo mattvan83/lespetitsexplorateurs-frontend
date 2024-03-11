@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
     gap: 8,
     height: 45,
     width: "90%",
+    backgroundColor: 'white',
   },
   searchBar: {
     flex: 1,
@@ -92,6 +93,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderColor: "#E4dfdf",
     borderWidth: 1,
+    backgroundColor: 'white',
   },
   input: {
     width: "90%",

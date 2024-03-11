@@ -6,13 +6,14 @@ import {
   Modal,
 } from "react-native";
 import globalStyles from '../globalStyles';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addActivityInfoScreen4 } from '../reducers/activities';
 import { useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function ProfileScreen({ navigation }) {
+  const activities = useSelector((state) => state.activities.value);
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
   const [showError, setShowError] = useState(false);

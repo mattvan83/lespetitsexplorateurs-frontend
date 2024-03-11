@@ -87,14 +87,9 @@ export default function App() {
             <Stack.Screen name="ListResults" component={ListResultsScreen} />
             <Stack.Screen name="MapResults" component={MapResultsScreen} />
             <Stack.Screen name="NewOrganizer" component={NewOrganizerScreen} />
-            <Stack.Screen
-              name="ActivitySheet"
-              component={ActivitySheetScreen}
-            />
-            <Stack.Screen
-              name="OrganizerProfile"
-              component={OrganizerProfileScreen}
-            />
+            <Stack.Screen name="ActivitySheet" component={ActivitySheetScreen} />
+            <Stack.Screen name="OrganizerProfile" component={OrganizerProfileScreen} />
+
             <Stack.Screen
               name="ActivityPart1"
               component={ActivityPart1Screen}

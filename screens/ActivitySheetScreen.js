@@ -14,7 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 const BACKEND_ADDRESS = "http://172.20.10.8:3000";
 
-export default function ActivitySheetScreen({ navigation, route: { params: { activity } }}) {
+export default function ActivitySheetScreen({ navigation, route: { params: { activity } } }) {
 
   const handleShare = async () => {
     console.log('share');
@@ -90,6 +90,15 @@ export default function ActivitySheetScreen({ navigation, route: { params: { act
   // Formater la durée
   const formattedDuration = `${durationHours}h${durationMinutes}`;
 
+  const handleClickOnOrganizer = () => {
+    fetch(`${BACKEND_ADDRESS}/organizers/${activity.organizerId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        data.result && navigation.navigate('OrganizerProfile', { organizer: data.organizer })
+      });
+  }
+
+  
   return (
     <View style={styles.container}>
       {/* <ImageBackground resizeMode="cover" style={styles.image} source={require('../assets/Images/bebe-nageurs.jpg')}> */}
@@ -131,12 +140,23 @@ export default function ActivitySheetScreen({ navigation, route: { params: { act
           </View>
         </View>
 
-        <View style={styles.orgaDiv}>
-          <Image style={styles.photoOrg} source={{ uri: activity.organizerImgUrl }} />
-          <View marginLeft={20}>
-            <Text style={styles.bold}>{activity.organizer}</Text>
-            <Text style={styles.small}>Organisateur</Text>
-          </View>
+
+        <View>
+          <TouchableOpacity
+            onPress={() => handleClickOnOrganizer()}
+            activeOpacity={0.8}
+            style={styles.orgaDiv}
+          >
+            <View style={styles.img}>
+              {activity.organizerImgUrl && <Image style={styles.photoOrg} source={{ uri: activity.organizerImgUrl }} />}
+              {activity.organizerImgUrl === "" && <Text style={styles.initiale}>{activity.organizer.slice(0, 1)}</Text>}
+            </View>
+            <View marginLeft={20}>
+              <Text style={styles.bold}>{activity.organizer}</Text>
+              <Text style={styles.small}>Organisateur</Text>
+            </View>
+          </TouchableOpacity>
+
           {/* <View style={styles.followWrite}>
             <TouchableOpacity onPress={() => handleFollow()} style={styles.btn}>
               <Text style={styles.btnOrganizer}>Suivre</Text>
@@ -162,7 +182,7 @@ export default function ActivitySheetScreen({ navigation, route: { params: { act
           <Text style={styles.textButton}>AJOUTER À L'AGENDA</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </View >
   );
 }
 
@@ -218,12 +238,6 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 15,
-    marginLeft: 25,
-  },
-  photoOrg: {
-    width: 48,
-    height: 48,
-    borderRadius: 100,
     marginLeft: 25,
   },
   div: {
@@ -282,6 +296,7 @@ const styles = StyleSheet.create({
     marginLeft: 25,
     marginRight: 25,
     fontSize: 15,
+    lineHeight: 20,
   },
   buttonContainer: {
     flex: 1,
@@ -303,5 +318,26 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
     textTransform: 'uppercase',
+  },
+  photoOrg: {
+    width: 48,
+    height: 48,
+    borderRadius: 100,
+  },
+  img: {
+    width: 48,
+    height: 48,
+    borderRadius: 100,
+    marginLeft: 25,
+    alignSelf: "center",
+    backgroundColor: '#EEF0FF',
+    borderRadius: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  initiale: {
+    fontSize: 36,
+    fontWeight: 'bold',
+    color: '#BBC3FF',
   },
 });

@@ -225,7 +225,7 @@ export default function ListResultsScreen({ navigation }) {
               <Ionicons name="arrow-back-outline" size={24} color="black" />
             </TouchableOpacity>
             <TextInput style={styles.titleHeader}>
-              Evènements proches du lieu de votre choix
+              Activités proches du lieu choisi
             </TextInput>
           </View>
 
@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
-    alignItems: "center",
+    // alignItems: "center",
     width: "100%",
   },
   header: {
@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
   topHeader: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 10,
+    // marginTop: 10,
   },
   goBackButton: {
     marginHorizontal: 20,
@@ -326,6 +326,7 @@ const styles = StyleSheet.create({
   titleHeader: {
     fontWeight: "bold",
     width: "80%",
+    fontSize: 16,
   },
   arrow: {
     marginTop: 35,

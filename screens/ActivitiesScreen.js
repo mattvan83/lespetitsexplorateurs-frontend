@@ -13,7 +13,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { loadUserActivities, deleteUserActivity } from '../reducers/user';
 import CardEditDelete from '../components/CardEditDelete';
 
-const BACKEND_ADDRESS = "http://192.168.1.22:3000";
+const BACKEND_ADDRESS = "http://192.168.1.23:3000";
 
 export default function ActivitiesScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -28,31 +28,14 @@ export default function ActivitiesScreen({ navigation }) {
   }, [])
 
   const activitiesList = user.userActivities.map((activity, i) => {
-    const inputDate = new Date(activity.date);
-    const options = {
-      weekday: "long", // full weekday name
-      day: "numeric", // day of the month
-      month: "long", // full month name
-      hour: "numeric",
-      minute: "numeric",
-    };
-    const formattedDate = inputDate
-      .toLocaleString("fr-FR", options)
-      .replace(":", "h")
-      .toUpperCase();
-
-    return <CardEditDelete key={i} imagePath={activity.imgUrl}
-      activityId={activity.id}
-      activityDate={formattedDate}
-      activityName={activity.name}
-      activityLocation={`${activity.postalCode}, ${activity.city}`}
-      isFavorite={activity.isLiked}
-      activityDistance={0} />
+      return <CardEditDelete key={i} activity={activity} />
   })
 
   const handleSubmit = () => {
     navigation.navigate("ActivityPart1");
   };
+
+  console.log(user.userActivities)
 
   return (
     <KeyboardAvoidingView
