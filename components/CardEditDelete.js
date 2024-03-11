@@ -3,6 +3,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
+import { addActivityInfoScreen1, addActivityInfoScreen2, addActivityInfoScreen3, addActivityInfoScreen4, addActivityInfoScreen5, startUpdate } from '../reducers/activities';
 import { deleteUserActivity } from "../reducers/user";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
@@ -20,6 +21,16 @@ export default function CardEditDelete({ activity }) {
       .then((data) => {
         data.result && navigation.navigate('ActivitySheet', { activity: data.activity })
       });
+  }
+
+  const handleEditSubmit = () => {
+    dispatch(addActivityInfoScreen1({ name: activity.name, description: activity.description, category: activity.category }));
+    dispatch(addActivityInfoScreen2({ concernedAges: activity.concernedAges }));
+    dispatch(addActivityInfoScreen3({ address: activity.address, postalCode: activity.postalCode, city: activity.city, locationName: activity.locationName }));
+    dispatch(addActivityInfoScreen4({ date: activity.date }));
+    dispatch(addActivityInfoScreen5({ imgUrl: activity.imgUrl }));
+    dispatch(startUpdate({id: activity.id}));
+    navigation.navigate("ActivityPart1");
   }
 
   const handleDeleteSubmit = () => {
@@ -50,7 +61,7 @@ export default function CardEditDelete({ activity }) {
     <View style={styles.cardContainer}>
       <TouchableOpacity activeOpacity={0.8} style={styles.card} onPress={() => handleClickOnActivity()}>
         {activity.imgUrl && <Image style={styles.img} source={{ uri: activity.imgUrl }} />}
-        {!activity.imgUrl && <View style={styles.img}><FontAwesome name={'photo'} color={'#BBC3FF'} size={28} /></View>} 
+        {!activity.imgUrl && <View style={styles.img}><FontAwesome name={'photo'} color={'#BBC3FF'} size={28} /></View>}
         <View style={styles.details}>
           <Text style={styles.activityDate}>{formattedDate}</Text>
 
@@ -64,13 +75,13 @@ export default function CardEditDelete({ activity }) {
             )}
           </View>
         </View>
-        <TouchableOpacity activeOpacity={0.8} style={styles.edit}>
+        <TouchableOpacity activeOpacity={0.8} style={styles.edit} onPress={() => handleEditSubmit()}>
           <AntDesign name="edit" size={24} color="#5669FF" />
         </TouchableOpacity>
         <TouchableOpacity activeOpacity={0.8} style={styles.delete} onPress={() => handleDeleteSubmit()}>
           <MaterialCommunityIcons name="delete-forever" size={24} color="#5669FF" />
         </TouchableOpacity>
-        </TouchableOpacity>
+      </TouchableOpacity>
     </View>
   );
 }

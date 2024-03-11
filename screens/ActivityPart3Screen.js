@@ -8,17 +8,18 @@ import {
   Platform,
 } from "react-native";
 import globalStyles from '../globalStyles';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addActivityInfoScreen3 } from '../reducers/activities';
 import { useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
-  const [activityAddress, setActivityAddress] = useState('');
-  const [activityPostalCode, setActivityPostalCode] = useState('');
-  const [activityCity, setActivityCity] = useState('');
-  const [activityPlace, setActivityPlace] = useState('');
+  const activities = useSelector((state) => state.activities.value);
+  const [activityAddress, setActivityAddress] = useState(activities.address);
+  const [activityPostalCode, setActivityPostalCode] = useState(activities.postalCode);
+  const [activityCity, setActivityCity] = useState(activities.city);
+  const [activityPlace, setActivityPlace] = useState(activities.locationName);
   const [showError, setShowError] = useState(false);
 
   const handleContinue = () => {

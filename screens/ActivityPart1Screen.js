@@ -9,8 +9,8 @@ import {
   Platform,
 } from "react-native";
 import globalStyles from '../globalStyles';
-import { useDispatch } from 'react-redux';
-import { addActivityInfoScreen1 } from '../reducers/activities';
+import { useDispatch, useSelector } from 'react-redux';
+import { addActivityInfoScreen1, resetActivityInfos } from '../reducers/activities';
 import { useState } from 'react';
 import FilterCategoryMedium from "../components/FilterCategoryMedium";
 import { handleFilterButtonClick } from '../modules/handleFilterButtonClick';
@@ -19,14 +19,15 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [activityName, setActivityName] = useState('');
-  const [activityDescription, setActivityDescription] = useState('');
+  const activities = useSelector((state) => state.activities.value);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [activityName, setActivityName] = useState(activities.name);
+  const [activityDescription, setActivityDescription] = useState(activities.description);
   const [showError, setShowError] = useState(false);
 
   const handleContinue = () => {
     if (activityName !== '' && activityDescription !== '' && selectedCategory !== '') {
-      dispatch(addActivityInfoScreen1({ name: activityName, description: activityDescription, category: selectedCategory}));
+      dispatch(addActivityInfoScreen1({ name: activityName, description: activityDescription, category: selectedCategory }));
       navigation.navigate('ActivityPart2');
     } else {
       setShowError(true);
@@ -34,8 +35,8 @@ export default function ProfileScreen({ navigation }) {
   }
 
   const categories = ['Sport', 'Musique', 'Créativité', 'Motricité', 'Éveil'];
-  
-  const handleCategoryList = (category)=> {
+
+  const handleCategoryList = (category) => {
     setSelectedCategory(category);
   }
 
@@ -44,12 +45,17 @@ export default function ProfileScreen({ navigation }) {
     return <FilterCategoryMedium key={i} category={category} handleCategoryList={handleCategoryList} isActive={isActive} />
   })
 
+  const handleReturnClick = () => {
+    dispatch(resetActivityInfos())
+    navigation.goBack()
+  }
+
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
       <View style={styles.filtersContainer}>
-        <FontAwesome name={'arrow-left'} color={'black'} size={20} style={styles.arrow} onPress={() => navigation.goBack()}/>
-        
+        <FontAwesome name={'arrow-left'} color={'black'} size={20} style={styles.arrow} onPress={() => handleReturnClick()} />
+
         <Text style={styles.title2}>Dites-nous tout</Text>
 
         <Text style={globalStyles.title4}>Nom de l'activité</Text>
@@ -84,7 +90,7 @@ export default function ProfileScreen({ navigation }) {
       </View>
 
       <View style={styles.bottom}>
-      <TouchableOpacity
+        <TouchableOpacity
           onPress={() => handleContinue()}
           style={styles.button}
           activeOpacity={0.8}
@@ -92,10 +98,10 @@ export default function ProfileScreen({ navigation }) {
           <Text style={styles.textButton}>Continuer</Text>
         </TouchableOpacity>
         {showError && (
-        <Text style={styles.error}>
-          Tous les champs sont requis.
-        </Text>
-      )}
+          <Text style={styles.error}>
+            Tous les champs sont requis.
+          </Text>
+        )}
       </View>
     </KeyboardAvoidingView>
   );

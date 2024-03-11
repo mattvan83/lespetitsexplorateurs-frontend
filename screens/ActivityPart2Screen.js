@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import globalStyles from '../globalStyles';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addActivityInfoScreen2 } from '../reducers/activities';
 import { useState, useEffect } from 'react';
 import FilterTextCategory from "../components/FilterTextCategory";
@@ -14,6 +14,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
+  const activities = useSelector((state) => state.activities.value);
   const [selectedAges, setSelectedAges] = useState([]);
   const [showError, setShowError] = useState(false);
 

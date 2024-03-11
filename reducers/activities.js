@@ -19,8 +19,11 @@ const initialState = {
     date: null,
     isRecurrent: false,
     recurrence: null,
-    image: null,
+    imgUrl: null,
     likes: [],
+    //For updates
+    isCurrentlyUpdated: false,
+    id: null,
   },
 };
 
@@ -48,11 +51,29 @@ export const activitiesSlice = createSlice({
         state.value.date = action.payload.date;
     },
     addActivityInfoScreen5: (state, action) => {
-        state.value.image = action.payload.image;
+        state.value.imgUrl = action.payload.imgUrl;
     },
+    startUpdate: (state, action) => {
+      state.value.isCurrentlyUpdated = true;
+      state.value.id= action.payload;
+    },
+    resetActivityInfos: (state, action) => {
+      state.value.name = null;
+      state.value.description = null;
+      state.value.category = null;
+      state.value.concernedAges = null;
+      state.value.address = null;
+      state.value.postalCode = null;
+      state.value.city = null;
+      state.value.locationName = null;
+      state.value.date = null;
+      state.value.imgUrl = null;
+      state.value.isCurrentlyUpdated = false;
+      state.value.id = null;
+    }
   },
 });
 
-export const { addActivityInfoScreen1, addActivityInfoScreen2, addActivityInfoScreen3, addActivityInfoScreen4, addActivityInfoScreen5, emptyStoreActivity } =
+export const { addActivityInfoScreen1, addActivityInfoScreen2, addActivityInfoScreen3, addActivityInfoScreen4, addActivityInfoScreen5, emptyStoreActivity, resetActivityInfos, startUpdate } =
   activitiesSlice.actions;
 export default activitiesSlice.reducer;
