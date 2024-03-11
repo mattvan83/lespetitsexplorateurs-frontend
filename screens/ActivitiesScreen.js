@@ -28,9 +28,6 @@ export default function ActivitiesScreen({ navigation }) {
       });
   }, [activities]);
 
-  // const activitiesList = user.userActivities.map((activity, i) => {
-  //   return <CardEditDelete key={i} activity={activity} />;
-  // });
 
   const handleSubmit = () => {
     navigation.navigate("ActivityPart1");

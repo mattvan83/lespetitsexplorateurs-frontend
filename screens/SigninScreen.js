@@ -76,12 +76,12 @@ export default function SigninScreen({ navigation }) {
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={Platform.OS === "ios" ? "padding" : "padding"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
     >
       <Image
         style={styles.img}
-        source={require("../assets/Images/logo-temp.png")}
+        source={{ uri: "https://res.cloudinary.com/ddoqxafok/image/upload/v1710191558/rnhxlupxbteo1kw5nf0c.jpg" }}
       />
       <Text style={styles.title}>Identification</Text>
 
@@ -97,7 +97,7 @@ export default function SigninScreen({ navigation }) {
           </View>
         )}
         <View style={globalStyles.border}>
-          <Ionicons name="mail-outline" size={24} color="#D0CFD4" />
+          <Ionicons name="mail-outline" size={24} color="#BBC3FF" />
           <TextInput
             placeholder="jane.doe@gmail.com"
             autoCapitalize="none"
@@ -105,11 +105,11 @@ export default function SigninScreen({ navigation }) {
             autoComplete="email"
             onChangeText={(value) => setEmail(value)}
             value={email}
-            style={globalStyles.input}
+            style={styles.input}
           />
         </View>
         <View style={globalStyles.border}>
-          <Ionicons name="lock-closed-outline" size={24} color="#D0CFD4" />
+          <Ionicons name="lock-closed-outline" size={24} color="#BBC3FF" />
           <TextInput
             placeholder="Mot de passe"
             textContentType="password"
@@ -121,7 +121,7 @@ export default function SigninScreen({ navigation }) {
           <MaterialCommunityIcons
             name={showPassword ? "eye-off" : "eye"}
             size={24}
-            color="#aaa"
+            color="#BBC3FF"
             style={styles.icon}
             onPress={toggleShowPassword}
           />
@@ -153,16 +153,15 @@ export default function SigninScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: "#F4F5FF",
     alignItems: "center",
     justifyContent: "center",
   },
   img: {
-    width: 150,
-    height: 150,
-    borderRadius: 100,
+    width: '100%',
+    height: 200,
+    // marginTop: 100,
     marginBottom: 50,
-    alignSelf: "center",
   },
   title: {
     fontSize: 24,
@@ -204,7 +203,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     height: 56,
-    color: "#747688",
+    color: "#7887FF",
     fontSize: 14,
     marginLeft: 10,
   },
