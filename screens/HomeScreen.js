@@ -264,7 +264,7 @@ export default function HomeScreen({ navigation }) {
             fetch(`${BACKEND_ADDRESS}/organizers/nogeoloc`)
               .then((response) => response.json())
               .then((data) => {
-                data.result && console.log(data);
+                data.result;
                 data.result && dispatch(loadOrganizers(data.organizers));
               });
           } else if (

@@ -18,6 +18,7 @@ import globalStyles from "../globalStyles";
 import { useEffect, useState, useRef } from "react";
 import * as Location from "expo-location";
 import { useDispatch, useSelector } from "react-redux";
+import { loadOrganizers } from "../reducers/organizers";
 import {
   addCurrentLocation,
   importActivities,
@@ -95,6 +96,14 @@ export default function MapResultsScreen({ navigation }) {
         !data.result &&
           dispatch(importActivities([])) &&
           dispatch(setErrorMsg(data.error));
+      });
+
+    fetch(
+      `${BACKEND_ADDRESS}/organizers/geoloc/${scopeFilter}/${user.filters.longitudeFilter}/${user.filters.latitudeFilter}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        data.result && dispatch(loadOrganizers(data.organizers));
       });
 
     // // Execute when the component unmounts
