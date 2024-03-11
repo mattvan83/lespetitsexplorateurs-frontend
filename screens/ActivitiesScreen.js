@@ -5,7 +5,7 @@ import {
   Platform,
   View,
   TouchableOpacity,
-  ScrollView,
+  FlatList,
 } from "react-native";
 import globalStyles from "../globalStyles";
 import { useEffect, useState } from "react";
@@ -13,7 +13,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { loadUserActivities } from "../reducers/user";
 import CardEditDelete from "../components/CardEditDelete";
 
-// const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
 export default function ActivitiesScreen({ navigation }) {
@@ -29,9 +28,9 @@ export default function ActivitiesScreen({ navigation }) {
       });
   }, [activities]);
 
-  const activitiesList = user.userActivities.map((activity, i) => {
-    return <CardEditDelete key={i} activity={activity} />;
-  });
+  // const activitiesList = user.userActivities.map((activity, i) => {
+  //   return <CardEditDelete key={i} activity={activity} />;
+  // });
 
   const handleSubmit = () => {
     navigation.navigate("ActivityPart1");
@@ -46,12 +45,16 @@ export default function ActivitiesScreen({ navigation }) {
     >
       <Text style={globalStyles.title2}>Mes activités</Text>
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollView}
-      >
-        {activitiesList}
-      </ScrollView>
+      <FlatList
+        data={user.userActivities}
+        renderItem={({ item, index }) => (
+          <View style={{ marginBottom: index === user.userActivities.length - 1 ? 100 : 0 }}> 
+            <CardEditDelete key={index} activity={item} />
+          </View>
+        )} 
+        keyExtractor={item => item._id}
+        style={styles.flatlist}
+      />
 
       <TouchableOpacity
         onPress={() => handleSubmit()}
@@ -87,5 +90,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#fff",
     textTransform: "uppercase",
+  },
+  flatlist: {
+    width: '100%',
+    padding: 8,
+    gap: 8,
   },
 });

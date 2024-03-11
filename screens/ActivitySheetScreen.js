@@ -14,7 +14,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
-// const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
 export default function ActivitySheetScreen({

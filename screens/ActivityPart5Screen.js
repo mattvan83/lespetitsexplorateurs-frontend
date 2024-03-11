@@ -2,13 +2,13 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 // import globalStyles from '../globalStyles';
 import { useDispatch, useSelector } from "react-redux";
 import { addUserActivity, addUserActivityPhoto } from "../reducers/user";
-import { addActivityInfoScreen5 } from "../reducers/activities";
+import { resetActivityInfos } from "../reducers/activities";
 import { useState } from "react";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 
-const BACKEND_ADDRESS = "http://172.20.10.8:3000";
+const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -61,7 +61,7 @@ export default function ProfileScreen({ navigation }) {
       .then((response) => response.json())
       .then((activity) => {
         if (activity.result) {
-          // let activity_temp = activity.activity;
+          dispatch(resetActivityInfos())
 
           // If a photo has been added, we update the activity in database
           if (photo) {
@@ -81,16 +81,9 @@ export default function ProfileScreen({ navigation }) {
             )
               .then((response) => response.json())
               .then((data) => {
-                // activity_temp.imgUrl = data.url
-                // console.log(activity_temp.imgUrl)
                 photoAdded = true;
                 dispatch(addUserActivity(activity.activity));
-                dispatch(
-                  addUserActivityPhoto({
-                    activityId: activity.activity._id,
-                    url: data.url,
-                  })
-                );
+                dispatch(addUserActivityPhoto({activityId: activity.activity._id, url: data.url }));
                 navigation.navigate("TabNavigator", { screen: "Activité" });
               });
           } else {
