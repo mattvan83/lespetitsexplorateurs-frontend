@@ -9,7 +9,6 @@ import {
   Platform,
   ScrollView,
   Dimensions,
-  TextInput,
 } from "react-native";
 import CardBig from "../components/CardBig";
 import globalStyles from "../globalStyles";
@@ -32,7 +31,7 @@ import HomeCategoryMedium from "../components/HomeCategoryMedium";
 
 // const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
-// console.log("Backend address:", BACKEND_ADDRESS);
+console.log("Backend address:", BACKEND_ADDRESS);
 
 export default function HomeScreen({ navigation }) {
   const [suggestionsList, setSuggestionsList] = useState([]);
@@ -222,7 +221,7 @@ export default function HomeScreen({ navigation }) {
       }
 
       // Check if the position is not obtained after a certain delay
-      const delay = 1000; // Set your desired delay in milliseconds
+      const delay = 2000; // Set your desired delay in milliseconds
       const timeoutId = setTimeout(() => {
         if (!isPositionObtained) {
           console.log("User coordinates unavailable");
@@ -238,6 +237,17 @@ export default function HomeScreen({ navigation }) {
               ageFilter,
               priceFilter,
             } = user.filters;
+
+            // console.log("user.filters: ", user.filters);
+            // console.log(
+            //   ageFilter,
+            //   categoryFilter,
+            //   dateFilter,
+            //   momentFilter,
+            //   priceFilter
+            // );
+            // console.log("BACKEND_ADDRESS: ", BACKEND_ADDRESS);
+            // console.log("user.token: ", user.token);
 
             fetch(`${BACKEND_ADDRESS}/activities/nogeoloc`, {
               method: "POST",
@@ -265,7 +275,6 @@ export default function HomeScreen({ navigation }) {
             fetch(`${BACKEND_ADDRESS}/organizers/nogeoloc`)
               .then((response) => response.json())
               .then((data) => {
-                data.result;
                 data.result && dispatch(loadOrganizers(data.organizers));
               });
           } else if (
@@ -303,7 +312,6 @@ export default function HomeScreen({ navigation }) {
                 !data.result &&
                   dispatch(importActivities([])) &&
                   dispatch(setErrorMsg(data.error));
-                // data.result && setActivities(data.activities);
               });
 
             fetch(
