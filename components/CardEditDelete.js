@@ -4,24 +4,11 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteUserActivity } from "../reducers/user";
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-const imageMapping = {
-  localImage1: require("../assets/test/activity1.png"),
-  localImage2: require("../assets/test/activity2.png"),
-  localImage3: require("../assets/test/activity3.png"),
-  localImage4: require("../assets/Images/eveil-musical.png"),
-};
+const BACKEND_ADDRESS = "http://192.168.1.23:3000";
 
-export default function CardEditDelete({
-  activityId,
-  imagePath,
-  activityDate,
-  activityName,
-  activityLocation,
-  activityDistance,
-}) {
-  // Check if the image is in the mapping
-  const isLocalAsset = imageMapping.hasOwnProperty(imagePath);
+export default function CardEditDelete({ activity }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
 
@@ -29,30 +16,39 @@ export default function CardEditDelete({
     fetch(`${BACKEND_ADDRESS}/activities/`, {
       method: "DELETE",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ activityId: activityId, token: user.token }),
+      body: JSON.stringify({ activityId: activity.id, token: user.token }),
     })
       .then((response) => response.json())
       .then((data) => {
         console.log(data)
-        data.result && dispatch(deleteUserActivity(activityId))
+        data.result && dispatch(deleteUserActivity(data.activityId))
       })
   }
+
+  const inputDate = new Date(activity.date);
+
+  const options = {
+    weekday: "long", // full weekday name
+    day: "numeric", // day of the month
+    month: "long", // full month name
+    hour: "numeric",
+    minute: "numeric",
+  };
+  const formattedDate = inputDate.toLocaleString("fr-FR", options).replace(":", "h").toUpperCase();
 
   return (
     <View style={styles.cardContainer}>
       <View style={styles.card}>
-        <Image
-          style={styles.img}
-          source={isLocalAsset ? imageMapping[imagePath] : { uri: imagePath }}
-        />
+        {activity.imgUrl && <Image style={styles.img} source={{ uri: activity.imgUrl }} />}
+        {!activity.imgUrl && <View style={styles.img}><FontAwesome name={'photo'} color={'#BBC3FF'} size={28} /></View>} 
         <View style={styles.details}>
-          <Text style={styles.activityDate}>{activityDate}</Text>
+          <Text style={styles.activityDate}>{formattedDate}</Text>
 
-          <Text style={styles.activityName}>{activityName}</Text>
+          <Text style={styles.activityName}>{activity.name}</Text>
           <View style={styles.locationContainer}>
-            <Text style={styles.activityLocation}>{activityLocation}</Text>
-            {activityDistance ? (
-              <Text style={styles.activityLocation}>{activityDistance} KM</Text>
+            <Text style={styles.activityLocation}>{`${activity.postalCode}, ${activity.city}`}</Text>
+            {activity.distance ? (
+              <Text style={styles.activityLocation}>{activity.distance} KM</Text>
             ) : (
               <></>
             )}
@@ -74,7 +70,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   card: {
-    justifyContent: "space-evenly",
+    justifyContent: "flex-start",
+    padding: 8,
+    gap: 12,
     alignItems: "center",
     flexDirection: "row",
     borderRadius: 16,
@@ -93,6 +91,9 @@ const styles = StyleSheet.create({
     height: 92,
     width: 82,
     borderRadius: 8,
+    backgroundColor: "#EEF0FF",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   details: {
     gap: 4,

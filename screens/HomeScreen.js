@@ -283,7 +283,7 @@ export default function HomeScreen({ navigation }) {
   });
 
   const activitiesList = activities.map((activity, i) => {
-    return <CardBig key={i} activity={activity} display="horizontal" />;
+    return <CardBig key={i} activity={activity} />;
   });
 
   return (

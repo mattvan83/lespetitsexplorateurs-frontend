@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 
 
-export default function CardBig({ activity, display} ) {
+export default function CardBig({ activity } ) {
   const navigation = useNavigation();
   const user = useSelector((state) => state.user.value);
   //A SUPPRIMER PLUS TARD
@@ -23,7 +23,7 @@ export default function CardBig({ activity, display} ) {
 
   return (
     <View style={styles.cardContainer}>
-      <TouchableOpacity activeOpacity={0.8} style={ display === "vertical" ? styles.cardV : styles.cardH} onPress={() => navigation.navigate('ActivitySheet', {activity})}>
+      <TouchableOpacity activeOpacity={0.8} style={ styles.cardH} onPress={() => navigation.navigate('ActivitySheet', {activity})}>
         <Image style={styles.img} source={{ uri: activity.imgUrl }} />
         <View style={styles.details}>
           <View style={styles.dateFavoriteContainer}>

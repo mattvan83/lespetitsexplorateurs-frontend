@@ -2,6 +2,7 @@ import { StyleSheet, Text, Image, View, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 
 export default function Card({ activity} ) {
@@ -26,7 +27,8 @@ export default function Card({ activity} ) {
   return (
     <View style={styles.cardContainer}>
       <TouchableOpacity activeOpacity={0.8} style={styles.card} onPress={() => navigation.navigate('ActivitySheet', {activity})}>
-        <Image style={styles.img} source={{ uri: activity.imgUrl }} />
+      {activity.imgUrl && <Image style={styles.img} source={{ uri: activity.imgUrl }} />}
+        {!activity.imgUrl && <View style={styles.img}><FontAwesome name={'photo'} color={'#BBC3FF'} size={28} /></View>} 
         <View style={styles.details}>
           <View style={styles.dateFavoriteContainer}>
             <Text style={styles.activityDate}>{formattedDate}</Text>
@@ -59,7 +61,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   card: {
-    justifyContent: "space-evenly",
+    justifyContent: "flex-start",
+    padding: 8,
+    gap: 12,
     alignItems: "center",
     flexDirection: "row",
     borderRadius: 16,
@@ -78,6 +82,9 @@ const styles = StyleSheet.create({
     height: 92,
     width: 82,
     borderRadius: 8,
+    backgroundColor: "#EEF0FF",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   details: {
     gap: 4,

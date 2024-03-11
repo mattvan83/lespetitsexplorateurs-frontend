@@ -13,11 +13,12 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 
+
+const BACKEND_ADDRESS = "http://192.168.1.23:3000";
+
 export default function ProfileScreen({ navigation }) {
   const [photo, setPhoto] = useState();
   const [photoType, setPhotoType] = useState('image/jpeg');
-
-  const formData = new FormData();
 
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
@@ -46,7 +47,7 @@ export default function ProfileScreen({ navigation }) {
 
   const handleCreate = () => {
     const token = user.token;
-    fetch(`http://192.168.1.23:3000/activities/newActivity/${token}`, {
+    fetch(`${BACKEND_ADDRESS}/activities/newActivity/${token}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -66,13 +67,31 @@ export default function ProfileScreen({ navigation }) {
       .then((response) => response.json())
       .then((activity) => {
         if (activity.result) {
+
+          // If a photo has been added, we update the activity in database
+          if (photo != "") {
+            const formData = new FormData();
+            formData.append('photoFromFront', {
+              uri: photo,
+              name: 'photo.jpg',
+              type: photoType,
+            });
+
+            fetch(`${BACKEND_ADDRESS}/activities/newPhoto/${activity._id}`, {
+              method: 'POST',
+              body: formData,
+            }).then((response) => response.json())
+              .then((data) => {
+                console.log(data)
+              });
+          }
+
           navigation.navigate("TabNavigator", { screen: "Activité" });
           dispatch(addUserActivities(activity.activity))
         } else {
           console.error("The activity haven't been created", activity.error);
         }
       });
-    //});
   }
 
 
