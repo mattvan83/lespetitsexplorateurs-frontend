@@ -22,6 +22,8 @@ export default function ProfileScreen({ navigation }) {
   const [activityPlace, setActivityPlace] = useState(activities.locationName);
   const [showError, setShowError] = useState(false);
 
+  console.log('Reducer: ', activities);
+
   const handleContinue = () => {
     if (activityAddress !== '' && activityPostalCode !== '' && activityCity !== '') {
       dispatch(addActivityInfoScreen3({ address: activityAddress, postalCode: activityPostalCode, city: activityCity, locationName: activityPlace }));

@@ -17,10 +17,6 @@ export default function ProfileScreen({ navigation }) {
   const activities = useSelector((state) => state.activities.value);
   const [selectedAges, setSelectedAges] = useState([]);
   const [showError, setShowError] = useState(false);
-
-  /*useEffect(() => {
-    setSelectedAges([]);
-  }, []);*/
   
   const ageCategory = ["3-12 mois", "1-3 ans", "3-6 ans", "6-10 ans", "10+ ans"];
 
@@ -36,6 +32,7 @@ export default function ProfileScreen({ navigation }) {
   const handleContinue = () => {
     if (selectedAges.length !== 0) {
       dispatch(addActivityInfoScreen2({ concernedAges: selectedAges }));
+      console.log('Ages: ', selectedAges);
       navigation.navigate('ActivityPart3');
     } else {
       setShowError(true);

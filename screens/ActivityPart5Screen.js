@@ -14,8 +14,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 
-
-const BACKEND_ADDRESS = "http://192.168.1.23:3000";
+const BACKEND_ADDRESS = "http://172.20.10.8:3000";
 
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
