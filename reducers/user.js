@@ -67,6 +67,9 @@ export const userSlice = createSlice({
       state.value.filters.latitudeFilter = action.payload.latitudeFilter;
       state.value.filters.scopeFilter = action.payload.scopeFilter;
     },
+    setCategoryFilters: (state, action) => {
+      state.value.filters.categoryFilter = action.payload;
+    },
     setLocationFilters: (state, action) => {
       state.value.filters.cityFilter = action.payload.cityFilter;
       state.value.filters.longitudeFilter = action.payload.longitudeFilter;
@@ -137,6 +140,7 @@ export const {
   addCurrentCity,
   importActivities,
   setFilters,
+  setCategoryFilters,
   setLocationFilters,
   setPreferencesFilters,
   resetFilters,

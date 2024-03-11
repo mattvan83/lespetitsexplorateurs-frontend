@@ -1,10 +1,16 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
-
 import { Ionicons } from "@expo/vector-icons";
+import { useDispatch } from "react-redux";
+import { setCategoryFilters } from "../reducers/user";
+import { useNavigation } from "@react-navigation/native";
 
-export default function FilterCategoryMedium({ category }) {
-  //   const handleSubmit = () => {
-  //     handleCategoryList(category);
+export default function HomeCategoryMedium({ category }) {
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+
+  //   const handleSubmit = (category) => {
+  //     dispatch(setCategoryFilters([category])) &&
+  //       navigation.navigate("ListResults");
   //   };
 
   let icon = null;
@@ -32,7 +38,7 @@ export default function FilterCategoryMedium({ category }) {
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        // onPress={() => handleSubmit()}
+        // onPress={() => handleSubmit(category)}
         style={styles.categoryButton}
         activeOpacity={0.8}
       >
