@@ -1,11 +1,10 @@
 import { StyleSheet, Text, Image, View, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useNavigation } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 
-
-export default function Card({ activity} ) {
+export default function Card({ activity }) {
   const navigation = useNavigation();
   const user = useSelector((state) => state.user.value);
   //A SUPPRIMER PLUS TARD
@@ -21,31 +20,57 @@ export default function Card({ activity} ) {
     minute: "numeric",
   };
 
-
-  const formattedDate = inputDate.toLocaleString("fr-FR", options).replace(":", "h").toUpperCase();
+  const formattedDate = inputDate
+    .toLocaleString("fr-FR")
+    .replace(":", "h")
+    .toUpperCase();
 
   return (
     <View style={styles.cardContainer}>
-      <TouchableOpacity activeOpacity={0.8} style={styles.card} onPress={() => navigation.navigate('ActivitySheet', {activity})}>
-      {activity.imgUrl && <Image style={styles.img} source={{ uri: activity.imgUrl }} />}
-        {!activity.imgUrl && <View style={styles.img}><FontAwesome name={'photo'} color={'#BBC3FF'} size={28} /></View>} 
+      <TouchableOpacity
+        activeOpacity={0.8}
+        style={styles.card}
+        onPress={() => navigation.navigate("ActivitySheet", { activity })}
+      >
+        {activity.imgUrl && (
+          <Image style={styles.img} source={{ uri: activity.imgUrl }} />
+        )}
+        {!activity.imgUrl && (
+          <View style={styles.img}>
+            <FontAwesome name={"photo"} color={"#BBC3FF"} size={28} />
+          </View>
+        )}
         <View style={styles.details}>
           <View style={styles.dateFavoriteContainer}>
             <Text style={styles.activityDate}>{formattedDate}</Text>
             <TouchableOpacity activeOpacity={0.8} style={styles.favorite}>
               {!isFavorite ? (
-                <Icon style={styles.heartIcon} name="heart-outline" size={20} color="#EB5757"/>
+                <Icon
+                  style={styles.heartIcon}
+                  name="heart-outline"
+                  size={20}
+                  color="#EB5757"
+                />
               ) : (
-                <Icon style={styles.heartIcon} name="heart" size={20} color="#EB5757" />
+                <Icon
+                  style={styles.heartIcon}
+                  name="heart"
+                  size={20}
+                  color="#EB5757"
+                />
               )}
             </TouchableOpacity>
           </View>
 
           <Text style={styles.activityName}>{activity.name}</Text>
           <View style={styles.locationContainer}>
-            <Text style={styles.activityLocation}>{`${activity.postalCode}, ${activity.city}`}</Text>
+            <Text
+              style={styles.activityLocation}
+            >{`${activity.postalCode}, ${activity.city}`}</Text>
             {activity.distance ? (
-              <Text style={styles.activityLocation}>{user.latitude && user.longitude ? activity.distance : null} KM</Text>
+              <Text style={styles.activityLocation}>
+                {user.latitude && user.longitude ? activity.distance : null} KM
+              </Text>
             ) : (
               <></>
             )}
@@ -68,7 +93,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     borderRadius: 16,
     margin: 8,
-    width: '90%',
+    width: "90%",
     height: 112,
     backgroundColor: "white",
     //Ombre portée
@@ -83,8 +108,8 @@ const styles = StyleSheet.create({
     width: 82,
     borderRadius: 8,
     backgroundColor: "#EEF0FF",
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   details: {
     gap: 4,

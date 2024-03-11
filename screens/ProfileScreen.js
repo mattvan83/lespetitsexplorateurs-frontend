@@ -15,14 +15,15 @@ import {
   resetPreferences,
   setPreferencesFilters,
 } from "../reducers/user";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { logout } from "../reducers/user";
 import Slider from "@react-native-community/slider";
 import InputLocalisation from "../components/InputLocalisation";
 import FilterTextCategory from "../components/FilterTextCategory";
 import { handleFilterButtonClick } from "../modules/handleFilterButtonClick";
 
-const BACKEND_ADDRESS = "http://172.20.10.8:3000";
+// const BACKEND_ADDRESS = "http://192.168.1.20:3000";
+const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
@@ -40,6 +41,13 @@ export default function ProfileScreen({ navigation }) {
   const [selectedLatitude, setSelectedLatitude] = useState(
     user.preferences.longitudePreference
   );
+
+  useEffect(() => {
+    // Execute when the component unmounts
+    return () => {
+      console.log("Unmount ProfileScreen");
+    };
+  }, []);
 
   const handleLogOut = () => {
     dispatch(resetPreferences());
@@ -131,11 +139,16 @@ export default function ProfileScreen({ navigation }) {
         <Text style={globalStyles.title2}>Mon profil</Text>
 
         <View style={styles.profilNamePic}>
-          <Image source={{ uri: 'https://res.cloudinary.com/ddoqxafok/image/upload/v1710019231/qcwu39or7dzqmtiwugmr.jpg' }} style={styles.profileImg} />
+          <Image
+            source={{
+              uri: "https://res.cloudinary.com/ddoqxafok/image/upload/v1710019231/qcwu39or7dzqmtiwugmr.jpg",
+            }}
+            style={styles.profileImg}
+          />
           <Text style={styles.username}>{user.username}</Text>
           <TouchableOpacity onPress={() => handleLogOut()} activeOpacity={0.8}>
-          <Text style={styles.deconnexion}>Se déconnecter</Text>
-        </TouchableOpacity>
+            <Text style={styles.deconnexion}>Se déconnecter</Text>
+          </TouchableOpacity>
         </View>
 
         <Text style={globalStyles.title4}>Âges des enfants</Text>
@@ -190,18 +203,29 @@ const styles = StyleSheet.create({
   },
   filtersContainer: {
     flex: 1,
-    height: '70%',
+    height: "70%",
   },
   profilNamePic: {
-    alignSelf: 'center',
+    alignSelf: "center",
     marginBottom: 20,
   },
   username: {
     marginTop: 16,
     marginBottom: 8,
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
+  },
+  profilNamePic: {
+    alignSelf: "center",
+    marginBottom: 20,
+  },
+  username: {
+    marginTop: 16,
+    marginBottom: 8,
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "bold",
   },
   profileImg: {
     width: 150,

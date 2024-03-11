@@ -29,7 +29,7 @@ const globalStyles = StyleSheet.create({
     marginTop: 24,
     marginLeft: 20,
     marginBottom: 4,
-    textAlign: 'left'
+    textAlign: "left",
   },
 
   // FORMS

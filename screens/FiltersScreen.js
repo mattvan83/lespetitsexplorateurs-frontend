@@ -7,7 +7,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setFilters, resetFilters } from "../reducers/user";
 import globalStyles from "../globalStyles";
@@ -31,16 +31,23 @@ export default function FiltersScreen({ navigation }) {
     user.preferences.cityPreference
   );
   const [selectedLongitude, setSelectedLongitude] = useState(
-    user.preferences.latitudePreference
+    user.preferences.longitudePreference
   );
   const [selectedLatitude, setSelectedLatitude] = useState(
-    user.preferences.longitudePreference
+    user.preferences.latitudePreference
   );
 
   const categories = ["Sport", "Musique", "Créativité", "Motricité", "Éveil"];
   const dateFilters = ["Aujourd'hui", "Demain", "Cette semaine", "Ce week-end"];
   const momentFilters = ["Matin", "Après-midi", "Soir"];
   const ageFilters = ["3-12 mois", "1-3 ans", "3-6 ans", "6-10 ans", "10+ ans"];
+
+  useEffect(() => {
+    // Execute when the component unmounts
+    return () => {
+      console.log("Unmount FiltersScreen");
+    };
+  }, []);
 
   const handleCategoryList = (category) => {
     handleFilterButtonClick(

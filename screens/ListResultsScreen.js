@@ -16,6 +16,7 @@ import globalStyles from "../globalStyles";
 import { useEffect, useState } from "react";
 import * as Location from "expo-location";
 import { useDispatch, useSelector } from "react-redux";
+import { loadOrganizers } from "../reducers/organizers";
 import {
   addCurrentLocation,
   importActivities,
@@ -23,10 +24,11 @@ import {
   setErrorMsg,
 } from "../reducers/user";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
-import { Ionicons } from '@expo/vector-icons';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { Ionicons } from "@expo/vector-icons";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 
-const BACKEND_ADDRESS = "http://172.20.10.8:3000";
+// const BACKEND_ADDRESS = "http://192.168.1.20:3000";
+const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
 export default function ListResultsScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
@@ -36,6 +38,13 @@ export default function ListResultsScreen({ navigation }) {
   console.log("user.filters: ", userFilters);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    // Execute when the component unmounts
+    return () => {
+      console.log("Unmount ListResultsScreen");
+    };
+  }, []);
 
   useEffect(() => {
     // Get user filters
@@ -76,6 +85,19 @@ export default function ListResultsScreen({ navigation }) {
           dispatch(importActivities([])) &&
           dispatch(setErrorMsg(data.error));
       });
+
+    fetch(
+      `${BACKEND_ADDRESS}/organizers/geoloc/${scopeFilter}/${user.filters.longitudeFilter}/${user.filters.latitudeFilter}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        data.result && dispatch(loadOrganizers(data.organizers));
+      });
+
+    // // Execute when the component unmounts
+    // return () => {
+    //   console.log("Unmount ListResultsScreen");
+    // };
   }, [userFilters]);
 
   const searchCity = (query) => {
@@ -164,48 +186,8 @@ export default function ListResultsScreen({ navigation }) {
   };
 
   const activitiesList = user.activities.map((activity, i) => {
-    return (<Card key={i} activity={activity} />);
+    return <Card key={i} activity={activity} />;
   });
-
-  // const activities = user.activities.map((activity, i) => {
-  //   const inputDate = new Date(activity.date);
-
-  //   const options = {
-  //     weekday: "long", // full weekday name
-  //     day: "numeric", // day of the month
-  //     month: "long", // full month name
-  //     hour: "numeric",
-  //     minute: "numeric",
-  //   };
-
-  //   const formattedDate = inputDate
-  //     .toLocaleString("fr-FR", options)
-  //     .replace(":", "h")
-  //     .toUpperCase();
-
-  //   // console.log(formattedDate);
-
-  //   return (
-  //     <Card
-  //       key={i}
-  //       id={activity.id}
-  //       imagePath={
-  //         activity.imgUrl.includes(1)
-  //           ? "localImage1"
-  //           : activity.imgUrl.includes(2)
-  //           ? "localImage2"
-  //           : "localImage3"
-  //       }
-  //       activityDate={formattedDate}
-  //       activityName={activity.name}
-  //       activityLocation={`${activity.postalCode}, ${activity.city}`}
-  //       isFavorite={activity.isLiked}
-  //       activityDistance={
-  //         user.latitude && user.longitude ? activity.distance : null
-  //       }
-  //     />
-  //   );
-  // });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -331,7 +313,7 @@ const styles = StyleSheet.create({
   arrow: {
     marginTop: 35,
     marginLeft: 20,
-    alignSelf:'flex-start',
+    alignSelf: "flex-start",
   },
   filtersButton: {
     width: 70,

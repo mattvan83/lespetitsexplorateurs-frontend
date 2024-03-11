@@ -9,25 +9,30 @@ import {
   Share,
   Alert,
 } from "react-native";
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import { Ionicons } from '@expo/vector-icons';
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 
-const BACKEND_ADDRESS = "http://172.20.10.8:3000";
+// const BACKEND_ADDRESS = "http://192.168.1.20:3000";
+const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
-export default function ActivitySheetScreen({ navigation, route: { params: { activity } }}) {
+export default function ActivitySheetScreen({
+  navigation,
+  route: {
+    params: { activity },
+  },
+}) {
   const activities = useSelector((state) => state.activities.value);
   const user = useSelector((state) => state.user.value);
   const [isLiked, setIsLiked] = useState(false);
 
   const handleShare = async () => {
-    console.log('share');
+    console.log("share");
 
     try {
       const result = await Share.share({
-        message:
-          'Les Petits Explorateurs | Activité proche de chez vous !',
+        message: "Les Petits Explorateurs | Activité proche de chez vous !",
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
@@ -41,10 +46,10 @@ export default function ActivitySheetScreen({ navigation, route: { params: { act
     } catch (error) {
       Alert.alert(error.message);
     }
-  }
+  };
 
   const handleLike = () => {
-    console.log('add to or remove from favorites');
+    console.log("add to or remove from favorites");
     setIsLiked(!isLiked);
 
     fetch(`${BACKEND_ADDRESS}/activities/favorite/${activities._id}`, {
@@ -64,17 +69,17 @@ export default function ActivitySheetScreen({ navigation, route: { params: { act
   };
 
   const handleFollow = () => {
-    console.log('follow or unfollow');
-  }
+    console.log("follow or unfollow");
+  };
 
   const handleMessage = () => {
-    console.log('navigate to MessageScreen');
+    console.log("navigate to MessageScreen");
     navigation.navigate("MessagingDiscussion");
-  }
+  };
 
   const handleCalendar = () => {
-    console.log('add to calendar');
-  }
+    console.log("add to calendar");
+  };
 
   //const inputDate = new Date(activity.date);
 
@@ -90,24 +95,49 @@ export default function ActivitySheetScreen({ navigation, route: { params: { act
 
   //Gestion de la date
   const dateObject = new Date(activity.date);
-  const daysOfWeek = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi'];
-  const months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+  const daysOfWeek = [
+    "Dimanche",
+    "Lundi",
+    "Mardi",
+    "Mercredi",
+    "Jeudi",
+    "Vendredi",
+    "Samedi",
+  ];
+  const months = [
+    "janvier",
+    "février",
+    "mars",
+    "avril",
+    "mai",
+    "juin",
+    "juillet",
+    "août",
+    "septembre",
+    "octobre",
+    "novembre",
+    "décembre",
+  ];
   // Obtenir le jour de la semaine, le jour du mois, le mois et l'année
   const day = daysOfWeek[dateObject.getDay()];
   const date = dateObject.getDate();
   const month = months[dateObject.getMonth()];
   const year = dateObject.getFullYear();
   // Obtenir l'heure et les minutes
-  const hours = dateObject.getUTCHours().toString().padStart(2, '0'); // Ajoute un zéro devant si nécessaire
-  const minutes = dateObject.getUTCMinutes().toString().padStart(2, '0'); // Ajoute un zéro devant si nécessaire
+  const hours = dateObject.getUTCHours().toString().padStart(2, "0"); // Ajoute un zéro devant si nécessaire
+  const minutes = dateObject.getUTCMinutes().toString().padStart(2, "0"); // Ajoute un zéro devant si nécessaire
   // Formater date et heure
   const formattedDate = `${day} ${date} ${month} ${year}`;
   const formattedTime = `${hours}h${minutes}`;
 
   //Gestion de la durée
   // Conversion en heures, minutes et secondes
-  const durationHours = Math.floor(activity.durationInMilliseconds / (1000 * 60 * 60));
-  const durationMinutes = Math.floor((activity.durationInMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
+  const durationHours = Math.floor(
+    activity.durationInMilliseconds / (1000 * 60 * 60)
+  );
+  const durationMinutes = Math.floor(
+    (activity.durationInMilliseconds % (1000 * 60 * 60)) / (1000 * 60)
+  );
   // Formater la durée
   const formattedDuration = `${durationHours}h${durationMinutes}`;
 
@@ -115,25 +145,46 @@ export default function ActivitySheetScreen({ navigation, route: { params: { act
     fetch(`${BACKEND_ADDRESS}/organizers/${activity.organizerId}`)
       .then((response) => response.json())
       .then((data) => {
-        data.result && navigation.navigate('OrganizerProfile', { organizer: data.organizer })
+        data.result &&
+          navigation.navigate("OrganizerProfile", {
+            organizer: data.organizer,
+          });
       });
-  }
+  };
 
-  
   return (
     <View style={styles.container}>
       {/* <ImageBackground resizeMode="cover" style={styles.image} source={require('../assets/Images/bebe-nageurs.jpg')}> */}
-      <ImageBackground resizeMode="cover" style={styles.image} source={{ uri: activity.imgUrl }}>
+      <ImageBackground
+        resizeMode="cover"
+        style={styles.image}
+        source={{ uri: activity.imgUrl }}
+      >
         <View style={styles.iconPosition}>
           <View>
-            <FontAwesome name={'arrow-left'} color={'black'} size={20} onPress={() => navigation.goBack()} />
+            <FontAwesome
+              name={"arrow-left"}
+              color={"black"}
+              size={20}
+              onPress={() => navigation.goBack()}
+            />
           </View>
           <View style={styles.likeShare}>
-            <TouchableOpacity onPress={() => handleShare()} style={styles.topIconBckgd}>
+            <TouchableOpacity
+              onPress={() => handleShare()}
+              style={styles.topIconBckgd}
+            >
               <Ionicons name="share-social-sharp" size={24} color="white" />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handleLike()} style={styles.topIconBckgd}>
-              <Ionicons name="heart" size={24} style={{ color: isLiked ? 'red' : 'white' }} />
+            <TouchableOpacity
+              onPress={() => handleLike()}
+              style={styles.topIconBckgd}
+            >
+              <Ionicons
+                name="heart"
+                size={24}
+                style={{ color: isLiked ? "red" : "white" }}
+              />
             </TouchableOpacity>
           </View>
         </View>
@@ -147,7 +198,9 @@ export default function ActivitySheetScreen({ navigation, route: { params: { act
           </View>
           <View marginLeft={20}>
             <Text style={styles.bold}>{formattedDate}</Text>
-            <Text style={styles.small}>{formattedTime} - Durée de l'activité : {formattedDuration}</Text>
+            <Text style={styles.small}>
+              {formattedTime} - Durée de l'activité : {formattedDuration}
+            </Text>
           </View>
         </View>
 
@@ -157,10 +210,11 @@ export default function ActivitySheetScreen({ navigation, route: { params: { act
           </View>
           <View marginLeft={20}>
             <Text style={styles.bold}>{activity.locationName}</Text>
-            <Text style={styles.small}>{activity.address} {activity.postalCode} {activity.city} </Text>
+            <Text style={styles.small}>
+              {activity.address} {activity.postalCode} {activity.city}{" "}
+            </Text>
           </View>
         </View>
-
 
         <View>
           <TouchableOpacity
@@ -169,8 +223,17 @@ export default function ActivitySheetScreen({ navigation, route: { params: { act
             style={styles.orgaDiv}
           >
             <View style={styles.img}>
-              {activity.organizerImgUrl && <Image style={styles.photoOrg} source={{ uri: activity.organizerImgUrl }} />}
-              {activity.organizerImgUrl === "" && <Text style={styles.initiale}>{activity.organizer.slice(0, 1)}</Text>}
+              {activity.organizerImgUrl && (
+                <Image
+                  style={styles.photoOrg}
+                  source={{ uri: activity.organizerImgUrl }}
+                />
+              )}
+              {activity.organizerImgUrl === "" && (
+                <Text style={styles.initiale}>
+                  {activity.organizer.slice(0, 1)}
+                </Text>
+              )}
             </View>
             <View marginLeft={20}>
               <Text style={styles.bold}>{activity.organizer}</Text>
@@ -203,41 +266,44 @@ export default function ActivitySheetScreen({ navigation, route: { params: { act
           <Text style={styles.textButton}>AJOUTER À L'AGENDA</Text>
         </TouchableOpacity>
       </View>
-    </View >
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   image: {
     flex: 3.5,
   },
   iconPosition: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingRight: 25,
     paddingLeft: 25,
     paddingTop: 35,
   },
   likeShare: {
-    display: 'flex',
-    flexDirection: 'row',
+    display: "flex",
+    flexDirection: "row",
   },
   like: {
-    color: 'white',
+    color: "white",
+  },
+  like: {
+    color: "white",
   },
   topIconBckgd: {
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    backgroundColor: "rgba(255, 255, 255, 0.3)",
     height: 36,
     width: 36,
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 5,
     margin: 5,
   },
@@ -246,71 +312,71 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 35,
-    fontWeight: '600',
-    display: 'flex',
-    alignItems: 'flex-start',
+    fontWeight: "600",
+    display: "flex",
+    alignItems: "flex-start",
     marginLeft: 25,
     marginTop: 20,
     marginBottom: 20,
     marginRight: 25,
   },
   icon: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#EAEDFF',
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#EAEDFF",
     width: 48,
     height: 48,
     borderRadius: 15,
     marginLeft: 25,
   },
   div: {
-    display: 'flex',
+    display: "flex",
     height: 55,
     width: 305,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 10,
   },
   orgaDiv: {
-    display: 'flex',
+    display: "flex",
     height: 55,
     width: 260,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   bold: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 16,
     marginBottom: 5,
     marginRight: 25,
   },
   small: {
     fontSize: 12,
-    color: 'grey',
+    color: "grey",
     marginRight: 25,
   },
   followWrite: {
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
   },
   btn: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#EAEDFF',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#EAEDFF",
     width: 60,
     height: 28,
     borderRadius: 5,
     marginTop: 7,
   },
   btnOrganizer: {
-    color: '#5669FF',
-    fontWeight: 'bold',
+    color: "#5669FF",
+    fontWeight: "bold",
     fontSize: 12,
   },
   subtitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginLeft: 25,
     marginRight: 25,
     marginTop: 20,
@@ -324,24 +390,24 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 20,
     marginTop: 15,
   },
   button: {
     padding: 10,
-    width: '70%',
+    width: "70%",
     height: 58,
-    backgroundColor: '#5669FF',
+    backgroundColor: "#5669FF",
     borderRadius: 15,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   textButton: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#fff',
-    textTransform: 'uppercase',
+    fontWeight: "bold",
+    color: "#fff",
+    textTransform: "uppercase",
   },
   photoOrg: {
     width: 48,
@@ -354,14 +420,35 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     marginLeft: 25,
     alignSelf: "center",
-    backgroundColor: '#EEF0FF',
+    backgroundColor: "#EEF0FF",
     borderRadius: 100,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   initiale: {
     fontSize: 36,
-    fontWeight: 'bold',
-    color: '#BBC3FF',
+    fontWeight: "bold",
+    color: "#BBC3FF",
+  },
+  photoOrg: {
+    width: 48,
+    height: 48,
+    borderRadius: 100,
+  },
+  img: {
+    width: 48,
+    height: 48,
+    borderRadius: 100,
+    marginLeft: 25,
+    alignSelf: "center",
+    backgroundColor: "#EEF0FF",
+    borderRadius: 100,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  initiale: {
+    fontSize: 36,
+    fontWeight: "bold",
+    color: "#BBC3FF",
   },
 });

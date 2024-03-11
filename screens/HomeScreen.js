@@ -28,19 +28,23 @@ import {
 import Organizers from "../components/Organizers";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 import { Ionicons } from "@expo/vector-icons";
+import HomeCategoryMedium from "../components/HomeCategoryMedium";
 
-const BACKEND_ADDRESS = "http://172.20.10.8:3000";
+// const BACKEND_ADDRESS = "http://192.168.1.20:3000";
+const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
+// console.log("Backend address:", BACKEND_ADDRESS);
 
 export default function HomeScreen({ navigation }) {
   const [suggestionsList, setSuggestionsList] = useState([]);
   const user = useSelector((state) => state.user.value);
   const organizers = useSelector((state) => state.organizers.value);
-  //const [activities, setActivities] = useState([])
+  // const [activities, setActivities] = useState([]);
+  const categories = ["Sport", "Musique", "Créativité", "Motricité", "Éveil"];
 
   // console.log("user: ", user);
   // console.log("user.filters: ", user.filters);
   // console.log("user.preferences: ", user.preferences);
-  console.log("user.errorMsg: ", user.errorMsg);
+  // console.log("user.errorMsg: ", user.errorMsg);
 
   const dispatch = useDispatch();
 
@@ -92,16 +96,25 @@ export default function HomeScreen({ navigation }) {
                 "user.preferences.longitudePreference: ",
                 user.preferences.longitudePreference
               );
-              // Set location details in user preferences if not defined
+              // Set location details in user preferences if not defined -> indirectly set user location filters as default state
+              // ToDo: Call fetch PUT /updatePreferences to update partially user preferences?
               if (
-                !user.preferences.latitudePreference ||
-                !user.preferences.longitudePreference
+                user.preferences.latitudePreference === -200 ||
+                user.preferences.longitudePreference === -200
               ) {
                 dispatch(
                   setLocationPreferences({
                     cityPreference: city,
                     latitudePreference: coordinates.latitude,
                     longitudePreference: coordinates.longitude,
+                  })
+                );
+
+                dispatch(
+                  setLocationFilters({
+                    cityFilter: city,
+                    latitudeFilter: coordinates.latitude,
+                    longitudeFilter: coordinates.longitude,
                   })
                 );
 
@@ -114,12 +127,6 @@ export default function HomeScreen({ navigation }) {
                   priceFilter,
                   scopeFilter,
                 } = user.filters;
-
-                // console.log(
-                //   user.token,
-                //   coordinates.latitude,
-                //   coordinates.longitude
-                // );
 
                 fetch(`${BACKEND_ADDRESS}/activities/geoloc`, {
                   method: "POST",
@@ -145,31 +152,29 @@ export default function HomeScreen({ navigation }) {
                     data.result &&
                       dispatch(importActivities(data.activities)) &&
                       dispatch(setErrorMsg(null));
-
                     !data.result &&
                       dispatch(importActivities([])) &&
                       dispatch(setErrorMsg(data.error));
-                      //data.result && setActivities(data.activities)
+                  });
+
+                fetch(
+                  `${BACKEND_ADDRESS}/organizers/geoloc/${scopeFilter}/${coordinates.longitude}/${coordinates.latitude}`
+                )
+                  .then((response) => response.json())
+                  .then((data) => {
+                    data.result && dispatch(loadOrganizers(data.organizers));
                   });
               } else if (
-                user.preferences.latitudePreference &&
-                user.preferences.longitudePreference
+                user.preferences.latitudePreference !== -200 &&
+                user.preferences.longitudePreference !== -200
               ) {
                 // Get user filters
                 const {
                   categoryFilter,
                   dateFilter,
                   momentFilter,
-                  ageFilter,
                   priceFilter,
-                  scopeFilter,
                 } = user.filters;
-
-                // console.log(
-                //   user.token,
-                //   coordinates.latitude,
-                //   coordinates.longitude
-                // );
 
                 fetch(`${BACKEND_ADDRESS}/activities/geoloc`, {
                   method: "POST",
@@ -178,12 +183,12 @@ export default function HomeScreen({ navigation }) {
                     token: user.token,
                     latitude: user.preferences.latitudePreference,
                     longitude: user.preferences.longitudePreference,
-                    scope: scopeFilter,
+                    scope: user.preferences.scopePreference,
                     filters: {
                       categoryFilter,
                       dateFilter,
                       momentFilter,
-                      ageFilter,
+                      ageFilter: user.preferences.agePreference,
                     },
                   }),
                 })
@@ -198,18 +203,18 @@ export default function HomeScreen({ navigation }) {
                     !data.result &&
                       dispatch(importActivities([])) &&
                       dispatch(setErrorMsg(data.error));
-                      //data.result && setActivities(data.activities)
+                    // data.result && setActivities(data.activities);
+                  });
+
+                fetch(
+                  `${BACKEND_ADDRESS}/organizers/geoloc/${user.preferences.scopePreference}/${user.preferences.longitudePreference}/${user.preferences.latitudePreference}`
+                )
+                  .then((response) => response.json())
+                  .then((data) => {
+                    data.result && dispatch(loadOrganizers(data.organizers));
                   });
               }
             }
-
-            fetch(
-              `${BACKEND_ADDRESS}/organizers/geoloc/${user.preferences.scopePreference}/${coordinates.longitude}/${coordinates.latitude}`
-            )
-              .then((response) => response.json())
-              .then((data) => {
-                data.result && dispatch(loadOrganizers(data.organizers));
-              });
           }
         } catch (error) {
           console.error("Error obtaining user coordinates: ", error);
@@ -217,30 +222,108 @@ export default function HomeScreen({ navigation }) {
       }
 
       // Check if the position is not obtained after a certain delay
-      const delay = 2000; // Set your desired delay in milliseconds
+      const delay = 1000; // Set your desired delay in milliseconds
       const timeoutId = setTimeout(() => {
         if (!isPositionObtained) {
           console.log("User coordinates unavailable");
-          // Handle the case where coordinates are not obtained within the specified delay
-          fetch(`${BACKEND_ADDRESS}/activities/nogeoloc/${user.token}`)
-            .then((response) => response.json())
-            .then((data) => {
-              data.result && dispatch(importActivities(data.activities));
-            });
+          if (
+            user.preferences.latitudePreference === -200 ||
+            user.preferences.longitudePreference === -200
+          ) {
+            // Get user filters
+            const {
+              categoryFilter,
+              dateFilter,
+              momentFilter,
+              ageFilter,
+              priceFilter,
+            } = user.filters;
 
-          fetch(`${BACKEND_ADDRESS}/organizers/nogeoloc`)
-            .then((response) => response.json())
-            .then((data) => {
-              data.result && dispatch(loadOrganizers(data.organizers));
-            });
+            fetch(`${BACKEND_ADDRESS}/activities/nogeoloc`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                token: user.token,
+                filters: {
+                  categoryFilter,
+                  dateFilter,
+                  momentFilter,
+                  ageFilter,
+                },
+              }),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                data.result &&
+                  dispatch(importActivities(data.activities)) &&
+                  dispatch(setErrorMsg(null));
+                !data.result &&
+                  dispatch(importActivities([])) &&
+                  dispatch(setErrorMsg(data.error));
+              });
+
+            fetch(`${BACKEND_ADDRESS}/organizers/nogeoloc`)
+              .then((response) => response.json())
+              .then((data) => {
+                data.result;
+                data.result && dispatch(loadOrganizers(data.organizers));
+              });
+          } else if (
+            user.preferences.latitudePreference !== -200 &&
+            user.preferences.longitudePreference !== -200
+          ) {
+            // Get user filters
+            const { categoryFilter, dateFilter, momentFilter, priceFilter } =
+              user.filters;
+
+            fetch(`${BACKEND_ADDRESS}/activities/geoloc`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                token: user.token,
+                latitude: user.preferences.latitudePreference,
+                longitude: user.preferences.longitudePreference,
+                scope: user.preferences.scopePreference,
+                filters: {
+                  categoryFilter,
+                  dateFilter,
+                  momentFilter,
+                  ageFilter: user.preferences.agePreference,
+                },
+              }),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                // console.log("data.result: ", data.result);
+                // console.log("data.error: ", data.error);
+                // console.log("data.activities: ", data.activities);
+                data.result &&
+                  dispatch(importActivities(data.activities)) &&
+                  dispatch(setErrorMsg(null));
+                !data.result &&
+                  dispatch(importActivities([])) &&
+                  dispatch(setErrorMsg(data.error));
+                // data.result && setActivities(data.activities);
+              });
+
+            fetch(
+              `${BACKEND_ADDRESS}/organizers/geoloc/${user.preferences.scopePreference}/${user.preferences.longitudePreference}/${user.preferences.latitudePreference}`
+            )
+              .then((response) => response.json())
+              .then((data) => {
+                data.result && dispatch(loadOrganizers(data.organizers));
+              });
+          }
         }
       }, delay);
 
       // Cleanup the timeout when the component unmounts or when the position is obtained
-      return () => clearTimeout(timeoutId);
+      return () => {
+        clearTimeout(timeoutId);
+        console.log("Unmount HomeScreen");
+      };
     })();
   }, []);
-
 
   const searchCity = (query) => {
     // Prevent search with an empty query
@@ -276,103 +359,111 @@ export default function HomeScreen({ navigation }) {
     navigation.navigate("Filters");
   };
 
-  const organizersMax10 = organizers.length > 10 ? organizers.slice(0, 10) : organizers;
+  const categoryList = categories.map((category, i) => {
+    return <HomeCategoryMedium key={i} category={category} />;
+  });
+
+  const organizersMax10 =
+    organizers.length > 10 ? organizers.slice(0, 10) : organizers;
   const organizersList = organizersMax10.map((data, i) => {
     return <Organizers key={i} {...data} />;
   });
 
-  const activitiesList = activities.map((activity, i) => {
+  const activitiesList = user.activities.map((activity, i) => {
     return <CardBig key={i} activity={activity} />;
   });
 
   return (
     // <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}
-      >
-        
-        <View style={styles.searchContainer}>
-
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+      <View style={styles.searchContainer}>
         <Text style={styles.localisation}>Localisation</Text>
-        <Text style={styles.localisationBold}>{user.filters.scopeFilter}km autour de {user.filters.cityFilter}</Text>
-          <View style={styles.search}>
-            <View style={styles.searchBar}>
-              <Ionicons name="location-outline" size={24} color="#7887FF" />
-              <AutocompleteDropdown
-                onChangeText={(value) => searchCity(value)}
-                onSelectItem={(item) =>
-                  item &&
-                  dispatch(
-                    setLocationFilters({
-                      cityFilter: item.cityName,
-                      longitudeFilter: item.coords[0],
-                      latitudeFilter: item.coords[1],
-                    })
-                  ) &&
-                  navigation.navigate("ListResults")
-                }
-                dataSet={suggestionsList}
-                suggestionsListMaxHeight={
-                  Dimensions.get("window").height * 0.45
-                }
-                onClear={onClearPress}
-                textInputProps={{
-                  placeholder: "Rechercher un lieu...",
-                  style: {
-                    color: "#5669FF",
-                    paddingLeft: 20,
-                  },
-                }}
-                inputContainerStyle={styles.inputContainer}
-                containerStyle={styles.dropdownContainer}
-                suggestionsListContainerStyle={styles.suggestionListContainer}
-                rightButtonsContainerStyle={styles.rightButtonsContainerStyle}
-                emptyResultText="Recherche infructueuse"
-                suggestionsListTextStyle={{
-                  color: "#120D26",
-                  fontSize: 12,
-                }}
-                closeOnSubmit
-              />
-            </View>
-            <TouchableOpacity
-              onPress={() => handlePressFilters()}
-              style={styles.filtersButton}
-              activeOpacity={0.8}
-            >
-              <Ionicons name="filter" size={24} color="#4A43EC" />
-              {/* <Text style={styles.textButton}>Filtres</Text> */}
-            </TouchableOpacity>
+        <Text style={styles.localisationBold}>
+          {user.filters.scopeFilter}km autour de {user.filters.cityFilter}
+        </Text>
+        <View style={styles.search}>
+          <View style={styles.searchBar}>
+            <Ionicons name="location-outline" size={24} color="#7887FF" />
+            <AutocompleteDropdown
+              onChangeText={(value) => searchCity(value)}
+              onSelectItem={(item) =>
+                item &&
+                dispatch(
+                  setLocationFilters({
+                    cityFilter: item.cityName,
+                    longitudeFilter: item.coords[0],
+                    latitudeFilter: item.coords[1],
+                  })
+                ) &&
+                navigation.navigate("ListResults")
+              }
+              dataSet={suggestionsList}
+              suggestionsListMaxHeight={Dimensions.get("window").height * 0.45}
+              onClear={onClearPress}
+              textInputProps={{
+                placeholder: "Rechercher un lieu...",
+                style: {
+                  color: "#5669FF",
+                  paddingLeft: 20,
+                },
+              }}
+              inputContainerStyle={styles.inputContainer}
+              containerStyle={styles.dropdownContainer}
+              suggestionsListContainerStyle={styles.suggestionListContainer}
+              rightButtonsContainerStyle={styles.rightButtonsContainerStyle}
+              emptyResultText="Recherche infructueuse"
+              suggestionsListTextStyle={{
+                color: "#120D26",
+                fontSize: 12,
+              }}
+              closeOnSubmit
+            />
           </View>
+          <TouchableOpacity
+            onPress={() => handlePressFilters()}
+            style={styles.filtersButton}
+            activeOpacity={0.8}
+          >
+            <Ionicons name="filter" size={24} color="#4A43EC" />
+            {/* <Text style={styles.textButton}>Filtres</Text> */}
+          </TouchableOpacity>
         </View>
-        <View style={styles.body}>
-          <View style={styles.listActivities}>
-            {user.latitude && user.longitude ? (
-              <Text style={globalStyles.title3}>Près de chez vous</Text>
-            ) : (
-              <Text style={globalStyles.title3}>Bientôt</Text>
-            )}
-            {user.errorMsg ? (
-              <TextInput style={styles.errorMsg}>{user.errorMsg}</TextInput>
-            ) : (
-              <></>
-            )}
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.scrollView}
-            >
-              {activitiesList}
-            </ScrollView>
+      </View>
+      <View style={styles.body}>
+        <ScrollView style={styles.listActivities}>
+          <Text style={globalStyles.title3}>Catégories</Text>
+          <ScrollView horizontal={true} style={styles.organizers}>
+            {categoryList}
+          </ScrollView>
+          {user.preferences.latitudePreference !== -200 &&
+          user.preferences.longitudePreference !== -200 ? (
+            <Text style={globalStyles.title3}>Près de chez vous</Text>
+          ) : (
+            <Text style={globalStyles.title3}>Bientôt</Text>
+          )}
+          {user.errorMsg ? (
+            <TextInput style={styles.errorMsg}>{user.errorMsg}</TextInput>
+          ) : (
+            <></>
+          )}
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.scrollView}
+          >
+            {activitiesList}
+          </ScrollView>
 
-            <Text style={globalStyles.title3}>Organisateurs</Text>
-            <ScrollView horizontal={true} style={styles.organizers}>
-              {organizersList}
-            </ScrollView>
-          </View>
-        </View>
-      </KeyboardAvoidingView>
+          <Text style={globalStyles.title3}>Organisateurs</Text>
+          <ScrollView horizontal={true} style={styles.organizers}>
+            {organizersList}
+          </ScrollView>
+        </ScrollView>
+      </View>
+    </KeyboardAvoidingView>
     // </SafeAreaView>
   );
 }
@@ -385,17 +476,18 @@ const styles = StyleSheet.create({
   },
   localisation: {
     marginTop: 50,
-    color: 'white',
+    color: "white",
   },
   localisationBold: {
     marginTop: 4,
     marginBottom: 24,
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
   },
   organizers: {
     marginLeft: 10,
     gap: 8,
+    // flex: 0.33,
   },
   header: {
     flex: 0.25,
@@ -433,6 +525,7 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     paddingHorizontal: 10,
+    // marginTop: 20,
   },
   searchContainer: {
     // marginTop: 50,
@@ -443,8 +536,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#4A43EC",
     width: "100%",
     paddingBottom: 20,
-    borderBottomRightRadius : 33,
-    borderBottomLeftRadius : 33,
+    borderBottomRightRadius: 33,
+    borderBottomLeftRadius: 33,
   },
   search: {
     flexDirection: "row",
@@ -461,7 +554,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     // borderColor: "#E4dfdf",
     // borderWidth: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   input: {
     width: "90%",
