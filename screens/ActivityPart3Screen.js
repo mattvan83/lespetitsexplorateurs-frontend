@@ -37,12 +37,13 @@ export default function ProfileScreen({ navigation }) {
   }
 
   useEffect(() => {
+    const searchAddress = activityAddress+activityPostalCode
     fetch(
-      `https://api-adresse.data.gouv.fr/search/?q=${activityPostalCode}`
+      `https://api-adresse.data.gouv.fr/search/?q=${searchAddress}`
     )
       .then((response) => response.json())
       .then((apiData) => {
-        if (apiData.features.length > 0) {
+        if (apiData && apiData.features && apiData.features.length > 0) {
           setLongitude(apiData.features[0].geometry.coordinates[0]);
           setLatitude(apiData.features[0].geometry.coordinates[1]);
         } else {

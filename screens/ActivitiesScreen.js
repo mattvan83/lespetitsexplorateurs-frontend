@@ -48,11 +48,11 @@ export default function ActivitiesScreen({ navigation }) {
       <FlatList
         data={user.userActivities}
         renderItem={({ item, index }) => (
-          <View key={index} style={{ marginBottom: index === user.userActivities.length - 1 ? 100 : 0 }}> 
-            <CardEditDelete activity={item} />
+          <View style={{ marginBottom: index === user.userActivities.length - 1 ? 100 : 0 }}> 
+            <CardEditDelete key={index} activity={item} />
           </View>
         )} 
-        keyExtractor={item => item._id}
+        keyExtractor={item => item.id}
         style={styles.flatlist}
       />
 

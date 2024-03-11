@@ -153,11 +153,10 @@ export default function ActivitySheetScreen({
 
   return (
     <View style={styles.container}>
-      {/* <ImageBackground resizeMode="cover" style={styles.image} source={require('../assets/Images/bebe-nageurs.jpg')}> */}
       <ImageBackground
         resizeMode="cover"
         style={styles.image}
-        source={{ uri: activity.imgUrl }}
+        source={{ uri: activity.imgUrl ? activity.imgUrl : "https://res.cloudinary.com/ddoqxafok/image/upload/v1710188470/qpg1ws4diplphnwy9nfd.png"}}
       >
         <View style={styles.iconPosition}>
           <View>
