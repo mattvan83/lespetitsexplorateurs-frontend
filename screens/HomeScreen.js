@@ -27,6 +27,7 @@ import {
 import Organizers from "../components/Organizers";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 import { Ionicons } from "@expo/vector-icons";
+import HomeCategoryMedium from "../components/HomeCategoryMedium";
 
 // const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
@@ -37,6 +38,7 @@ export default function HomeScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
   const organizers = useSelector((state) => state.organizers.value);
   // const [activities, setActivities] = useState([]);
+  const categories = ["Sport", "Musique", "Créativité", "Motricité", "Éveil"];
 
   // console.log("user: ", user);
   // console.log("user.filters: ", user.filters);
@@ -295,6 +297,10 @@ export default function HomeScreen({ navigation }) {
     navigation.navigate("Filters");
   };
 
+  const categoryList = categories.map((category, i) => {
+    return <HomeCategoryMedium key={i} category={category} />;
+  });
+
   const organizersMax10 =
     organizers.length > 10 ? organizers.slice(0, 10) : organizers;
   const organizersList = organizersMax10.map((data, i) => {
@@ -363,7 +369,11 @@ export default function HomeScreen({ navigation }) {
           </View>
         </View>
         <View style={styles.body}>
-          <View style={styles.listActivities}>
+          <ScrollView style={styles.listActivities}>
+            <Text style={globalStyles.title3}>Catégories</Text>
+            <ScrollView horizontal={true} style={styles.organizers}>
+              {categoryList}
+            </ScrollView>
             {user.latitude && user.longitude ? (
               <Text style={globalStyles.title3}>Près de chez vous</Text>
             ) : (
@@ -386,7 +396,7 @@ export default function HomeScreen({ navigation }) {
             <ScrollView horizontal={true} style={styles.organizers}>
               {organizersList}
             </ScrollView>
-          </View>
+          </ScrollView>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -403,6 +413,7 @@ const styles = StyleSheet.create({
   organizers: {
     marginLeft: 10,
     gap: 8,
+    // flex: 0.33,
   },
   header: {
     flex: 0.25,
@@ -441,9 +452,7 @@ const styles = StyleSheet.create({
   scrollView: {
     justifyContent: "center",
     paddingHorizontal: 10,
-  },
-  card: {
-    marginRight: 100,
+    // marginTop: 20,
   },
   searchContainer: {
     // marginTop: 50,
