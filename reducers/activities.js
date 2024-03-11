@@ -32,30 +32,30 @@ export const activitiesSlice = createSlice({
   initialState,
   reducers: {
     addActivityInfoScreen1: (state, action) => {
-        state.value.name = action.payload.name;
-        state.value.description = action.payload.description;
-        state.value.category = action.payload.category;
+      state.value.name = action.payload.name;
+      state.value.description = action.payload.description;
+      state.value.category = action.payload.category;
     },
     addActivityInfoScreen2: (state, action) => {
-        state.value.concernedAges = action.payload.concernedAges;
+      state.value.concernedAges = action.payload.concernedAges;
     },
     addActivityInfoScreen3: (state, action) => {
-        state.value.address = action.payload.address;
-        state.value.postalCode = action.payload.postalCode;
-        state.value.city = action.payload.city;
-        state.value.locationName = action.payload.locationName;
-        //state.value.latitude = action.payload.latitude;
-        //state.value.longitude = action.payload.longitude;
+      state.value.address = action.payload.address;
+      state.value.postalCode = action.payload.postalCode;
+      state.value.city = action.payload.city;
+      state.value.locationName = action.payload.locationName;
+      state.value.latitude = action.payload.latitude;
+      state.value.longitude = action.payload.longitude;
     },
     addActivityInfoScreen4: (state, action) => {
-        state.value.date = action.payload.date;
+      state.value.date = action.payload.date;
     },
     addActivityInfoScreen5: (state, action) => {
-        state.value.imgUrl = action.payload.imgUrl;
+      state.value.imgUrl = action.payload.imgUrl;
     },
     startUpdate: (state, action) => {
       state.value.isCurrentlyUpdated = true;
-      state.value.id= action.payload;
+      state.value.id = action.payload;
     },
     resetActivityInfos: (state, action) => {
       state.value.name = null;
@@ -64,6 +64,8 @@ export const activitiesSlice = createSlice({
       state.value.concernedAges = null;
       state.value.address = null;
       state.value.postalCode = null;
+      state.value.latitude = null;
+      state.value.longitude = null;
       state.value.city = null;
       state.value.locationName = null;
       state.value.date = null;

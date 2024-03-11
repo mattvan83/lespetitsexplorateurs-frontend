@@ -52,6 +52,8 @@ export default function ProfileScreen({ navigation }) {
         concernedAges: activities.concernedAges,
         address: activities.address,
         postalCode: activities.postalCode,
+        longitude: activities.longitude,
+        latitude: activities.latitude,
         locationName: activities.locationName,
         city: activities.city,
         date: activities.date,
