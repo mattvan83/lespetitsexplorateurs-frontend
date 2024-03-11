@@ -4,6 +4,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteUserActivity } from "../reducers/user";
+import { useNavigation } from '@react-navigation/native';
 
 const imageMapping = {
   localImage1: require("../assets/test/activity1.png"),
@@ -21,6 +22,7 @@ export default function CardEditDelete({
   activityDistance,
 }) {
   // Check if the image is in the mapping
+  const navigation = useNavigation();
   const isLocalAsset = imageMapping.hasOwnProperty(imagePath);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
@@ -42,13 +44,14 @@ export default function CardEditDelete({
 
   return (
     <View style={styles.cardContainer}>
-      <View style={styles.card}>
-        <Image
-          style={styles.img}
-          source={isLocalAsset ? imageMapping[imagePath] : { uri: imagePath }}
-        />
-        <View style={styles.details}>
-          <Text style={styles.activityDate}>{activityDate}</Text>
+      <TouchableOpacity onPress={() => navigation.navigate('ActivitySheet', { activityId })}>
+        <View style={styles.card}>
+          <Image
+            style={styles.img}
+            source={isLocalAsset ? imageMapping[imagePath] : { uri: imagePath }}
+          />
+          <View style={styles.details}>
+            <Text style={styles.activityDate}>{activityDate}</Text>
 
           <Text style={styles.activityName}>{activityName}</Text>
           <View style={styles.locationContainer}>
@@ -67,6 +70,7 @@ export default function CardEditDelete({
           <MaterialCommunityIcons name="delete-forever" size={24} color="#5669FF" />
         </TouchableOpacity>
       </View>
+      </TouchableOpacity>
     </View>
   );
 }

@@ -11,10 +11,15 @@ import {
 } from "react-native";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { Ionicons } from '@expo/vector-icons';
+import { useState } from "react";
+import { useSelector } from "react-redux";
 
 const BACKEND_ADDRESS = "http://172.20.10.8:3000";
 
 export default function ActivitySheetScreen({ navigation, route: { params: { activity } }}) {
+  const activities = useSelector((state) => state.activities.value);
+  const user = useSelector((state) => state.user.value);
+  const [isLiked, setIsLiked] = useState(false);
 
   const handleShare = async () => {
     console.log('share');
@@ -40,7 +45,23 @@ export default function ActivitySheetScreen({ navigation, route: { params: { act
 
   const handleLike = () => {
     console.log('add to or remove from favorites');
-  }
+    setIsLiked(!isLiked);
+
+    fetch(`${BACKEND_ADDRESS}/activities/favorite/${activities._id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.result) {
+          dispatch(
+            updateLikedActivities({
+              userId: user._id,
+            })
+          );
+        }
+      });
+  };
 
   const handleFollow = () => {
     console.log('follow or unfollow');
@@ -55,10 +76,10 @@ export default function ActivitySheetScreen({ navigation, route: { params: { act
     console.log('add to calendar');
   }
 
-  // const inputDate = new Date(activity.date);
+  //const inputDate = new Date(activity.date);
 
-  // const options = {
-  //   weekday: "long", // full weekday name
+  //const options = {
+  //  weekday: "long", // full weekday name
   //   day: "numeric", // day of the month
   //   month: "long", // full month name
   //   hour: "numeric",
@@ -103,7 +124,7 @@ export default function ActivitySheetScreen({ navigation, route: { params: { act
               <Ionicons name="share-social-sharp" size={24} color="white" />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleLike()} style={styles.topIconBckgd}>
-              <Ionicons name="heart" size={24} color="white" />
+              <Ionicons name="heart" size={24} style={{ color: isLiked ? 'red' : 'white' }} />
             </TouchableOpacity>
           </View>
         </View>
@@ -186,6 +207,9 @@ const styles = StyleSheet.create({
   likeShare: {
     display: 'flex',
     flexDirection: 'row',
+  },
+  like: {
+    color: 'white',
   },
   topIconBckgd: {
     backgroundColor: 'rgba(255, 255, 255, 0.3)',

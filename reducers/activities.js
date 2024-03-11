@@ -50,9 +50,24 @@ export const activitiesSlice = createSlice({
     addActivityInfoScreen5: (state, action) => {
         state.value.image = action.payload.image;
     },
+    updateLikedActivities: (state, action) => {
+      const indexActivity = state.value.findIndex(
+        (activity) => activity.id === action.payload.id
+      );
+
+      if (action.payload.isLiked) {
+        state.value[indexActivity].likes.push(action.payload.userId);
+        state.value[indexActivity].isLiked = true;
+      } else {
+        state.value[indexActivity].likes = state.value[indexActivity].likes.filter(
+          (userId) => userId !== action.payload.userId
+        );
+        state.value[indexActivity].isLiked = false;
+      }
+    },
   },
 });
 
-export const { addActivityInfoScreen1, addActivityInfoScreen2, addActivityInfoScreen3, addActivityInfoScreen4, addActivityInfoScreen5, emptyStoreActivity } =
+export const { addActivityInfoScreen1, addActivityInfoScreen2, addActivityInfoScreen3, addActivityInfoScreen4, addActivityInfoScreen5 } =
   activitiesSlice.actions;
 export default activitiesSlice.reducer;

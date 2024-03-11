@@ -8,16 +8,17 @@ import {
   ScrollView,
 } from "react-native";
 import globalStyles from '../globalStyles';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { loadUserActivities, deleteUserActivity } from '../reducers/user';
+import { loadUserActivities } from '../reducers/user';
 import CardEditDelete from '../components/CardEditDelete';
 
-const BACKEND_ADDRESS = "http://192.168.1.22:3000";
+const BACKEND_ADDRESS = "http://172.20.10.8:3000";
 
 export default function ActivitiesScreen({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
+  const activities = useSelector((state) => state.activities.value);
 
   useEffect(() => {
     fetch(`${BACKEND_ADDRESS}/activities/allactivities/${user.token}`)
@@ -25,7 +26,7 @@ export default function ActivitiesScreen({ navigation }) {
       .then((data) => {
         data.result && dispatch(loadUserActivities(data.activities));
       })
-  }, [])
+  }, [activities])
 
   const activitiesList = user.userActivities.map((activity, i) => {
     const inputDate = new Date(activity.date);
@@ -48,7 +49,7 @@ export default function ActivitiesScreen({ navigation }) {
       activityLocation={`${activity.postalCode}, ${activity.city}`}
       isFavorite={activity.isLiked}
       activityDistance={0} />
-  })
+  });
 
   const handleSubmit = () => {
     navigation.navigate("ActivityPart1");

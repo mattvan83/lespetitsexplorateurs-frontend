@@ -13,6 +13,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 
+const BACKEND_ADDRESS = "http://172.20.10.8:3000";
+
 export default function ProfileScreen({ navigation }) {
   const [photo, setPhoto] = useState();
   const [photoType, setPhotoType] = useState('image/jpeg');
@@ -49,7 +51,7 @@ export default function ProfileScreen({ navigation }) {
     dispatch(addActivityInfoScreen5({ image: photo }));
       //.then(() => {
         //Fetch route POST /activities
-        fetch(`http://192.168.1.22:3000/activities/newActivity/${token}`, {
+        fetch(`${BACKEND_ADDRESS}/activities/newActivity/${token}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 

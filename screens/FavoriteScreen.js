@@ -54,6 +54,17 @@ export default function FavoriteScreen({ navigation }) {
     navigation.navigate("ActivitySheet");
   };
 
+  /*If no favorites
+  if(!favoriteItems){
+    return (
+      <View>
+        <Text>
+
+        </Text>
+      </View>
+    )
+  }*/
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
