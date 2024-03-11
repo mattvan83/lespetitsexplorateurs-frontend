@@ -7,7 +7,7 @@ import {
 } from "react-native";
 // import globalStyles from '../globalStyles';
 import { useDispatch, useSelector } from 'react-redux';
-import { setPreferences, resetPreferences, addUserActivities } from '../reducers/user';
+import { addUserActivity, addUserActivityPhoto } from '../reducers/user';
 import { useState } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import * as ImagePicker from 'expo-image-picker';
@@ -68,26 +68,34 @@ export default function ProfileScreen({ navigation }) {
       .then((activity) => {
         if (activity.result) {
 
+          // let activity_temp = activity.activity;
+
           // If a photo has been added, we update the activity in database
-          if (photo != "") {
+          if (photo) {
             const formData = new FormData();
             formData.append('photoFromFront', {
               uri: photo,
               name: 'photo.jpg',
               type: photoType,
             });
-
-            fetch(`${BACKEND_ADDRESS}/activities/newPhoto/${activity._id}`, {
+          
+            fetch(`${BACKEND_ADDRESS}/activities/newPhoto/${activity.activity._id}`, {
               method: 'POST',
               body: formData,
             }).then((response) => response.json())
               .then((data) => {
-                console.log(data)
+                // activity_temp.imgUrl = data.url
+                // console.log(activity_temp.imgUrl)
+                photoAdded = true;
+                dispatch(addUserActivity(activity.activity))
+                dispatch(addUserActivityPhoto({activityId: activity.activity._id, url: data.url}))
+                navigation.navigate("TabNavigator", { screen: "Activité" });
               });
+          } else {
+            dispatch(addUserActivity(activity.activity))
+            navigation.navigate("TabNavigator", { screen: "Activité" });
           }
-
-          navigation.navigate("TabNavigator", { screen: "Activité" });
-          dispatch(addUserActivities(activity.activity))
+          
         } else {
           console.error("The activity haven't been created", activity.error);
         }

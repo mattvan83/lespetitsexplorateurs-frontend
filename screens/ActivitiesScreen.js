@@ -35,6 +35,8 @@ export default function ActivitiesScreen({ navigation }) {
     navigation.navigate("ActivityPart1");
   };
 
+  console.log(user.userActivities)
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
