@@ -61,6 +61,8 @@ export default function MapResultsScreen({ navigation }) {
   useEffect(() => {
     // Get user filters
     const {
+      latitudeFilter,
+      longitudeFilter,
       categoryFilter,
       dateFilter,
       momentFilter,
@@ -69,43 +71,118 @@ export default function MapResultsScreen({ navigation }) {
       scopeFilter,
     } = user.filters;
 
-    fetch(`${BACKEND_ADDRESS}/activities/geoloc`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        token: user.token,
-        latitude: user.filters.latitudeFilter,
-        longitude: user.filters.longitudeFilter,
-        scope: scopeFilter,
-        filters: {
-          categoryFilter,
-          dateFilter,
-          momentFilter,
-          ageFilter,
-        },
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        // console.log("data.result: ", data.result);
-        // console.log("data.error: ", data.error);
-        // console.log("data.activities: ", data.activities);
-        data.result &&
-          dispatch(importActivities(data.activities)) &&
-          dispatch(setErrorMsg(null));
-        !data.result &&
-          dispatch(importActivities([])) &&
-          dispatch(setErrorMsg(data.error));
-      });
+    if (latitudeFilter === -200 || longitudeFilter === -200) {
+      if (
+        user.preferences.latitudePreference === -200 ||
+        user.preferences.longitudePreference === -200
+      ) {
+        fetch(`${BACKEND_ADDRESS}/activities/nogeoloc`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            token: user.token,
+            filters: {
+              categoryFilter,
+              dateFilter,
+              momentFilter,
+              ageFilter,
+            },
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            data.result &&
+              dispatch(importActivities(data.activities)) &&
+              dispatch(setErrorMsg(null));
+            !data.result &&
+              dispatch(importActivities([])) &&
+              dispatch(setErrorMsg(data.error));
+          });
 
-    fetch(
-      `${BACKEND_ADDRESS}/organizers/geoloc/${scopeFilter}/${user.filters.longitudeFilter}/${user.filters.latitudeFilter}`
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        data.result && dispatch(loadOrganizers(data.organizers));
-      });
+        fetch(`${BACKEND_ADDRESS}/organizers/nogeoloc`)
+          .then((response) => response.json())
+          .then((data) => {
+            data.result && dispatch(loadOrganizers(data.organizers));
+          });
+      } else if (
+        user.preferences.latitudePreference !== -200 &&
+        user.preferences.longitudePreference !== -200
+      ) {
+        fetch(`${BACKEND_ADDRESS}/activities/geoloc`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            token: user.token,
+            latitude: user.preferences.latitudePreference,
+            longitude: user.preferences.longitudePreference,
+            scope: user.preferences.scopePreference,
+            filters: {
+              categoryFilter,
+              dateFilter,
+              momentFilter,
+              ageFilter: user.preferences.agePreference,
+            },
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            // console.log("data.result: ", data.result);
+            // console.log("data.error: ", data.error);
+            // console.log("data.activities: ", data.activities);
+            data.result &&
+              dispatch(importActivities(data.activities)) &&
+              dispatch(setErrorMsg(null));
+            !data.result &&
+              dispatch(importActivities([])) &&
+              dispatch(setErrorMsg(data.error));
+          });
 
+        fetch(
+          `${BACKEND_ADDRESS}/organizers/geoloc/${user.preferences.scopePreference}/${user.preferences.longitudePreference}/${user.preferences.latitudePreference}`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            data.result && dispatch(loadOrganizers(data.organizers));
+          });
+      }
+    } else if (latitudeFilter !== -200 || longitudeFilter !== -200) {
+      fetch(`${BACKEND_ADDRESS}/activities/geoloc`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          token: user.token,
+          latitude: latitudeFilter,
+          longitude: longitudeFilter,
+          scope: scopeFilter,
+          filters: {
+            categoryFilter,
+            dateFilter,
+            momentFilter,
+            ageFilter,
+          },
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // console.log("data.result: ", data.result);
+          // console.log("data.error: ", data.error);
+          // console.log("data.activities: ", data.activities);
+          data.result &&
+            dispatch(importActivities(data.activities)) &&
+            dispatch(setErrorMsg(null));
+          !data.result &&
+            dispatch(importActivities([])) &&
+            dispatch(setErrorMsg(data.error));
+        });
+
+      fetch(
+        `${BACKEND_ADDRESS}/organizers/geoloc/${scopeFilter}/${longitudeFilter}/${latitudeFilter}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          data.result && dispatch(loadOrganizers(data.organizers));
+        });
+    }
     // // Execute when the component unmounts
     // return () => {
     //   console.log("Unmount MapResultsScreen");

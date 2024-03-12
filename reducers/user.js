@@ -17,15 +17,15 @@ const initialState = {
       ageFilter: [],
       priceFilter: null,
       cityFilter: null,
-      latitudeFilter: null,
-      longitudeFilter: null,
+      latitudeFilter: -200,
+      longitudeFilter: -200,
       scopeFilter: 50,
     },
     preferences: {
       agePreference: [],
       cityPreference: null,
-      latitudePreference: null,
-      longitudePreference: null,
+      latitudePreference: -200,
+      longitudePreference: -200,
       scopePreference: 50,
     },
     errorMsg: null,
@@ -123,9 +123,10 @@ export const userSlice = createSlice({
       state.value.userActivities.push(action.payload);
     },
     addUserActivityPhoto: (state, action) => {
-      const index = state.value.userActivities.findIndex(activity => activity._id === action.payload.activityId);
+      const index = state.value.userActivities.findIndex(
+        (activity) => activity._id === action.payload.activityId
+      );
       state.value.userActivities[index].imgUrl = action.payload.url;
-    
     },
     deleteUserActivity: (state, action) => {
       state.value.userActivities = state.value.userActivities.filter(

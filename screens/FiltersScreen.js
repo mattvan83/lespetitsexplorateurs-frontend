@@ -172,8 +172,8 @@ export default function FiltersScreen({ navigation }) {
     setSelectedMoments([]);
     setSelectedAges([]);
     setPrice(30);
-    setSelectedLongitude(null);
-    setSelectedLatitude(null);
+    setSelectedLongitude(-200);
+    setSelectedLatitude(-200);
     setSelectedCity(null);
     setScope(50);
 
