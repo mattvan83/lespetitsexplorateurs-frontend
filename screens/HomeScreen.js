@@ -30,7 +30,6 @@ import { Ionicons } from "@expo/vector-icons";
 import HomeCategoryMedium from "../components/HomeCategoryMedium";
 
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
-// console.log("Backend address:", BACKEND_ADDRESS);
 
 export default function HomeScreen({ navigation }) {
   const [suggestionsList, setSuggestionsList] = useState([]);

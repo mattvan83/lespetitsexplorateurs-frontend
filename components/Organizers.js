@@ -10,8 +10,8 @@ export default function Organizers(organizer) {
                 style={styles.button}
                 activeOpacity={0.8}
             >
-                 {organizer.image && <Image source={{ uri: organizer.image }} style={styles.organizerImgProfile} />}
-                 {organizer.image==="" && <Text style={styles.initiale}>{organizer.name.slice(0, 1)}</Text>}
+                 {organizer.imgUrl && <Image source={{ uri: organizer.imgUrl }} style={styles.organizerImgProfile} />}
+                 {organizer.imgUrl==="" && <Text style={styles.initiale}>{organizer.name.slice(0, 1)}</Text>}
             </TouchableOpacity>
             <Text style={styles.textButton}>{organizer.name}</Text>
         </View>

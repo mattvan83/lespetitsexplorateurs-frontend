@@ -2,6 +2,7 @@ import { StyleSheet, Text, Image, View, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 
 export default function CardBig({ activity } ) {
@@ -24,7 +25,7 @@ export default function CardBig({ activity } ) {
   return (
     <View style={styles.cardContainer}>
       <TouchableOpacity activeOpacity={0.8} style={ styles.cardH} onPress={() => navigation.navigate('ActivitySheet', {activity})}>
-        <Image style={styles.img} source={{ uri: activity.imgUrl }} />
+          <Image style={styles.img} source={{ uri: activity.imgUrl ? activity.imgUrl : "https://res.cloudinary.com/ddoqxafok/image/upload/v1710191558/rnhxlupxbteo1kw5nf0c.jpg"}} />
         <View style={styles.details}>
           <View style={styles.dateFavoriteContainer}>
             <Text style={styles.activityDate}>{formattedDate}</Text>
@@ -76,6 +77,9 @@ const styles = StyleSheet.create({
     height: 131,
     width: 218,
     borderRadius: 8,
+    backgroundColor: "#EEF0FF",
+    justifyContent: "center",
+    alignItems: "center",
   },
   details: {
     gap: 4,

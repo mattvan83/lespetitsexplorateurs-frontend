@@ -15,15 +15,31 @@ import { useState } from 'react';
 import FilterCategoryMedium from "../components/FilterCategoryMedium";
 import { handleFilterButtonClick } from '../modules/handleFilterButtonClick';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+const { invertMappingTable } = require("../modules/invertMapping");
 
 
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
   const activities = useSelector((state) => state.activities.value);
-  const [selectedCategory, setSelectedCategory] = useState("");
+  // Cf below for category mapping
   const [activityName, setActivityName] = useState(activities.name);
   const [activityDescription, setActivityDescription] = useState(activities.description);
   const [showError, setShowError] = useState(false);
+
+  const categoryMapping = {
+    Sport: "Sport",
+    Musique: "Music",
+    Créativité: "Creativity",
+    Motricité: "Motricity",
+    Éveil: "Awakening",
+  };
+  const backToFrontCategoryMapping = invertMappingTable(categoryMapping); 
+  let frontCategory = "";
+  if (activities.category) {
+    frontCategory = backToFrontCategoryMapping[activities.category];
+  }
+  const [selectedCategory, setSelectedCategory] = useState(activities.isCurrentlyUpdated ? frontCategory : '');
+  console.log(frontCategory)
 
   const handleContinue = () => {
     if (activityName !== '' && activityDescription !== '' && selectedCategory !== '') {

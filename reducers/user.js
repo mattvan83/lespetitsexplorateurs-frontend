@@ -123,9 +123,23 @@ export const userSlice = createSlice({
       state.value.userActivities.push(action.payload);
     },
     addUserActivityPhoto: (state, action) => {
-      const index = state.value.userActivities.findIndex(activity => activity._id === action.payload.activityId);
+      // const index = state.value.userActivities.findIndex(activity => activity._id === action.payload.activityId);
+      const index = state.value.userActivities.findIndex(activity => activity.id === action.payload.activityId);
       state.value.userActivities[index].imgUrl = action.payload.url;
-    
+    },
+    modifyUserActivity: (state, action) => {
+      const index = state.value.userActivities.findIndex(activity => activity.id === action.payload.activityId);
+      state.value.userActivities[index].name = action.payload.activity.name;
+      state.value.userActivities[index].description = action.payload.activity.description;
+      // state.value.userActivities[index].durationInMilliseconds = action.payload.activity.durationInMilliseconds;
+      state.value.userActivities[index].category = action.payload.activity.category;
+      state.value.userActivities[index].concernedAges = action.payload.activity.concernedAges;
+      state.value.userActivities[index].address = action.payload.activity.address;
+      state.value.userActivities[index].postalCode = action.payload.activity.postalCode;
+      state.value.userActivities[index].city = action.payload.activity.city;
+      state.value.userActivities[index].locationName = action.payload.activity.locationName;
+      state.value.userActivities[index].date = action.payload.activity.date;
+      // state.value.userActivities[index].price = action.payload.activity.price;
     },
     deleteUserActivity: (state, action) => {
       state.value.userActivities = state.value.userActivities.filter(
@@ -160,6 +174,7 @@ export const {
   loadUserActivities,
   addUserActivity,
   addUserActivityPhoto,
+  modifyUserActivity,
   deleteUserActivity,
   setErrorMsg,
 } = userSlice.actions;

@@ -10,7 +10,7 @@ import {
 import globalStyles from '../globalStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import { addActivityInfoScreen3 } from '../reducers/activities';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 export default function ProfileScreen({ navigation }) {
@@ -20,27 +20,67 @@ export default function ProfileScreen({ navigation }) {
   const [activityPostalCode, setActivityPostalCode] = useState(activities.postalCode);
   const [activityCity, setActivityCity] = useState(activities.city);
   const [activityPlace, setActivityPlace] = useState(activities.locationName);
+  const [longitude, setLongitude] = useState(null);
+  const [latitude, setLatitude] = useState(null);
   const [showError, setShowError] = useState(false);
+  const [errorPostalCode, setErrorPostalCode] = useState(false);
 
-  console.log('Reducer: ', activities);
+
+  console.log(activities)
 
   const handleContinue = () => {
-    if (activityAddress !== '' && activityPostalCode !== '' && activityCity !== '') {
-      dispatch(addActivityInfoScreen3({ address: activityAddress, postalCode: activityPostalCode, city: activityCity, locationName: activityPlace }));
-      navigation.navigate('ActivityPart4');
-    } else {
+    if ((!activityAddress || activityAddress === '') || (!activityPostalCode || activityPostalCode === '') || (!activityCity || activityCity === '')) {
       setShowError(true);
+    } else {
+      if (!longitude || !latitude) {
+        setErrorPostalCode(true);
+      } else {
+        console.log(longitude)
+        console.log(latitude)
+        dispatch(addActivityInfoScreen3({ address: activityAddress, postalCode: activityPostalCode, city: activityCity, locationName: activityPlace, longitude: longitude, latitude: latitude }));
+        navigation.navigate('ActivityPart4');
+      }
     }
   }
+
+  useEffect(() => {
+    const searchAddress = activityAddress + activityPostalCode
+    fetch(
+      `https://api-adresse.data.gouv.fr/search/?q=${searchAddress}`
+    )
+      .then((response) => response.json())
+      .then((apiData) => {
+        if (apiData && apiData.features && apiData.features.length > 0) {
+          setLongitude(apiData.features[0].geometry.coordinates[0]);
+          setLatitude(apiData.features[0].geometry.coordinates[1]);
+        } else {
+          fetch(
+            `https://api-adresse.data.gouv.fr/search/?q=${activityPostalCode}`
+          )
+            .then((response) => response.json())
+            .then((apiData) => {
+              if (apiData && apiData.features && apiData.features.length > 0) {
+                setLongitude(apiData.features[0].geometry.coordinates[0]);
+                setLatitude(apiData.features[0].geometry.coordinates[1]);
+              }
+            });
+        }
+      });
+  }, [activityAddress, activityPostalCode])
 
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
       <View style={styles.filtersContainer}>
-        <FontAwesome name={'arrow-left'} color={'black'} size={20} style={styles.arrow} onPress={() => navigation.goBack()}/>
-        
+        <FontAwesome name={'arrow-left'} color={'black'} size={20} style={styles.arrow} onPress={() => navigation.goBack()} />
+
         <Text style={styles.title2}>Comment trouver l'activité ?</Text>
 
+        {showError && (
+          <Text style={styles.error}>
+            Les champs "Adresse", "Code postal" et "Ville" sont requis.
+          </Text>
+        )}
         <Text style={globalStyles.title4}>Adresse</Text>
         <View style={globalStyles.border} marginLeft={20}>
           <TextInput
@@ -53,6 +93,11 @@ export default function ProfileScreen({ navigation }) {
           />
         </View>
 
+        {errorPostalCode && (
+          <View>
+            <Text style={styles.error}>Code postal non reconnu</Text>
+          </View>
+        )}
         <Text style={globalStyles.title4}>Code postal</Text>
         <View style={globalStyles.border} marginLeft={20} width={150}>
           <TextInput
@@ -92,18 +137,14 @@ export default function ProfileScreen({ navigation }) {
       </View>
 
       <View style={styles.bottom}>
-      <TouchableOpacity
+        <TouchableOpacity
           onPress={() => handleContinue()}
           style={styles.button}
           activeOpacity={0.8}
         >
           <Text style={styles.textButton}>Continuer</Text>
         </TouchableOpacity>
-        {showError && (
-        <Text style={styles.error}>
-          Les champs "Adresse", "Code postal" et "Ville" sont requis.
-        </Text>
-      )}
+
       </View>
     </KeyboardAvoidingView>
   );
@@ -133,9 +174,10 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   error: {
-    color: 'red',
-    fontWeight: 'bold',
-    margin: 15,
+    marginTop: 10,
+    marginLeft: 20,
+    color: "#EB5757",
+    width: "90%",
   },
   // a supprimer plus tard 
   filtersButton: {

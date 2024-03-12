@@ -24,6 +24,7 @@ export default function CardEditDelete({ activity }) {
   }
 
   const handleEditSubmit = () => {
+    console.log(activity.address)
     dispatch(addActivityInfoScreen1({ name: activity.name, description: activity.description, category: activity.category }));
     dispatch(addActivityInfoScreen2({ concernedAges: activity.concernedAges }));
     dispatch(addActivityInfoScreen3({ address: activity.address, postalCode: activity.postalCode, city: activity.city, locationName: activity.locationName }));

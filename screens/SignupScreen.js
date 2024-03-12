@@ -70,12 +70,12 @@ export default function SignupScreen({ navigation }) {
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={Platform.OS === "ios" ? "padding" : "padding"}
       keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0}
     >
       <Image
         style={styles.img}
-        source={require("../assets/Images/logo-temp.png")}
+        source={{ uri : "https://res.cloudinary.com/ddoqxafok/image/upload/v1710191558/rnhxlupxbteo1kw5nf0c.jpg" }}
       />
       <Text style={styles.title}>Créer un compte</Text>
 
@@ -86,7 +86,7 @@ export default function SignupScreen({ navigation }) {
           </View>
         )}
         <View style={globalStyles.border}>
-          <Ionicons name="mail-outline" size={24} color="#D0CFD4" />
+          <Ionicons name="mail-outline" size={24} color="#BBC3FF" />
           <TextInput
             placeholder="jane.doe@gmail.com"
             autoCapitalize="none"
@@ -98,7 +98,7 @@ export default function SignupScreen({ navigation }) {
           />
         </View>
         <View style={globalStyles.border}>
-          <AntDesign name="smileo" size={24} color="#D0CFD4" />
+          <AntDesign name="smileo" size={24} color="#BBC3FF" />
           <TextInput
             placeholder="Nom d'utilisateur"
             textContentType="username"
@@ -108,7 +108,7 @@ export default function SignupScreen({ navigation }) {
           />
         </View>
         <View style={globalStyles.border}>
-          <Ionicons name="lock-closed-outline" size={24} color="#D0CFD4" />
+          <Ionicons name="lock-closed-outline" size={24} color="#BBC3FF" />
           <TextInput
             placeholder="Mot de passe"
             textContentType="newPassword"
@@ -167,16 +167,16 @@ export default function SignupScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: "#F4F5FF",
     alignItems: "center",
     justifyContent: "center",
   },
   img: {
-    width: 150,
-    height: 150,
+    width: '100%',
+    height: 200,
     borderRadius: 100,
+    // marginTop: 100,
     marginBottom: 50,
-    alignSelf: "center",
   },
   title: {
     fontSize: 24,

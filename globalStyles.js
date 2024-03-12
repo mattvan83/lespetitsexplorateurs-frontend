@@ -45,7 +45,7 @@ const globalStyles = StyleSheet.create({
     flexDirection: "row",
     paddingLeft: 10,
     paddingRight: 10,
-    borderColor: "#E4dfdf",
+    borderColor: "#BBC3FF",
     borderWidth: 1,
     borderRadius: 12,
     margin: 6,
@@ -54,7 +54,7 @@ const globalStyles = StyleSheet.create({
   input: {
     width: "90%",
     height: 56,
-    color: "#747688",
+    color: "#7887FF",
     fontSize: 14,
     marginLeft: 10,
   },

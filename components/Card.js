@@ -2,11 +2,13 @@ import { StyleSheet, Text, Image, View, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
+import { useState, useEffect } from 'react';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 export default function Card({ activity }) {
   const navigation = useNavigation();
   const user = useSelector((state) => state.user.value);
+  const [selectedImage, setSelectedImage] = useState(null);
   //A SUPPRIMER PLUS TARD
   let isFavorite = false;
 
@@ -25,6 +27,27 @@ export default function Card({ activity }) {
     .replace(":", "h")
     .toUpperCase();
 
+  const images = [
+    "https://res.cloudinary.com/ddoqxafok/image/upload/v1710193837/fc8mbgyemnaoht4vmtbq.jpg",
+    "https://res.cloudinary.com/ddoqxafok/image/upload/v1710194196/mrti6xyaxle51luebatx.jpg",
+    "https://res.cloudinary.com/ddoqxafok/image/upload/v1710193256/htkhybdxefcsm7ktpqbp.jpg",
+    "https://res.cloudinary.com/ddoqxafok/image/upload/v1710230637/roldct4qep6fbuusopb6.jpg",
+    "https://res.cloudinary.com/ddoqxafok/image/upload/v1710230637/lfisxvri72gavcspokvt.jpg",
+    "https://res.cloudinary.com/ddoqxafok/image/upload/v1710230637/sqjdln8xutod0u5oijbh.jpg",
+    "https://res.cloudinary.com/ddoqxafok/image/upload/v1710230637/t0ia8jbjnnp2wtlhac98.jpg",
+    
+  ];
+
+  const chooseRandomImage = () => {
+    const randomIndex = Math.floor(Math.random() * images.length);
+    const randomImage = images[randomIndex];
+    setSelectedImage(randomImage);
+  };
+
+  useEffect(() => {
+    chooseRandomImage()
+  })
+
   return (
     <View style={styles.cardContainer}>
       <TouchableOpacity
@@ -32,14 +55,8 @@ export default function Card({ activity }) {
         style={styles.card}
         onPress={() => navigation.navigate("ActivitySheet", { activity })}
       >
-        {activity.imgUrl && (
-          <Image style={styles.img} source={{ uri: activity.imgUrl }} />
-        )}
-        {!activity.imgUrl && (
-          <View style={styles.img}>
-            <FontAwesome name={"photo"} color={"#BBC3FF"} size={28} />
-          </View>
-        )}
+        <Image style={styles.img} source={{ uri: activity.imgUrl ? activity.imgUrl : selectedImage }} />
+
         <View style={styles.details}>
           <View style={styles.dateFavoriteContainer}>
             <Text style={styles.activityDate}>{formattedDate}</Text>
