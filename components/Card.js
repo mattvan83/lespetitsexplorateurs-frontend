@@ -120,6 +120,7 @@ export default function Card({ activity }) {
 const styles = StyleSheet.create({
   cardContainer: {
     alignItems: "center",
+    width: "100%",
   },
   card: {
     justifyContent: "flex-start",
@@ -148,12 +149,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   details: {
+    flex: 1,
     gap: 4,
     height: 82,
-    width: 215,
     justifyContent: "space-between",
   },
   dateFavoriteContainer: {
+    width: '100%',
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
