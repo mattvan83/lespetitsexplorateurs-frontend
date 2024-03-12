@@ -38,6 +38,31 @@ export default function NewOrganizerScreen({ navigation }) {
 
   const POSTALCODE_REGEX = /^(?:0[1-9]|[1-8]\d|9[0-8])\d{3}$/;
 
+  useEffect(() => {
+    const searchAddress = city + postalCode
+    fetch(
+      `https://api-adresse.data.gouv.fr/search/?q=${searchAddress}`
+    )
+      .then((response) => response.json())
+      .then((apiData) => {
+        if (apiData && apiData.features && apiData.features.length > 0) {
+          setLongitude(apiData.features[0].geometry.coordinates[0]);
+          setLatitude(apiData.features[0].geometry.coordinates[1]);
+        } else {
+          fetch(
+            `https://api-adresse.data.gouv.fr/search/?q=${postalCode}`
+          )
+            .then((response) => response.json())
+            .then((apiData) => {
+              if (apiData && apiData.features && apiData.features.length > 0) {
+                setLongitude(apiData.features[0].geometry.coordinates[0]);
+                setLatitude(apiData.features[0].geometry.coordinates[1]);
+              }
+            });
+        }
+      });
+  }, [city, postalCode])
+
   const handleSubmit = () => {
     // if (POSTALCODE_REGEX.test(postalCode)) {
 
@@ -74,7 +99,7 @@ export default function NewOrganizerScreen({ navigation }) {
         title: title,
         about: about,
         postalCode: postalCode,
-        city: city,
+        city: city, 
         address: address,
         longitude: longitude,
         latitude: latitude,

@@ -44,7 +44,7 @@ export default function ProfileScreen({ navigation }) {
   }
 
   useEffect(() => {
-    const searchAddress = activityAddress + activityPostalCode
+    const searchAddress = activityCity + activityPostalCode
     fetch(
       `https://api-adresse.data.gouv.fr/search/?q=${searchAddress}`
     )
@@ -66,7 +66,7 @@ export default function ProfileScreen({ navigation }) {
             });
         }
       });
-  }, [activityAddress, activityPostalCode])
+  }, [activityCity, activityPostalCode])
 
 
   return (
