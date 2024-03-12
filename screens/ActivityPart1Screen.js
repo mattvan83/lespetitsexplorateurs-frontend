@@ -20,7 +20,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
   const activities = useSelector((state) => state.activities.value);
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(activities.category);
   const [activityName, setActivityName] = useState(activities.name);
   const [activityDescription, setActivityDescription] = useState(activities.description);
   const [showError, setShowError] = useState(false);

@@ -127,8 +127,6 @@ export const userSlice = createSlice({
       state.value.userActivities[index].imgUrl = action.payload.url;
     },
     modifyUserActivity: (state, action) => {
-      console.log(action.payload)
-      console.log(state.value.userActivities)
       const index = state.value.userActivities.findIndex(activity => activity.id === action.payload.activityId);
       state.value.userActivities[index].name = action.payload.activity.name;
       state.value.userActivities[index].description = action.payload.activity.description;

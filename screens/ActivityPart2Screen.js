@@ -15,7 +15,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
   const activities = useSelector((state) => state.activities.value);
-  const [selectedAges, setSelectedAges] = useState([]);
+  const [selectedAges, setSelectedAges] = useState(activities.concernedAges);
   const [showError, setShowError] = useState(false);
   
   const ageCategory = ["3-12 mois", "1-3 ans", "3-6 ans", "6-10 ans", "10+ ans"];
