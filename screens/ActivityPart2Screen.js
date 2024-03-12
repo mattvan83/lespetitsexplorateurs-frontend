@@ -11,14 +11,34 @@ import { useState, useEffect } from 'react';
 import FilterTextCategory from "../components/FilterTextCategory";
 import { handleFilterButtonClick } from '../modules/handleFilterButtonClick';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+const { invertMappingTable } = require("../modules/invertMapping");
 
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
   const activities = useSelector((state) => state.activities.value);
-  const [selectedAges, setSelectedAges] = useState(activities.isCurrentlyUpdated ? activities.concernedAges : []);
+  // CF below for concernedAges
   const [showError, setShowError] = useState(false);
   
   const ageCategory = ["3-12 mois", "1-3 ans", "3-6 ans", "6-10 ans", "10+ ans"];
+
+  const ageMapping = {
+    "3-12 mois": "3_12months",
+    "1-3 ans": "1_3years",
+    "3-6 ans": "3_6years",
+    "6-10 ans": "6_10years",
+    "10+ ans": "10+years",
+  };
+  const ages = [];
+  for (let element of activities.concernedAges) {
+    ages.push(ageMapping[element]);
+    console.log(ages)
+  } 
+  const backToFrontAgeMapping = invertMappingTable(ageMapping);
+
+  frontConcernedAges = activities.concernedAges.map(
+    (age) => backToFrontAgeMapping[age]
+  );
+  const [selectedAges, setSelectedAges] = useState(activities.isCurrentlyUpdated ? frontConcernedAges : []);
 
   const handleAgeList = (category) => {
     handleFilterButtonClick(category, selectedAges, setSelectedAges);
