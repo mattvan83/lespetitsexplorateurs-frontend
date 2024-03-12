@@ -17,6 +17,7 @@ const initialState = {
     longitude: null,
     city: null,
     date: null,
+    price: 0,
     isRecurrent: false,
     recurrence: null,
     imgUrl: null,
@@ -38,6 +39,7 @@ export const activitiesSlice = createSlice({
     },
     addActivityInfoScreen2: (state, action) => {
       state.value.concernedAges = action.payload.concernedAges;
+      state.value.price = action.payload.price;
     },
     addActivityInfoScreen3: (state, action) => {
       state.value.address = action.payload.address;
@@ -72,6 +74,7 @@ export const activitiesSlice = createSlice({
       state.value.imgUrl = null;
       state.value.isCurrentlyUpdated = false;
       state.value.id = null;
+      state.value.price = 0;
     },
     updateLikedActivities: (state, action) => {
       const indexActivity = state.value.findIndex(

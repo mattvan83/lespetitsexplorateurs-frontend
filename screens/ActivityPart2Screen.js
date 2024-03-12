@@ -2,6 +2,7 @@ import {
   StyleSheet,
   Text,
   View,
+  TextInput,
   TouchableOpacity,
 } from "react-native";
 import globalStyles from '../globalStyles';
@@ -11,11 +12,13 @@ import { useState, useEffect } from 'react';
 import FilterTextCategory from "../components/FilterTextCategory";
 import { handleFilterButtonClick } from '../modules/handleFilterButtonClick';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Slider from "@react-native-community/slider";
 const { invertMappingTable } = require("../modules/invertMapping");
 
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
   const activities = useSelector((state) => state.activities.value);
+  const [price, setPrice] = useState(0);
   // CF below for concernedAges
   const [showError, setShowError] = useState(false);
   
@@ -37,7 +40,7 @@ export default function ProfileScreen({ navigation }) {
   frontConcernedAges = activities.concernedAges.map(
     (age) => backToFrontAgeMapping[age]
   );
-  console.log(frontConcernedAges)
+ 
   const [selectedAges, setSelectedAges] = useState(activities.isCurrentlyUpdated ? frontConcernedAges : []);
 
   const handleAgeList = (category) => {
@@ -51,7 +54,8 @@ export default function ProfileScreen({ navigation }) {
 
   const handleContinue = () => {
     if (selectedAges.length !== 0) {
-      dispatch(addActivityInfoScreen2({ concernedAges: selectedAges }));
+      console.log(price)
+      dispatch(addActivityInfoScreen2({ concernedAges: selectedAges, price: price }));
       console.log('Ages: ', selectedAges);
       navigation.navigate('ActivityPart3');
     } else {
@@ -63,11 +67,29 @@ export default function ProfileScreen({ navigation }) {
     <View style={styles.filtersContainer}>
         <FontAwesome name={'arrow-left'} color={'black'} size={20} style={styles.arrow} onPress={() => navigation.goBack()}/>
         
-        <Text style={styles.title2}>À qui s'adresse l'activité ?</Text>
+        <Text style={styles.title2}>Dites-nous en plus !</Text>
 
-        <Text style={globalStyles.title4}>Âge des enfants</Text>
+        <Text style={globalStyles.title4}>Âge du public concerné</Text>
         <View style={styles.filters} >
           {ageList}
+        </View>
+
+        <Text style={globalStyles.title4}>Prix de l'activité : {price} €</Text>
+        <Slider
+          style={styles.slider}
+          lowerLimit={0}
+          minimumValue={0}
+          maximumValue={30}
+          upperLimit={30}
+          minimumTrackTintColor="#5669FF"
+          maximumTrackTintColor="#E7E7E9"
+          step={1}
+          value={price}
+          onValueChange={(value) => setPrice(value)}
+        />
+        <View style={styles.sliderBottom}>
+          <Text style={styles.textSlider}>0€</Text>
+          <Text style={styles.textSlider}>30€</Text>
         </View>
 
         <View style={styles.bottom} >
@@ -158,5 +180,20 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#fff",
     textTransform: "uppercase",
+  },
+  slider: {
+    width: "90%",
+    height: 40,
+    alignSelf: "center",
+  },
+  sliderBottom: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "90%",
+    alignSelf: "center",
+  },
+  textSlider: {
+    fontSize: 14,
+    color: "#8A8AA3",
   },
 });

@@ -86,11 +86,7 @@ export default function ProfileScreen({ navigation }) {
               .then((response) => response.json())
               .then((data) => {
                 photoAdded = true;
-
-                // Modification du champ _id en id pour ne pas avoir de conflits sur la key flatlist du screen activitiesScreen
-                const modifiedActivities = activity.activity.map(({ _id, ...data }) => ({ id: _id, ...data }));
-                dispatch(addUserActivity(modifiedActivities));
-                // dispatch(addUserActivity(activity.activity));
+                dispatch(addUserActivity(activity.activity));
                 dispatch(addUserActivityPhoto({ activityId: activity.activity._id, url: data.url }));
                 navigation.navigate("TabNavigator", { screen: "Activité" });
               });
@@ -120,7 +116,9 @@ export default function ProfileScreen({ navigation }) {
         city: activities.city,
         date: activities.date,
         id: activities.id,
-        // image: activities.image,
+        price: activities.price,
+        longitude: activities.longitude,
+        latitude: activities.latitude,
       }),
     })
       .then((response) => response.json())
@@ -153,6 +151,9 @@ export default function ProfileScreen({ navigation }) {
                     locationName: activities.locationName,
                     city: activities.city,
                     date: activities.date,
+                    price: activities.price,
+                    longitude: activities.longitude,
+                    latitude: activities.latitude,
                   }
                 }
                 ));
@@ -172,6 +173,7 @@ export default function ProfileScreen({ navigation }) {
                 locationName: activities.locationName,
                 city: activities.city,
                 date: activities.date,
+                price: activities.price
               }
             }
             ));
