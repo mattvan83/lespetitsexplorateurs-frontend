@@ -41,17 +41,13 @@ export default function Card({ activity }) {
       user.preferences.latitudePreference !== -200 &&
       user.preferences.longitudePreference !== -200
     ) {
-      distanceText = (
-        <Text style={styles.activityLocation}>{`${activity.distance} KM`}</Text>
-      );
+      distanceText = ( activity.distance === undefined ? <></> : <Text style={styles.activityLocation}>{`${activity.distance} KM`}</Text>);
     }
   } else if (
     user.filters.latitudeFilter !== -200 &&
     user.filters.longitudeFilter !== -200
-  ) {
-    distanceText = (
-      <Text style={styles.activityLocation}>{`${activity.distance} KM`}</Text>
-    );
+  ){
+    distanceText = ( activity.distance === undefined ? <></> : <Text style={styles.activityLocation}>{`${activity.distance} KM`}</Text>);
   }
 
   const images = [
