@@ -16,6 +16,7 @@ export default function ProfileScreen({ navigation }) {
   const activities = useSelector((state) => state.activities.value);
   const [photo, setPhoto] = useState(activities.imgUrl);
   const [photoType, setPhotoType] = useState("image/jpeg");
+  const [photoModification, setPhotoModification] = useState(false);
   const token = user.token;
 
   const handleChoosePhoto = async () => {
@@ -37,6 +38,7 @@ export default function ProfileScreen({ navigation }) {
     if (!result.canceled) {
       setPhoto(result.assets[0].uri);
       setPhotoType(result.assets[0].mimeType);
+      setPhotoModification(true);
     }
   };
 
@@ -84,7 +86,11 @@ export default function ProfileScreen({ navigation }) {
               .then((response) => response.json())
               .then((data) => {
                 photoAdded = true;
-                dispatch(addUserActivity(activity.activity));
+
+                // Modification du champ _id en id pour ne pas avoir de conflits sur la key flatlist du screen activitiesScreen
+                const modifiedActivities = activity.activity.map(({ _id, ...data }) => ({ id: _id, ...data }));
+                dispatch(addUserActivity(modifiedActivities));
+                // dispatch(addUserActivity(activity.activity));
                 dispatch(addUserActivityPhoto({ activityId: activity.activity._id, url: data.url }));
                 navigation.navigate("TabNavigator", { screen: "Activité" });
               });
@@ -120,8 +126,8 @@ export default function ProfileScreen({ navigation }) {
       .then((response) => response.json())
       .then((activity) => {
         if (activity.result) {
-          // If a photo has been added, we update the activity in database
-          if (photo) {
+          // If a photo has been modified, we update the activity in database
+          if (photo && photoModification) {
             const formData = new FormData();
             formData.append('photoFromFront', {
               uri: photo,
@@ -150,7 +156,7 @@ export default function ProfileScreen({ navigation }) {
                   }
                 }
                 ));
-                dispatch(addUserActivityPhoto({activityId: activities.id, url: data.url}))
+                dispatch(addUserActivityPhoto({ activityId: activities.id, url: data.url }))
                 navigation.navigate("TabNavigator", { screen: "Activité" });
               });
           } else {

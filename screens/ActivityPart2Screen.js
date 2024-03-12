@@ -31,13 +31,13 @@ export default function ProfileScreen({ navigation }) {
   const ages = [];
   for (let element of activities.concernedAges) {
     ages.push(ageMapping[element]);
-    console.log(ages)
   } 
   const backToFrontAgeMapping = invertMappingTable(ageMapping);
 
   frontConcernedAges = activities.concernedAges.map(
     (age) => backToFrontAgeMapping[age]
   );
+  console.log(frontConcernedAges)
   const [selectedAges, setSelectedAges] = useState(activities.isCurrentlyUpdated ? frontConcernedAges : []);
 
   const handleAgeList = (category) => {

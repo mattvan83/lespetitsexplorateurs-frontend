@@ -35,6 +35,8 @@ export default function ActivitiesScreen({ navigation }) {
     navigation.navigate("ActivityPart1");
   };
 
+  console.log(user.userActivities)
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -46,10 +48,10 @@ export default function ActivitiesScreen({ navigation }) {
         data={user.userActivities}
         renderItem={({ item, index }) => (
           <View style={{ marginBottom: index === user.userActivities.length - 1 ? 100 : 0 }}> 
-            <CardEditDelete key={index} activity={item} />
+            <CardEditDelete key={String(item.id)} activity={item} />
           </View>
         )} 
-        keyExtractor={item => item.id}
+        keyExtractor={item => String(item.id)}
         style={styles.flatlist}
       />
 
