@@ -11,6 +11,7 @@ import globalStyles from "../globalStyles";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { loadUserActivities } from "../reducers/user";
+import { resetActivityInfos } from "../reducers/activities";
 import CardEditDelete from "../components/CardEditDelete";
 
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
@@ -30,10 +31,9 @@ export default function ActivitiesScreen({ navigation }) {
 
 
   const handleSubmit = () => {
+    dispatch(resetActivityInfos())
     navigation.navigate("ActivityPart1");
   };
-
-  console.log(user.userActivities);
 
   return (
     <KeyboardAvoidingView

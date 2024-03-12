@@ -81,7 +81,7 @@ export default function SigninScreen({ navigation }) {
     >
       <Image
         style={styles.img}
-        source={{ uri: "https://res.cloudinary.com/ddoqxafok/image/upload/v1710191558/rnhxlupxbteo1kw5nf0c.jpg" }}
+        source={{ uri: "https://res.cloudinary.com/ddoqxafok/image/upload/v1710230637/iufea3u7hgp5l3rzxi7o.jpg" }}
       />
       <Text style={styles.title}>Identification</Text>
 

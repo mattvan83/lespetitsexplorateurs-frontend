@@ -25,7 +25,7 @@ export default function CardBig({ activity } ) {
   return (
     <View style={styles.cardContainer}>
       <TouchableOpacity activeOpacity={0.8} style={ styles.cardH} onPress={() => navigation.navigate('ActivitySheet', {activity})}>
-          <Image style={styles.img} source={{ uri: activity.imgUrl ? activity.imgUrl : "https://res.cloudinary.com/ddoqxafok/image/upload/v1710188470/qpg1ws4diplphnwy9nfd.png"}} />
+          <Image style={styles.img} source={{ uri: activity.imgUrl ? activity.imgUrl : "https://res.cloudinary.com/ddoqxafok/image/upload/v1710191558/rnhxlupxbteo1kw5nf0c.jpg"}} />
         <View style={styles.details}>
           <View style={styles.dateFavoriteContainer}>
             <Text style={styles.activityDate}>{formattedDate}</Text>

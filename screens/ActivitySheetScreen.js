@@ -156,7 +156,7 @@ export default function ActivitySheetScreen({
       <ImageBackground
         resizeMode="cover"
         style={styles.image}
-        source={{ uri: activity.imgUrl ? activity.imgUrl : "https://res.cloudinary.com/ddoqxafok/image/upload/v1710188470/qpg1ws4diplphnwy9nfd.png"}}
+        source={{ uri: activity.imgUrl ? activity.imgUrl : "https://res.cloudinary.com/ddoqxafok/image/upload/v1710193256/htkhybdxefcsm7ktpqbp.jpg"}}
       >
         <View style={styles.iconPosition}>
           <View>
