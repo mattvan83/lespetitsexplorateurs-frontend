@@ -11,10 +11,10 @@ import {
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { updateLikedActivities } from "../reducers/activities";
 
-// const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
 export default function ActivitySheetScreen({
@@ -23,9 +23,10 @@ export default function ActivitySheetScreen({
     params: { activity },
   },
 }) {
-  const activities = useSelector((state) => state.activities.value);
   const user = useSelector((state) => state.user.value);
-  const [isLiked, setIsLiked] = useState(false);
+  const activities = useSelector((state) => state.activities.value);
+  console.log("Activity: ", activity);
+  
 
   const handleShare = async () => {
     console.log("share");
@@ -50,32 +51,35 @@ export default function ActivitySheetScreen({
 
   const handleLike = () => {
     console.log("add to or remove from favorites");
-    setIsLiked(!isLiked);
+    console.log("isLiked BDD: ", activity.isLiked);
+    console.log("isLiked reducer: ", activities);
 
-    fetch(`${BACKEND_ADDRESS}/activities/favorite/${activities._id}`, {
+    const token = user.token;
+    const activityId = activity.id;
+    const userId = user.id;
+    const isLiked = activity.isLiked;
+    
+    fetch(`${BACKEND_ADDRESS}/activities/favorite/${token}/${activityId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token, activityId })
+    }).then((response) => response.json())
+    .then(data => {
+      data.result && dispatch(updateLikedActivities({ activityId, userId, isLiked }));
     })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.result) {
-          dispatch(
-            updateLikedActivities({
-              userId: user._id,
-            })
-          );
-        }
-      });
+    .catch(error => {
+      console.error('Erreur:', error);
+    });
   };
 
-  const handleFollow = () => {
+  /*const handleFollow = () => {
     console.log("follow or unfollow");
-  };
+  };*/
 
-  const handleMessage = () => {
+  /*const handleMessage = () => {
     console.log("navigate to MessageScreen");
     navigation.navigate("MessagingDiscussion");
-  };
+  };*/
 
   const handleCalendar = () => {
     console.log("add to calendar");
@@ -183,7 +187,7 @@ export default function ActivitySheetScreen({
               <Ionicons
                 name="heart"
                 size={24}
-                style={{ color: isLiked ? "red" : "white" }}
+                style={{ color: activities.isLiked ? "red" : "white" }}
               />
             </TouchableOpacity>
           </View>

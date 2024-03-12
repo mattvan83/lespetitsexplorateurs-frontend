@@ -9,7 +9,6 @@ import {
   Platform,
   ScrollView,
   Dimensions,
-  TextInput,
 } from "react-native";
 import CardBig from "../components/CardBig";
 import globalStyles from "../globalStyles";
@@ -30,7 +29,6 @@ import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 import { Ionicons } from "@expo/vector-icons";
 import HomeCategoryMedium from "../components/HomeCategoryMedium";
 
-// const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 // console.log("Backend address:", BACKEND_ADDRESS);
 

@@ -8,7 +8,7 @@ import { deleteUserActivity } from "../reducers/user";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 
-const BACKEND_ADDRESS = "http://192.168.1.23:3000";
+const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
 export default function CardEditDelete({ activity }) {
   const navigation = useNavigation();

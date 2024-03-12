@@ -27,7 +27,6 @@ import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 import { Ionicons } from "@expo/vector-icons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
-// const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
 export default function ListResultsScreen({ navigation }) {

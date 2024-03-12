@@ -12,8 +12,8 @@ import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { loadFavoriteActivities } from "../reducers/user";
 import CardEditDelete from "../components/CardEditDelete";
+import { MaterialIcons } from "@expo/vector-icons";
 
-// const BACKEND_ADDRESS = "http://192.168.1.20:3000";
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
 export default function FavoriteScreen({ navigation }) {
@@ -21,7 +21,7 @@ export default function FavoriteScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
 
   useEffect(() => {
-    fetch(`${BACKEND_ADDRESS}/activities/favoriteActivities/${user.token}`)
+    fetch(`${BACKEND_ADDRESS}/activities/favorite/${user.token}`)
       .then((response) => response.json())
       .then((data) => {
         data.result && dispatch(loadFavoriteActivities(data.activities));
@@ -60,64 +60,54 @@ export default function FavoriteScreen({ navigation }) {
     navigation.navigate("ActivitySheet");
   };
 
-  /*If no favorites
-  if(!favoriteItems){
-    return (
-      <View>
-        <Text>
-
-        </Text>
-      </View>
-    )
-  }*/
-
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
+    <View style={styles.container}>
       <Text style={globalStyles.title2}>Mes favoris</Text>
-
+      {activitiesList.length === 0 ? ( // Vérifiez si la liste des activités est vide
+      <View style={styles.noFavContainer}>
+        <View style={styles.img}>
+          <MaterialIcons name='favorite' size={64} color="#BBC3FF" style={styles.icon} />
+        </View>
+        <Text style={styles.text}>Vous n'avez pas encore de favoris.</Text>
+        <Text style={styles.text}>Explorez l'appli pour sauvegarder des activités près de chez vous !</Text>
+      </View>
+    ) : (
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollView}
       >
         {activitiesList}
       </ScrollView>
-
-      <TouchableOpacity
-        onPress={() => handleActivitySheet()}
-        style={styles.button}
-        activeOpacity={0.8}
-      >
-        <Text style={styles.textButton}>Temporary button to ActivitySheet</Text>
-      </TouchableOpacity>
-    </KeyboardAvoidingView>
+    )}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: "column",
     backgroundColor: "white",
   },
-  button: {
-    padding: 10,
-    width: "70%",
-    height: 58,
-    backgroundColor: "#5669FF",
-    borderRadius: 15,
+  noFavContainer: {
+    flex: 1,
+    alignItems: 'center',
     justifyContent: "center",
-    alignItems: "center",
+  },
+  img: {
+    width: 150,
+    height: 150,
+    borderRadius: 100,
+    marginBottom: 20,
     alignSelf: "center",
-    position: "absolute",
-    bottom: 30,
+    backgroundColor: '#EEF0FF',
+    borderRadius: 100,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  textButton: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#fff",
-    textTransform: "uppercase",
-  },
+  text: {
+    textAlign: 'center',
+    width: '80%',
+    lineHeight: 24,
+    alignSelf: 'center',
+  }
 });
