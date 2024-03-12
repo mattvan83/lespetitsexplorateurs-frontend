@@ -156,7 +156,7 @@ export default function ActivitySheetScreen({
       <ImageBackground
         resizeMode="cover"
         style={styles.image}
-        source={{ uri: activity.imgUrl ? activity.imgUrl : "https://res.cloudinary.com/ddoqxafok/image/upload/v1710193256/htkhybdxefcsm7ktpqbp.jpg"}}
+        source={{ uri: activity.imgUrl ? activity.imgUrl : "https://res.cloudinary.com/ddoqxafok/image/upload/v1710193256/htkhybdxefcsm7ktpqbp.jpg" }}
       >
         <View style={styles.iconPosition}>
           <View>
@@ -214,32 +214,34 @@ export default function ActivitySheetScreen({
           </View>
         </View>
 
-        <View>
-          <TouchableOpacity
-            onPress={() => handleClickOnOrganizer()}
-            activeOpacity={0.8}
-            style={styles.orgaDiv}
-          >
-            <View style={styles.img}>
-              {activity.organizerImgUrl && (
-                <Image
-                  style={styles.photoOrg}
-                  source={{ uri: activity.organizerImgUrl }}
-                />
-              )}
-              {activity.organizerImgUrl === "" && (
-                <Text style={styles.initiale}>
-                  {activity.organizer.slice(0, 1)}
-                </Text>
-              )}
-            </View>
-            <View marginLeft={20}>
-              <Text style={styles.bold}>{activity.organizer}</Text>
-              <Text style={styles.small}>Organisateur</Text>
-            </View>
-          </TouchableOpacity>
+        {activity.organizer && (
+          <View>
+            <TouchableOpacity
+              onPress={() => handleClickOnOrganizer()}
+              activeOpacity={0.8}
+              style={styles.orgaDiv}
+            >
+              <View style={styles.img}>
+                {activity.organizerImgUrl && (
+                  <Image
+                    style={styles.photoOrg}
+                    source={{ uri: activity.organizerImgUrl }}
+                  />
+                )}
+                {activity.organizerImgUrl === "" && (
+                  <Text style={styles.initiale}>
+                    {activity.organizer.slice(0, 1)}
+                  </Text>
+                )}
+              </View>
+              <View marginLeft={20}>
+                <Text style={styles.bold}>{activity.organizer}</Text>
+                <Text style={styles.small}>Organisateur</Text>
+              </View>
+            </TouchableOpacity>
 
-          {/* <View style={styles.followWrite}>
+
+            {/* <View style={styles.followWrite}>
             <TouchableOpacity onPress={() => handleFollow()} style={styles.btn}>
               <Text style={styles.btnOrganizer}>Suivre</Text>
             </TouchableOpacity>
@@ -247,7 +249,8 @@ export default function ActivitySheetScreen({
               <Text style={styles.btnOrganizer}>Écrire</Text>
             </TouchableOpacity>
           </View> */}
-        </View>
+          </View>
+        )}
 
         <Text style={styles.subtitle}>À propos de l'évènement</Text>
         <ScrollView>

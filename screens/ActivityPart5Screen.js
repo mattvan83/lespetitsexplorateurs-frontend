@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 // import globalStyles from '../globalStyles';
 import { useDispatch, useSelector } from "react-redux";
-import { addUserActivity, addUserActivityPhoto } from "../reducers/user";
+import { addUserActivity, addUserActivityPhoto, modifyUserActivity } from "../reducers/user";
 import { resetActivityInfos } from "../reducers/activities";
 import { useState } from "react";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -85,7 +85,7 @@ export default function ProfileScreen({ navigation }) {
               .then((data) => {
                 photoAdded = true;
                 dispatch(addUserActivity(activity.activity));
-                dispatch(addUserActivityPhoto({activityId: activity.activity._id, url: data.url }));
+                dispatch(addUserActivityPhoto({ activityId: activity.activity._id, url: data.url }));
                 navigation.navigate("TabNavigator", { screen: "Activité" });
               });
           } else {
@@ -98,67 +98,82 @@ export default function ProfileScreen({ navigation }) {
       });
   };
 
-  // const handleEdit = () => {
-  //   const activityId = activities.id;
-  //   console.log(`${BACKEND_ADDRESS}/activities/update/${activityId}`)
-  //   fetch(`${BACKEND_ADDRESS}/activities/update/65ef05c640d0908371f25cef`, {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify({
-  //       token: user.token,
-  //       name: activities.name,
-  //       description: activities.description,
-  //       category: activities.category,
-  //       concernedAges: activities.concernedAges,
-  //       address: activities.address,
-  //       postalCode: activities.postalCode,
-  //       locationName: activities.locationName,
-  //       city: activities.city,
-  //       date: activities.date,
-  //       // image: activities.image,
-  //     }),
-  //   })
-  //     .then((response) => response.json())
-  //     .then((activity) => {
-  //       if (activity.result) {
+  const handleEdit = () => {
+    console.log(activities.id.id)
+    fetch(`${BACKEND_ADDRESS}/activities/update`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        token: user.token,
+        name: activities.name,
+        description: activities.description,
+        category: activities.category,
+        concernedAges: activities.concernedAges,
+        address: activities.address,
+        postalCode: activities.postalCode,
+        locationName: activities.locationName,
+        city: activities.city,
+        date: activities.date,
+        id: activities.id,
+        // image: activities.image,
+      }),
+    })
+      .then((response) => response.json())
+      .then((activity) => {
+        if (activity.result) {
+          console.log(activities)
 
-  //         // let activity_temp = activity.activity;
+          // let activity_temp = activity.activity;
 
-  //         // If a photo has been added, we update the activity in database
-  //         // if (photo) {
-  //         //   const formData = new FormData();
-  //         //   formData.append('photoFromFront', {
-  //         //     uri: photo,
-  //         //     name: 'photo.jpg',
-  //         //     type: photoType,
-  //         //   });
+          // If a photo has been added, we update the activity in database
+          // if (photo) {
+          //   const formData = new FormData();
+          //   formData.append('photoFromFront', {
+          //     uri: photo,
+          //     name: 'photo.jpg',
+          //     type: photoType,
+          //   });
 
-  //         //   fetch(`${BACKEND_ADDRESS}/activities/newPhoto/${activity.activity._id}`, {
-  //         //     method: 'POST',
-  //         //     body: formData,
-  //         //   }).then((response) => response.json())
-  //         //     .then((data) => {
-  //         //       // activity_temp.imgUrl = data.url
-  //         //       // console.log(activity_temp.imgUrl)
-  //         //       photoAdded = true;
-  //         //       dispatch(addUserActivity(activity.activity))
-  //         //       dispatch(addUserActivityPhoto({activityId: activity.activity._id, url: data.url}))
-  //         //       navigation.navigate("TabNavigator", { screen: "Activité" });
-  //         //     });
-  //         // } else {
-  //         //   //Modifier le dispatch pour qu'il mette à jour les champs dans le tableau activités du user
-  //         //   // dispatch(addUserActivity(activity.activity))
-  //         //   navigation.navigate("TabNavigator", { screen: "Activité" });
-  //         // }
+          //   fetch(`${BACKEND_ADDRESS}/activities/newPhoto/${activity.activity._id}`, {
+          //     method: 'POST',
+          //     body: formData,
+          //   }).then((response) => response.json())
+          //     .then((data) => {
+          //       // activity_temp.imgUrl = data.url
+          //       // console.log(activity_temp.imgUrl)
+          //       photoAdded = true;
+          //       dispatch(addUserActivity(activity.activity))
+          //       dispatch(addUserActivityPhoto({activityId: activity.activity._id, url: data.url}))
+          //       navigation.navigate("TabNavigator", { screen: "Activité" });
+          //     });
+          // } else {
+          //   //Modifier le dispatch pour qu'il mette à jour les champs dans le tableau activités du user
+          //   // dispatch(addUserActivity(activity.activity))
+          //   navigation.navigate("TabNavigator", { screen: "Activité" });
+          // }
 
-  //         // A supprimer quand la mise à jour des photos sera OK
-  //           navigation.navigate("TabNavigator", { screen: "Activité" });
+          dispatch(modifyUserActivity({
+            activityId: activities.id,
+            activity: {
+              name: activities.name,
+              description: activities.description,
+              category: activities.category,
+              concernedAges: activities.concernedAges,
+              address: activities.address,
+              postalCode: activities.postalCode,
+              locationName: activities.locationName,
+              city: activities.city,
+              date: activities.date,
+            }
+          }
+          ));
+          navigation.navigate("TabNavigator", { screen: "Activité" });
 
-  //       } else {
-  //         console.error("The activity haven't been created", activity.error);
-  //       }
-  //     });
-  // }
+        } else {
+          console.error("The activity haven't been created", activity.error);
+        }
+      });
+  }
 
   return (
     <View style={styles.filtersContainer}>

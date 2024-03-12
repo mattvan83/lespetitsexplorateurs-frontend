@@ -55,7 +55,7 @@ export const activitiesSlice = createSlice({
     },
     startUpdate: (state, action) => {
       state.value.isCurrentlyUpdated = true;
-      state.value.id = action.payload;
+      state.value.id = action.payload.id;
     },
     resetActivityInfos: (state, action) => {
       state.value.name = null;
