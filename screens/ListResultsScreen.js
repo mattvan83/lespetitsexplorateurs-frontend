@@ -267,6 +267,41 @@ export default function ListResultsScreen({ navigation }) {
     return <Card key={i} activity={activity} />;
   });
 
+  let headerLocalisation;
+  if (
+    user.filters.latitudeFilter === -200 ||
+    user.filters.longitudeFilter === -200
+  ) {
+    if (
+      user.preferences.latitudePreference === -200 ||
+      user.preferences.longitudePreference === -200
+    ) {
+      headerLocalisation = (
+        <Text style={styles.localisationBold}>Activités en France</Text>
+      );
+    } else if (
+      user.preferences.latitudePreference !== -200 &&
+      user.preferences.longitudePreference !== -200
+    ) {
+      headerLocalisation = (
+        <Text style={styles.localisationBold}>
+          Activités dans un rayon de {user.preferences.scopePreference}km autour
+          de {user.preferences.cityPreference}
+        </Text>
+      );
+    }
+  } else if (
+    user.filters.latitudeFilter !== -200 &&
+    user.filters.longitudeFilter !== -200
+  ) {
+    headerLocalisation = (
+      <Text style={styles.localisationBold}>
+        Activités dans un rayon de {user.filters.scopeFilter}km autour de{" "}
+        {user.filters.cityFilter}
+      </Text>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
@@ -284,9 +319,7 @@ export default function ListResultsScreen({ navigation }) {
             >
               <Ionicons name="arrow-back-outline" size={24} color="black" />
             </TouchableOpacity>
-            <TextInput style={styles.titleHeader}>
-              Activités proches du lieu choisi
-            </TextInput>
+            {headerLocalisation}
           </View>
 
           <View style={styles.searchContainer}>
@@ -383,10 +416,9 @@ const styles = StyleSheet.create({
   goBackButton: {
     marginHorizontal: 20,
   },
-  titleHeader: {
+  localisationBold: {
     fontWeight: "bold",
     width: "80%",
-    fontSize: 16,
   },
   arrow: {
     marginTop: 35,

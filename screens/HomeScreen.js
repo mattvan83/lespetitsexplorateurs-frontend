@@ -430,7 +430,7 @@ export default function HomeScreen({ navigation }) {
       );
     }
   } else if (
-    user.filters.latitudeFilter !== -200 ||
+    user.filters.latitudeFilter !== -200 &&
     user.filters.longitudeFilter !== -200
   ) {
     headerLocalisation = (
