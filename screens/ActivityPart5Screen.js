@@ -99,7 +99,6 @@ export default function ProfileScreen({ navigation }) {
   };
 
   const handleEdit = () => {
-    console.log(activities.id.id)
     fetch(`${BACKEND_ADDRESS}/activities/update`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -121,54 +120,57 @@ export default function ProfileScreen({ navigation }) {
       .then((response) => response.json())
       .then((activity) => {
         if (activity.result) {
-          console.log(activities)
-
-          // let activity_temp = activity.activity;
-
           // If a photo has been added, we update the activity in database
-          // if (photo) {
-          //   const formData = new FormData();
-          //   formData.append('photoFromFront', {
-          //     uri: photo,
-          //     name: 'photo.jpg',
-          //     type: photoType,
-          //   });
+          if (photo) {
+            const formData = new FormData();
+            formData.append('photoFromFront', {
+              uri: photo,
+              name: 'photo.jpg',
+              type: photoType,
+            });
 
-          //   fetch(`${BACKEND_ADDRESS}/activities/newPhoto/${activity.activity._id}`, {
-          //     method: 'POST',
-          //     body: formData,
-          //   }).then((response) => response.json())
-          //     .then((data) => {
-          //       // activity_temp.imgUrl = data.url
-          //       // console.log(activity_temp.imgUrl)
-          //       photoAdded = true;
-          //       dispatch(addUserActivity(activity.activity))
-          //       dispatch(addUserActivityPhoto({activityId: activity.activity._id, url: data.url}))
-          //       navigation.navigate("TabNavigator", { screen: "Activité" });
-          //     });
-          // } else {
-          //   //Modifier le dispatch pour qu'il mette à jour les champs dans le tableau activités du user
-          //   // dispatch(addUserActivity(activity.activity))
-          //   navigation.navigate("TabNavigator", { screen: "Activité" });
-          // }
-
-          dispatch(modifyUserActivity({
-            activityId: activities.id,
-            activity: {
-              name: activities.name,
-              description: activities.description,
-              category: activities.category,
-              concernedAges: activities.concernedAges,
-              address: activities.address,
-              postalCode: activities.postalCode,
-              locationName: activities.locationName,
-              city: activities.city,
-              date: activities.date,
+            fetch(`${BACKEND_ADDRESS}/activities/newPhoto/${activities.id}`, {
+              method: 'POST',
+              body: formData,
+            }).then((response) => response.json())
+              .then((data) => {
+                photoAdded = true;
+                dispatch(modifyUserActivity({
+                  activityId: activities.id,
+                  activity: {
+                    name: activities.name,
+                    description: activities.description,
+                    category: activities.category,
+                    concernedAges: activities.concernedAges,
+                    address: activities.address,
+                    postalCode: activities.postalCode,
+                    locationName: activities.locationName,
+                    city: activities.city,
+                    date: activities.date,
+                  }
+                }
+                ));
+                dispatch(addUserActivityPhoto({activityId: activities.id, url: data.url}))
+                navigation.navigate("TabNavigator", { screen: "Activité" });
+              });
+          } else {
+            dispatch(modifyUserActivity({
+              activityId: activities.id,
+              activity: {
+                name: activities.name,
+                description: activities.description,
+                category: activities.category,
+                concernedAges: activities.concernedAges,
+                address: activities.address,
+                postalCode: activities.postalCode,
+                locationName: activities.locationName,
+                city: activities.city,
+                date: activities.date,
+              }
             }
+            ));
+            navigation.navigate("TabNavigator", { screen: "Activité" });
           }
-          ));
-          navigation.navigate("TabNavigator", { screen: "Activité" });
-
         } else {
           console.error("The activity haven't been created", activity.error);
         }

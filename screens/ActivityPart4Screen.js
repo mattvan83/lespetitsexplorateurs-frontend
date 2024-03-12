@@ -14,8 +14,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function ProfileScreen({ navigation }) {
   const activities = useSelector((state) => state.activities.value);
-  const [date, setDate] = useState(new Date(activities.date));
-  const [time, setTime] = useState(new Date(activities.date));
+  const [date, setDate] = useState(activities.isCurrentlyUpdated ? new Date(activities.date) : new Date());
+  const [time, setTime] = useState(activities.isCurrentlyUpdated ? new Date(activities.date) : new Date());
   const [showError, setShowError] = useState(false);
 
   const dispatch = useDispatch();

@@ -123,7 +123,8 @@ export const userSlice = createSlice({
       state.value.userActivities.push(action.payload);
     },
     addUserActivityPhoto: (state, action) => {
-      const index = state.value.userActivities.findIndex(activity => activity._id === action.payload.activityId);
+      // const index = state.value.userActivities.findIndex(activity => activity._id === action.payload.activityId);
+      const index = state.value.userActivities.findIndex(activity => activity.id === action.payload.activityId);
       state.value.userActivities[index].imgUrl = action.payload.url;
     },
     modifyUserActivity: (state, action) => {

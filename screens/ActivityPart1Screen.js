@@ -24,6 +24,7 @@ export default function ProfileScreen({ navigation }) {
   const [activityName, setActivityName] = useState(activities.name);
   const [activityDescription, setActivityDescription] = useState(activities.description);
   const [showError, setShowError] = useState(false);
+  
 
   const handleContinue = () => {
     if (activityName !== '' && activityDescription !== '' && selectedCategory !== '') {
