@@ -25,6 +25,33 @@ export default function Card({ activity }) {
     .replace(":", "h")
     .toUpperCase();
 
+  let distanceText;
+  if (
+    user.filters.latitudeFilter === -200 ||
+    user.filters.longitudeFilter === -200
+  ) {
+    if (
+      user.preferences.latitudePreference === -200 ||
+      user.preferences.longitudePreference === -200
+    ) {
+      distanceText = <></>;
+    } else if (
+      user.preferences.latitudePreference !== -200 &&
+      user.preferences.longitudePreference !== -200
+    ) {
+      distanceText = (
+        <Text style={styles.activityLocation}>{`${activity.distance} KM`}</Text>
+      );
+    }
+  } else if (
+    user.filters.latitudeFilter !== -200 &&
+    user.filters.longitudeFilter !== -200
+  ) {
+    distanceText = (
+      <Text style={styles.activityLocation}>{`${activity.distance} KM`}</Text>
+    );
+  }
+
   return (
     <View style={styles.cardContainer}>
       <TouchableOpacity
@@ -67,13 +94,7 @@ export default function Card({ activity }) {
             <Text
               style={styles.activityLocation}
             >{`${activity.postalCode}, ${activity.city}`}</Text>
-            {activity.distance ? (
-              <Text style={styles.activityLocation}>
-                {user.latitude && user.longitude ? activity.distance : null} KM
-              </Text>
-            ) : (
-              <></>
-            )}
+            {distanceText}
           </View>
         </View>
       </TouchableOpacity>
