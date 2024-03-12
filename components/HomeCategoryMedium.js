@@ -8,10 +8,10 @@ export default function HomeCategoryMedium({ category }) {
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
-  //   const handleSubmit = (category) => {
-  //     dispatch(setCategoryFilters([category])) &&
-  //       navigation.navigate("ListResults");
-  //   };
+  const handleSubmit = (category) => {
+    dispatch(setCategoryFilters([category])) &&
+      navigation.navigate("ListResults");
+  };
 
   let icon = null;
 
@@ -38,7 +38,7 @@ export default function HomeCategoryMedium({ category }) {
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        // onPress={() => handleSubmit(category)}
+        onPress={() => handleSubmit(category)}
         style={styles.categoryButton}
         activeOpacity={0.8}
       >

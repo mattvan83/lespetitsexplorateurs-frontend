@@ -2,7 +2,7 @@ import { StyleSheet, Text, Image, View, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 export default function Card({ activity }) {
@@ -27,6 +27,33 @@ export default function Card({ activity }) {
     .replace(":", "h")
     .toUpperCase();
 
+  let distanceText;
+  if (
+    user.filters.latitudeFilter === -200 ||
+    user.filters.longitudeFilter === -200
+  ) {
+    if (
+      user.preferences.latitudePreference === -200 ||
+      user.preferences.longitudePreference === -200
+    ) {
+      distanceText = <></>;
+    } else if (
+      user.preferences.latitudePreference !== -200 &&
+      user.preferences.longitudePreference !== -200
+    ) {
+      distanceText = (
+        <Text style={styles.activityLocation}>{`${activity.distance} KM`}</Text>
+      );
+    }
+  } else if (
+    user.filters.latitudeFilter !== -200 &&
+    user.filters.longitudeFilter !== -200
+  ) {
+    distanceText = (
+      <Text style={styles.activityLocation}>{`${activity.distance} KM`}</Text>
+    );
+  }
+
   const images = [
     "https://res.cloudinary.com/ddoqxafok/image/upload/v1710193837/fc8mbgyemnaoht4vmtbq.jpg",
     "https://res.cloudinary.com/ddoqxafok/image/upload/v1710194196/mrti6xyaxle51luebatx.jpg",
@@ -35,7 +62,6 @@ export default function Card({ activity }) {
     "https://res.cloudinary.com/ddoqxafok/image/upload/v1710230637/lfisxvri72gavcspokvt.jpg",
     "https://res.cloudinary.com/ddoqxafok/image/upload/v1710230637/sqjdln8xutod0u5oijbh.jpg",
     "https://res.cloudinary.com/ddoqxafok/image/upload/v1710230637/t0ia8jbjnnp2wtlhac98.jpg",
-    
   ];
 
   const chooseRandomImage = () => {
@@ -45,8 +71,8 @@ export default function Card({ activity }) {
   };
 
   useEffect(() => {
-    chooseRandomImage()
-  })
+    chooseRandomImage();
+  });
 
   return (
     <View style={styles.cardContainer}>
@@ -55,7 +81,10 @@ export default function Card({ activity }) {
         style={styles.card}
         onPress={() => navigation.navigate("ActivitySheet", { activity })}
       >
-        <Image style={styles.img} source={{ uri: activity.imgUrl ? activity.imgUrl : selectedImage }} />
+        <Image
+          style={styles.img}
+          source={{ uri: activity.imgUrl ? activity.imgUrl : selectedImage }}
+        />
 
         <View style={styles.details}>
           <View style={styles.dateFavoriteContainer}>
@@ -84,13 +113,7 @@ export default function Card({ activity }) {
             <Text
               style={styles.activityLocation}
             >{`${activity.postalCode}, ${activity.city}`}</Text>
-            {activity.distance ? (
-              <Text style={styles.activityLocation}>
-                {user.latitude && user.longitude ? activity.distance : null} KM
-              </Text>
-            ) : (
-              <></>
-            )}
+            {distanceText}
           </View>
         </View>
       </TouchableOpacity>

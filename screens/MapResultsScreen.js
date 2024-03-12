@@ -28,6 +28,10 @@ import {
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker } from "react-native-maps";
+import {
+  calculateBarycenter,
+  convertCoordsToKm,
+} from "../modules/localisation";
 
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
@@ -60,6 +64,8 @@ export default function MapResultsScreen({ navigation }) {
   useEffect(() => {
     // Get user filters
     const {
+      latitudeFilter,
+      longitudeFilter,
       categoryFilter,
       dateFilter,
       momentFilter,
@@ -68,43 +74,118 @@ export default function MapResultsScreen({ navigation }) {
       scopeFilter,
     } = user.filters;
 
-    fetch(`${BACKEND_ADDRESS}/activities/geoloc`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        token: user.token,
-        latitude: user.filters.latitudeFilter,
-        longitude: user.filters.longitudeFilter,
-        scope: scopeFilter,
-        filters: {
-          categoryFilter,
-          dateFilter,
-          momentFilter,
-          ageFilter,
-        },
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        // console.log("data.result: ", data.result);
-        // console.log("data.error: ", data.error);
-        // console.log("data.activities: ", data.activities);
-        data.result &&
-          dispatch(importActivities(data.activities)) &&
-          dispatch(setErrorMsg(null));
-        !data.result &&
-          dispatch(importActivities([])) &&
-          dispatch(setErrorMsg(data.error));
-      });
+    if (latitudeFilter === -200 || longitudeFilter === -200) {
+      if (
+        user.preferences.latitudePreference === -200 ||
+        user.preferences.longitudePreference === -200
+      ) {
+        fetch(`${BACKEND_ADDRESS}/activities/nogeoloc`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            token: user.token,
+            filters: {
+              categoryFilter,
+              dateFilter,
+              momentFilter,
+              ageFilter,
+            },
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            data.result &&
+              dispatch(importActivities(data.activities)) &&
+              dispatch(setErrorMsg(null));
+            !data.result &&
+              dispatch(importActivities([])) &&
+              dispatch(setErrorMsg(data.error));
+          });
 
-    fetch(
-      `${BACKEND_ADDRESS}/organizers/geoloc/${scopeFilter}/${user.filters.longitudeFilter}/${user.filters.latitudeFilter}`
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        data.result && dispatch(loadOrganizers(data.organizers));
-      });
+        fetch(`${BACKEND_ADDRESS}/organizers/nogeoloc`)
+          .then((response) => response.json())
+          .then((data) => {
+            data.result && dispatch(loadOrganizers(data.organizers));
+          });
+      } else if (
+        user.preferences.latitudePreference !== -200 &&
+        user.preferences.longitudePreference !== -200
+      ) {
+        fetch(`${BACKEND_ADDRESS}/activities/geoloc`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            token: user.token,
+            latitude: user.preferences.latitudePreference,
+            longitude: user.preferences.longitudePreference,
+            scope: user.preferences.scopePreference,
+            filters: {
+              categoryFilter,
+              dateFilter,
+              momentFilter,
+              ageFilter: user.preferences.agePreference,
+            },
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            // console.log("data.result: ", data.result);
+            // console.log("data.error: ", data.error);
+            // console.log("data.activities: ", data.activities);
+            data.result &&
+              dispatch(importActivities(data.activities)) &&
+              dispatch(setErrorMsg(null));
+            !data.result &&
+              dispatch(importActivities([])) &&
+              dispatch(setErrorMsg(data.error));
+          });
 
+        fetch(
+          `${BACKEND_ADDRESS}/organizers/geoloc/${user.preferences.scopePreference}/${user.preferences.longitudePreference}/${user.preferences.latitudePreference}`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            data.result && dispatch(loadOrganizers(data.organizers));
+          });
+      }
+    } else if (latitudeFilter !== -200 || longitudeFilter !== -200) {
+      fetch(`${BACKEND_ADDRESS}/activities/geoloc`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          token: user.token,
+          latitude: latitudeFilter,
+          longitude: longitudeFilter,
+          scope: scopeFilter,
+          filters: {
+            categoryFilter,
+            dateFilter,
+            momentFilter,
+            ageFilter,
+          },
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // console.log("data.result: ", data.result);
+          // console.log("data.error: ", data.error);
+          // console.log("data.activities: ", data.activities);
+          data.result &&
+            dispatch(importActivities(data.activities)) &&
+            dispatch(setErrorMsg(null));
+          !data.result &&
+            dispatch(importActivities([])) &&
+            dispatch(setErrorMsg(data.error));
+        });
+
+      fetch(
+        `${BACKEND_ADDRESS}/organizers/geoloc/${scopeFilter}/${longitudeFilter}/${latitudeFilter}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          data.result && dispatch(loadOrganizers(data.organizers));
+        });
+    }
     // // Execute when the component unmounts
     // return () => {
     //   console.log("Unmount MapResultsScreen");
@@ -199,26 +280,26 @@ export default function MapResultsScreen({ navigation }) {
     navigation.navigate("Filters");
   };
 
-  // Coordinates of the center point
-  const centerLatitude = user.filters.latitudeFilter; // Example latitude
-  const centerLongitude = user.filters.longitudeFilter; // Example longitude
+  // // Coordinates of the center point
+  // const centerLatitude = user.filters.latitudeFilter; // Example latitude
+  // const centerLongitude = user.filters.longitudeFilter; // Example longitude
 
-  // Radius in kilometers
-  const radiusInKm = user.filters.scopeFilter + 20;
+  // // Radius in kilometers
+  // const radiusInKm = user.filters.scopeFilter + 20;
 
-  // Calculate bounding box coordinates
-  const oneDegreeOfLatitudeInKm = 111.32;
-  const latitudeDelta = radiusInKm / oneDegreeOfLatitudeInKm;
-  const longitudeDelta =
-    radiusInKm /
-    (oneDegreeOfLatitudeInKm * Math.cos(centerLatitude * (Math.PI / 180)));
+  // // Calculate bounding box coordinates
+  // const oneDegreeOfLatitudeInKm = 111.32;
+  // const latitudeDelta = radiusInKm / oneDegreeOfLatitudeInKm;
+  // const longitudeDelta =
+  //   radiusInKm /
+  //   (oneDegreeOfLatitudeInKm * Math.cos(centerLatitude * (Math.PI / 180)));
 
-  const region = {
-    latitude: centerLatitude,
-    longitude: centerLongitude,
-    latitudeDelta,
-    longitudeDelta,
-  };
+  // const region = {
+  //   latitude: centerLatitude,
+  //   longitude: centerLongitude,
+  //   latitudeDelta,
+  //   longitudeDelta,
+  // };
 
   const reFocusMap = () => {
     if (mapViewRef.current) {
@@ -286,7 +367,7 @@ export default function MapResultsScreen({ navigation }) {
           longitude: activity.longitude,
         }}
         title={activity.name}
-        description={`${activity.distance} km`}
+        description={activity.distance ? `${activity.distance} km` : null}
         onPress={() => handleMarkerPress(activity, i)}
       >
         <TouchableOpacity
@@ -301,6 +382,126 @@ export default function MapResultsScreen({ navigation }) {
       </Marker>
     );
   });
+
+  let headerLocalisation;
+  let centerLatitude;
+  let centerLongitude;
+  let region;
+  if (
+    user.filters.latitudeFilter === -200 ||
+    user.filters.longitudeFilter === -200
+  ) {
+    if (
+      user.preferences.latitudePreference === -200 ||
+      user.preferences.longitudePreference === -200
+    ) {
+      headerLocalisation = (
+        <Text style={styles.localisationBold}>Activités en France</Text>
+      );
+
+      // Coordinates of the center point
+      centerLatitude = undefined;
+      centerLongitude = undefined;
+
+      // Compute barycenter of the near in time activities
+      const { barycenterLatitude, barycenterLongitude } = calculateBarycenter(
+        user.activities.map((activity) => {
+          return { latitude: activity.latitude, longitude: activity.longitude };
+        })
+      );
+      // console.log("Barycenter: ", { barycenterLatitude, barycenterLongitude });
+
+      // Compute distances from the barycenter and determine the max radius
+      const maxRadius = user.activities.map((activity) =>
+        convertCoordsToKm(
+          { latitude: barycenterLatitude, longitude: barycenterLongitude },
+          { latitude: activity.latitude, longitude: activity.longitude }
+        )
+      );
+      // console.log("maxRadius: ", maxRadius);
+
+      // Radius in kilometers
+      const radiusInKm = Math.max(...maxRadius) + 20;
+      // console.log("radiusInKm: ", radiusInKm);
+
+      // Calculate bounding box coordinates
+      const oneDegreeOfLatitudeInKm = 111.32;
+      const latitudeDelta = radiusInKm / oneDegreeOfLatitudeInKm;
+      const longitudeDelta =
+        radiusInKm /
+        (oneDegreeOfLatitudeInKm *
+          Math.cos(barycenterLatitude * (Math.PI / 180)));
+
+      region = {
+        latitude: barycenterLatitude,
+        longitude: barycenterLongitude,
+        latitudeDelta,
+        longitudeDelta,
+      };
+    } else if (
+      user.preferences.latitudePreference !== -200 &&
+      user.preferences.longitudePreference !== -200
+    ) {
+      headerLocalisation = (
+        <Text style={styles.localisationBold}>
+          Activités dans un rayon de {user.preferences.scopePreference}km autour
+          de {user.preferences.cityPreference}
+        </Text>
+      );
+
+      // Coordinates of the center point
+      centerLatitude = user.preferences.latitudePreference; // Example latitude
+      centerLongitude = user.preferences.longitudePreference; // Example longitude
+
+      // Radius in kilometers
+      const radiusInKm = user.preferences.scopePreference + 20;
+
+      // Calculate bounding box coordinates
+      const oneDegreeOfLatitudeInKm = 111.32;
+      const latitudeDelta = radiusInKm / oneDegreeOfLatitudeInKm;
+      const longitudeDelta =
+        radiusInKm /
+        (oneDegreeOfLatitudeInKm * Math.cos(centerLatitude * (Math.PI / 180)));
+
+      region = {
+        latitude: centerLatitude,
+        longitude: centerLongitude,
+        latitudeDelta,
+        longitudeDelta,
+      };
+    }
+  } else if (
+    user.filters.latitudeFilter !== -200 &&
+    user.filters.longitudeFilter !== -200
+  ) {
+    headerLocalisation = (
+      <Text style={styles.localisationBold}>
+        Activités dans un rayon de {user.filters.scopeFilter}km autour de{" "}
+        {user.filters.cityFilter}
+      </Text>
+    );
+
+    // Coordinates of the center point
+    centerLatitude = user.filters.latitudeFilter; // Example latitude
+    centerLongitude = user.filters.longitudeFilter; // Example longitude
+
+    // Radius in kilometers
+    const radiusInKm = user.filters.scopeFilter + 20;
+
+    // Calculate bounding box coordinates
+    const oneDegreeOfLatitudeInKm = 111.32;
+    const latitudeDelta = radiusInKm / oneDegreeOfLatitudeInKm;
+    const longitudeDelta =
+      radiusInKm /
+      (oneDegreeOfLatitudeInKm * Math.cos(centerLatitude * (Math.PI / 180)));
+
+    region = {
+      latitude: centerLatitude,
+      longitude: centerLongitude,
+      latitudeDelta,
+      longitudeDelta,
+    };
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -317,9 +518,7 @@ export default function MapResultsScreen({ navigation }) {
             >
               <Ionicons name="arrow-back-outline" size={24} color="black" />
             </TouchableOpacity>
-            <TextInput style={styles.titleHeader}>
-              Evènements proches du lieu de votre choix
-            </TextInput>
+            {headerLocalisation}
           </View>
 
           <View style={styles.searchContainer}>
@@ -371,16 +570,18 @@ export default function MapResultsScreen({ navigation }) {
             showsUserLocation
             onPress={handleMapPress}
           >
-            <Marker
-              coordinate={{
-                latitude: centerLatitude,
-                longitude: centerLongitude,
-              }}
-              title={userFilters.cityFilter}
-              description="Super ville"
-              pinColor="#fecb2d"
-              onPress={() => handleMapPress()} // Reset all marker colors when clicking on this marker
-            />
+            {centerLatitude && centerLongitude && (
+              <Marker
+                coordinate={{
+                  latitude: centerLatitude,
+                  longitude: centerLongitude,
+                }}
+                title={userFilters.cityFilter}
+                // description="Super ville"
+                pinColor="#fecb2d"
+                onPress={() => handleMapPress()} // Reset all marker colors when clicking on this marker
+              />
+            )}
             {activityMarkers}
           </MapView>
           <TouchableOpacity
@@ -424,7 +625,7 @@ const styles = StyleSheet.create({
   goBackButton: {
     marginHorizontal: 20,
   },
-  titleHeader: {
+  localisationBold: {
     fontWeight: "bold",
     width: "80%",
   },

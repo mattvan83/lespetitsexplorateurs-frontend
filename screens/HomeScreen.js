@@ -236,6 +236,17 @@ export default function HomeScreen({ navigation }) {
               priceFilter,
             } = user.filters;
 
+            // console.log("user.filters: ", user.filters);
+            // console.log(
+            //   ageFilter,
+            //   categoryFilter,
+            //   dateFilter,
+            //   momentFilter,
+            //   priceFilter
+            // );
+            // console.log("BACKEND_ADDRESS: ", BACKEND_ADDRESS);
+            // console.log("user.token: ", user.token);
+
             fetch(`${BACKEND_ADDRESS}/activities/nogeoloc`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -262,7 +273,6 @@ export default function HomeScreen({ navigation }) {
             fetch(`${BACKEND_ADDRESS}/organizers/nogeoloc`)
               .then((response) => response.json())
               .then((data) => {
-                data.result;
                 data.result && dispatch(loadOrganizers(data.organizers));
               });
           } else if (
@@ -300,7 +310,6 @@ export default function HomeScreen({ navigation }) {
                 !data.result &&
                   dispatch(importActivities([])) &&
                   dispatch(setErrorMsg(data.error));
-                // data.result && setActivities(data.activities);
               });
 
             fetch(
@@ -370,6 +379,78 @@ export default function HomeScreen({ navigation }) {
     return <CardBig key={i} activity={activity} />;
   });
 
+  let headerLocalisation;
+  let activitiesSectionTitle;
+  if (
+    user.filters.latitudeFilter === -200 ||
+    user.filters.longitudeFilter === -200
+  ) {
+    if (
+      user.preferences.latitudePreference === -200 ||
+      user.preferences.longitudePreference === -200
+    ) {
+      headerLocalisation = <Text style={styles.localisationBold}>France</Text>;
+      activitiesSectionTitle = (
+        <View style={styles.activitiesSectionContainer}>
+          <Text style={globalStyles.title3}>Bientôt</Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("ListResults")}
+            style={styles.seeAllActivities}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.seeAllTitle}>Voir tout</Text>
+            <Ionicons name="caret-forward-outline" size={16} color="#b8b6be" />
+          </TouchableOpacity>
+        </View>
+      );
+    } else if (
+      user.preferences.latitudePreference !== -200 &&
+      user.preferences.longitudePreference !== -200
+    ) {
+      headerLocalisation = (
+        <Text style={styles.localisationBold}>
+          {user.preferences.scopePreference}km autour de{" "}
+          {user.preferences.cityPreference}
+        </Text>
+      );
+      activitiesSectionTitle = (
+        <View style={styles.activitiesSectionContainer}>
+          <Text style={globalStyles.title3}>Près de chez vous</Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("ListResults")}
+            style={styles.seeAllActivities}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.seeAllTitle}>Voir tout</Text>
+            <Ionicons name="caret-forward-outline" size={16} color="#b8b6be" />
+          </TouchableOpacity>
+        </View>
+      );
+    }
+  } else if (
+    user.filters.latitudeFilter !== -200 &&
+    user.filters.longitudeFilter !== -200
+  ) {
+    headerLocalisation = (
+      <Text style={styles.localisationBold}>
+        {user.filters.scopeFilter}km autour de {user.filters.cityFilter}
+      </Text>
+    );
+    activitiesSectionTitle = (
+      <View style={styles.activitiesSectionContainer}>
+        <Text style={globalStyles.title3}>Près de chez vous</Text>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("ListResults")}
+          style={styles.seeAllActivities}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.seeAllTitle}>Voir tout</Text>
+          <Ionicons name="caret-forward-outline" size={16} color="#b8b6be" />
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
   return (
     // <SafeAreaView style={styles.container}>
     <KeyboardAvoidingView
@@ -378,9 +459,7 @@ export default function HomeScreen({ navigation }) {
     >
       <View style={styles.searchContainer}>
         <Text style={styles.localisation}>Localisation</Text>
-        <Text style={styles.localisationBold}>
-          {user.filters.scopeFilter}km autour de {user.filters.cityFilter}
-        </Text>
+        {headerLocalisation}
         <View style={styles.search}>
           <View style={styles.searchBar}>
             <Ionicons name="location-outline" size={24} color="#7887FF" />
@@ -435,12 +514,7 @@ export default function HomeScreen({ navigation }) {
           <ScrollView horizontal={true} style={styles.organizers}>
             {categoryList}
           </ScrollView>
-          {user.preferences.latitudePreference !== -200 &&
-          user.preferences.longitudePreference !== -200 ? (
-            <Text style={globalStyles.title3}>Près de chez vous</Text>
-          ) : (
-            <Text style={globalStyles.title3}>Bientôt</Text>
-          )}
+          {activitiesSectionTitle}
           {user.errorMsg ? (
             <TextInput style={styles.errorMsg}>{user.errorMsg}</TextInput>
           ) : (
@@ -513,6 +587,22 @@ const styles = StyleSheet.create({
   },
   listActivities: {
     // height: "100%",
+  },
+  activitiesSectionContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  seeAllActivities: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "flex-end",
+    marginTop: 30,
+    marginRight: 16,
+  },
+  seeAllTitle: {
+    color: "#b8b6be",
+    fontWeight: "bold",
   },
   errorMsg: {
     marginTop: 24,

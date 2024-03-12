@@ -1,11 +1,10 @@
 import { StyleSheet, Text, Image, View, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { useNavigation } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
+import { useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
-
-export default function CardBig({ activity } ) {
+export default function CardBig({ activity }) {
   const navigation = useNavigation();
   const user = useSelector((state) => state.user.value);
   //A SUPPRIMER PLUS TARD
@@ -20,32 +19,81 @@ export default function CardBig({ activity } ) {
     hour: "numeric",
     minute: "numeric",
   };
-  const formattedDate = inputDate.toLocaleString("fr-FR", options).replace(":", "h").toUpperCase();
+  const formattedDate = inputDate
+    .toLocaleString("fr-FR", options)
+    .replace(":", "h")
+    .toUpperCase();
+
+  let distanceText;
+  if (
+    user.filters.latitudeFilter === -200 ||
+    user.filters.longitudeFilter === -200
+  ) {
+    if (
+      user.preferences.latitudePreference === -200 ||
+      user.preferences.longitudePreference === -200
+    ) {
+      distanceText = <></>;
+    } else if (
+      user.preferences.latitudePreference !== -200 &&
+      user.preferences.longitudePreference !== -200
+    ) {
+      distanceText = (
+        <Text style={styles.activityLocation}>{`${activity.distance} KM`}</Text>
+      );
+    }
+  } else if (
+    user.filters.latitudeFilter !== -200 &&
+    user.filters.longitudeFilter !== -200
+  ) {
+    distanceText = (
+      <Text style={styles.activityLocation}>{`${activity.distance} KM`}</Text>
+    );
+  }
 
   return (
     <View style={styles.cardContainer}>
-      <TouchableOpacity activeOpacity={0.8} style={ styles.cardH} onPress={() => navigation.navigate('ActivitySheet', {activity})}>
-          <Image style={styles.img} source={{ uri: activity.imgUrl ? activity.imgUrl : "https://res.cloudinary.com/ddoqxafok/image/upload/v1710191558/rnhxlupxbteo1kw5nf0c.jpg"}} />
+      <TouchableOpacity
+        activeOpacity={0.8}
+        style={styles.cardH}
+        onPress={() => navigation.navigate("ActivitySheet", { activity })}
+      >
+        <Image
+          style={styles.img}
+          source={{
+            uri: activity.imgUrl
+              ? activity.imgUrl
+              : "https://res.cloudinary.com/ddoqxafok/image/upload/v1710191558/rnhxlupxbteo1kw5nf0c.jpg",
+          }}
+        />
         <View style={styles.details}>
           <View style={styles.dateFavoriteContainer}>
             <Text style={styles.activityDate}>{formattedDate}</Text>
             <TouchableOpacity activeOpacity={0.8} style={styles.favorite}>
               {!isFavorite ? (
-                <Icon style={styles.heartIcon} name="heart-outline" size={20} color="#EB5757"/>
+                <Icon
+                  style={styles.heartIcon}
+                  name="heart-outline"
+                  size={20}
+                  color="#EB5757"
+                />
               ) : (
-                <Icon style={styles.heartIcon} name="heart" size={20} color="#EB5757" />
+                <Icon
+                  style={styles.heartIcon}
+                  name="heart"
+                  size={20}
+                  color="#EB5757"
+                />
               )}
             </TouchableOpacity>
           </View>
 
           <Text style={styles.activityName}>{activity.name}</Text>
           <View style={styles.locationContainer}>
-            <Text style={styles.activityLocation}>{`${activity.postalCode}, ${activity.city}`}</Text>
-            {activity.distance ? (
-              <Text style={styles.activityLocation}>{user.latitude && user.longitude ? activity.distance : null} KM</Text>
-            ) : (
-              <></>
-            )}
+            <Text
+              style={styles.activityLocation}
+            >{`${activity.postalCode}, ${activity.city}`}</Text>
+            {distanceText}
           </View>
         </View>
       </TouchableOpacity>
