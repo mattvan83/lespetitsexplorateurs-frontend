@@ -221,7 +221,7 @@ export default function HomeScreen({ navigation }) {
       }
 
       // Check if the position is not obtained after a certain delay
-      const delay = 2000; // Set your desired delay in milliseconds
+      const delay = 1000; // Set your desired delay in milliseconds
       const timeoutId = setTimeout(() => {
         if (!isPositionObtained) {
           console.log("User coordinates unavailable");
@@ -381,6 +381,46 @@ export default function HomeScreen({ navigation }) {
     return <CardBig key={i} activity={activity} />;
   });
 
+  let headerLocalisation;
+  let activitiesSectionTitle;
+  if (
+    user.filters.latitudeFilter === -200 ||
+    user.filters.longitudeFilter === -200
+  ) {
+    if (
+      user.preferences.latitudePreference === -200 ||
+      user.preferences.longitudePreference === -200
+    ) {
+      headerLocalisation = <Text style={styles.localisationBold}>France</Text>;
+      activitiesSectionTitle = <Text style={globalStyles.title3}>Bientôt</Text>;
+    } else if (
+      user.preferences.latitudePreference !== -200 &&
+      user.preferences.longitudePreference !== -200
+    ) {
+      headerLocalisation = (
+        <Text style={styles.localisationBold}>
+          {user.preferences.scopePreference}km autour de{" "}
+          {user.preferences.cityPreference}
+        </Text>
+      );
+      activitiesSectionTitle = (
+        <Text style={globalStyles.title3}>Près de chez vous</Text>
+      );
+    }
+  } else if (
+    user.filters.latitudeFilter !== -200 ||
+    user.filters.longitudeFilter !== -200
+  ) {
+    headerLocalisation = (
+      <Text style={styles.localisationBold}>
+        {user.filters.scopeFilter}km autour de {user.filters.cityFilter}
+      </Text>
+    );
+    activitiesSectionTitle = (
+      <Text style={globalStyles.title3}>Près de chez vous</Text>
+    );
+  }
+
   return (
     // <SafeAreaView style={styles.container}>
     <KeyboardAvoidingView
@@ -389,9 +429,10 @@ export default function HomeScreen({ navigation }) {
     >
       <View style={styles.searchContainer}>
         <Text style={styles.localisation}>Localisation</Text>
-        <Text style={styles.localisationBold}>
+        {/* <Text style={styles.localisationBold}>
           {user.filters.scopeFilter}km autour de {user.filters.cityFilter}
-        </Text>
+        </Text> */}
+        {headerLocalisation}
         <View style={styles.search}>
           <View style={styles.searchBar}>
             <Ionicons name="location-outline" size={24} color="#7887FF" />
@@ -446,12 +487,13 @@ export default function HomeScreen({ navigation }) {
           <ScrollView horizontal={true} style={styles.organizers}>
             {categoryList}
           </ScrollView>
-          {user.preferences.latitudePreference !== -200 &&
+          {/* {user.preferences.latitudePreference !== -200 &&
           user.preferences.longitudePreference !== -200 ? (
             <Text style={globalStyles.title3}>Près de chez vous</Text>
           ) : (
             <Text style={globalStyles.title3}>Bientôt</Text>
-          )}
+          )} */}
+          {activitiesSectionTitle}
           {user.errorMsg ? (
             <TextInput style={styles.errorMsg}>{user.errorMsg}</TextInput>
           ) : (
