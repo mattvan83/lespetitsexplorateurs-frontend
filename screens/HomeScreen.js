@@ -35,16 +35,18 @@ const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 export default function HomeScreen({ navigation }) {
   const [suggestionsList, setSuggestionsList] = useState([]);
   const user = useSelector((state) => state.user.value);
+  // const userFilters = useSelector((state) => state.user.value.filters);
   const organizers = useSelector((state) => state.organizers.value);
   // const [activities, setActivities] = useState([]);
   const categories = ["Sport", "Musique", "Créativité", "Motricité", "Éveil"];
+  // const [isInitialRender, setIsInitialRender] = useState(true);
 
   // console.log("user: ", user);
   // console.log("user.filters: ", user.filters);
   // console.log("user.preferences: ", user.preferences);
   // console.log("user.errorMsg: ", user.errorMsg);
-  console.log("organizers: ", organizers);
-  console.log("user.errorOrganizersMsg: ", user.errorOrganizersMsg);
+  // console.log("organizers: ", organizers);
+  // console.log("user.errorOrganizersMsg: ", user.errorOrganizersMsg);
 
   const dispatch = useDispatch();
 
@@ -386,6 +388,18 @@ export default function HomeScreen({ navigation }) {
       });
   };
 
+  const handleSelectItem = (item) => {
+    item &&
+      dispatch(
+        setLocationFilters({
+          cityFilter: item.cityName,
+          longitudeFilter: item.coords[0],
+          latitudeFilter: item.coords[1],
+        })
+      ) &&
+      navigation.navigate("ListResults");
+  };
+
   const onClearPress = () => {
     setSuggestionsList(null);
   };
@@ -400,7 +414,7 @@ export default function HomeScreen({ navigation }) {
 
   const organizersMax10 =
     organizers.length > 10 ? organizers.slice(0, 10) : organizers;
-  console.log("organizersMax10: ", organizersMax10);
+  // console.log("organizersMax10: ", organizersMax10);
   const organizersList = organizersMax10.map((data, i) => {
     return <Organizers key={i} {...data} />;
   });
@@ -495,17 +509,7 @@ export default function HomeScreen({ navigation }) {
             <Ionicons name="location-outline" size={24} color="#7887FF" />
             <AutocompleteDropdown
               onChangeText={(value) => searchCity(value)}
-              onSelectItem={(item) =>
-                item &&
-                dispatch(
-                  setLocationFilters({
-                    cityFilter: item.cityName,
-                    longitudeFilter: item.coords[0],
-                    latitudeFilter: item.coords[1],
-                  })
-                ) &&
-                navigation.navigate("ListResults")
-              }
+              onSelectItem={(item) => handleSelectItem(item)}
               dataSet={suggestionsList}
               suggestionsListMaxHeight={Dimensions.get("window").height * 0.45}
               onClear={onClearPress}
