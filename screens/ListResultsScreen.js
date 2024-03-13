@@ -22,6 +22,7 @@ import {
   importActivities,
   setLocationFilters,
   setErrorMsg,
+  setCategoryFilters,
 } from "../reducers/user";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 import { Ionicons } from "@expo/vector-icons";
@@ -29,12 +30,15 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
-export default function ListResultsScreen({ navigation }) {
+export default function ListResultsScreen({ navigation, route }) {
+  const { category } = route.params ? route.params : { category: null };
+
   const user = useSelector((state) => state.user.value);
   const userFilters = useSelector((state) => state.user.value.filters);
   const [suggestionsList, setSuggestionsList] = useState([]);
 
   console.log("user.filters: ", userFilters);
+  console.log("category: ", category);
 
   const dispatch = useDispatch();
 
@@ -251,7 +255,147 @@ export default function ListResultsScreen({ navigation }) {
             dispatch(importActivities([])) &&
             dispatch(setErrorMsg(data.error));
         });
+
+      fetch(
+        `${BACKEND_ADDRESS}/organizers/geoloc/${scopeFilter}/${item.coords[0]}/${item.coords[1]}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          data.result && dispatch(loadOrganizers(data.organizers));
+        });
     }
+  };
+
+  const handlePressGoBackButton = () => {
+    if (category) {
+      dispatch(setCategoryFilters([]));
+
+      // Get user filters
+      const {
+        latitudeFilter,
+        longitudeFilter,
+        dateFilter,
+        momentFilter,
+        ageFilter,
+        priceFilter,
+        scopeFilter,
+      } = user.filters;
+
+      if (latitudeFilter === -200 || longitudeFilter === -200) {
+        if (
+          user.preferences.latitudePreference === -200 ||
+          user.preferences.longitudePreference === -200
+        ) {
+          fetch(`${BACKEND_ADDRESS}/activities/nogeoloc`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              token: user.token,
+              filters: {
+                categoryFilter: [],
+                dateFilter,
+                momentFilter,
+                ageFilter,
+              },
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              data.result &&
+                dispatch(importActivities(data.activities)) &&
+                dispatch(setErrorMsg(null));
+              !data.result &&
+                dispatch(importActivities([])) &&
+                dispatch(setErrorMsg(data.error));
+            });
+
+          fetch(`${BACKEND_ADDRESS}/organizers/nogeoloc`)
+            .then((response) => response.json())
+            .then((data) => {
+              data.result && dispatch(loadOrganizers(data.organizers));
+            });
+        } else if (
+          user.preferences.latitudePreference !== -200 &&
+          user.preferences.longitudePreference !== -200
+        ) {
+          fetch(`${BACKEND_ADDRESS}/activities/geoloc`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              token: user.token,
+              latitude: user.preferences.latitudePreference,
+              longitude: user.preferences.longitudePreference,
+              scope: user.preferences.scopePreference,
+              filters: {
+                categoryFilter: [],
+                dateFilter,
+                momentFilter,
+                ageFilter: user.preferences.agePreference,
+              },
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              // console.log("data.result: ", data.result);
+              // console.log("data.error: ", data.error);
+              // console.log("data.activities: ", data.activities);
+              data.result &&
+                dispatch(importActivities(data.activities)) &&
+                dispatch(setErrorMsg(null));
+              !data.result &&
+                dispatch(importActivities([])) &&
+                dispatch(setErrorMsg(data.error));
+            });
+
+          fetch(
+            `${BACKEND_ADDRESS}/organizers/geoloc/${user.preferences.scopePreference}/${user.preferences.longitudePreference}/${user.preferences.latitudePreference}`
+          )
+            .then((response) => response.json())
+            .then((data) => {
+              data.result && dispatch(loadOrganizers(data.organizers));
+            });
+        }
+      } else if (latitudeFilter !== -200 || longitudeFilter !== -200) {
+        fetch(`${BACKEND_ADDRESS}/activities/geoloc`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            token: user.token,
+            latitude: latitudeFilter,
+            longitude: longitudeFilter,
+            scope: scopeFilter,
+            filters: {
+              categoryFilter: [],
+              dateFilter,
+              momentFilter,
+              ageFilter,
+            },
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            // console.log("data.result: ", data.result);
+            // console.log("data.error: ", data.error);
+            // console.log("data.activities: ", data.activities);
+            data.result &&
+              dispatch(importActivities(data.activities)) &&
+              dispatch(setErrorMsg(null));
+            !data.result &&
+              dispatch(importActivities([])) &&
+              dispatch(setErrorMsg(data.error));
+          });
+
+        fetch(
+          `${BACKEND_ADDRESS}/organizers/geoloc/${scopeFilter}/${longitudeFilter}/${latitudeFilter}`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            data.result && dispatch(loadOrganizers(data.organizers));
+          });
+      }
+    }
+
+    navigation.navigate("TabNavigator", { screen: "Explorer" });
   };
 
   const onClearPress = () => {
@@ -310,9 +454,7 @@ export default function ListResultsScreen({ navigation }) {
         <View style={styles.header}>
           <View style={styles.topHeader}>
             <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("TabNavigator", { screen: "Explorer" })
-              }
+              onPress={() => handlePressGoBackButton()}
               style={styles.goBackButton}
               activeOpacity={0.8}
             >

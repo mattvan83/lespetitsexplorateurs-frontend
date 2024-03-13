@@ -269,6 +269,14 @@ export default function MapResultsScreen({ navigation }) {
             setMarkerColors([]);
           setPressedMarkerIndex(null);
         });
+
+      fetch(
+        `${BACKEND_ADDRESS}/organizers/geoloc/${scopeFilter}/${item.coords[0]}/${item.coords[1]}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          data.result && dispatch(loadOrganizers(data.organizers));
+        });
     }
   };
 
@@ -279,27 +287,6 @@ export default function MapResultsScreen({ navigation }) {
   const handlePressFilters = () => {
     navigation.navigate("Filters");
   };
-
-  // // Coordinates of the center point
-  // const centerLatitude = user.filters.latitudeFilter; // Example latitude
-  // const centerLongitude = user.filters.longitudeFilter; // Example longitude
-
-  // // Radius in kilometers
-  // const radiusInKm = user.filters.scopeFilter + 20;
-
-  // // Calculate bounding box coordinates
-  // const oneDegreeOfLatitudeInKm = 111.32;
-  // const latitudeDelta = radiusInKm / oneDegreeOfLatitudeInKm;
-  // const longitudeDelta =
-  //   radiusInKm /
-  //   (oneDegreeOfLatitudeInKm * Math.cos(centerLatitude * (Math.PI / 180)));
-
-  // const region = {
-  //   latitude: centerLatitude,
-  //   longitude: centerLongitude,
-  //   latitudeDelta,
-  //   longitudeDelta,
-  // };
 
   const reFocusMap = () => {
     if (mapViewRef.current) {

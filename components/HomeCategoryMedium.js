@@ -10,7 +10,7 @@ export default function HomeCategoryMedium({ category }) {
 
   const handleSubmit = (category) => {
     dispatch(setCategoryFilters([category])) &&
-      navigation.navigate("ListResults");
+      navigation.navigate("ListResults", { category });
   };
 
   let icon = null;

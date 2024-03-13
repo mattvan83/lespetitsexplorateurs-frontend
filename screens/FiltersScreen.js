@@ -19,11 +19,15 @@ import { handleFilterButtonClick } from "../modules/handleFilterButtonClick";
 export default function FiltersScreen({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
-  const [price, setPrice] = useState(30);
+  const [price, setPrice] = useState(user.filters.priceFilter);
   const [scope, setScope] = useState(user.preferences.scopePreference);
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [selectedDates, setSelectedDates] = useState([]);
-  const [selectedMoments, setSelectedMoments] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState(
+    user.filters.categoryFilter
+  );
+  const [selectedDates, setSelectedDates] = useState(user.filters.dateFilter);
+  const [selectedMoments, setSelectedMoments] = useState(
+    user.filters.momentFilter
+  );
   const [selectedAges, setSelectedAges] = useState(
     user.preferences.agePreference
   );

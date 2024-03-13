@@ -42,6 +42,7 @@ export default function HomeScreen({ navigation }) {
   // console.log("user.filters: ", user.filters);
   // console.log("user.preferences: ", user.preferences);
   // console.log("user.errorMsg: ", user.errorMsg);
+  // console.log("organizers: ", organizers);
 
   const dispatch = useDispatch();
 
