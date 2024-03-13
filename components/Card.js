@@ -142,6 +142,7 @@ const styles = StyleSheet.create({
   cardContainer: {
     alignItems: "center",
     width: "100%",
+    backgroundColor: 'transparent',
   },
   card: {
     justifyContent: "flex-start",

@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   KeyboardAvoidingView,
   Platform,
+  Image,
   Dimensions,
 } from "react-native";
 // import SearchBar from "../components/SearchBar";
@@ -24,7 +25,7 @@ import {
 } from "../reducers/user";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 import { Ionicons } from "@expo/vector-icons";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import {
   calculateBarycenter,
   convertCoordsToKm,
@@ -32,7 +33,7 @@ import {
 
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
-export default function MapResultsScreen({ navigation }) {
+export default function MapResultsScreenTest({ navigation }) {
   const user = useSelector((state) => state.user.value);
   const userFilters = useSelector((state) => state.user.value.filters);
   const [suggestionsList, setSuggestionsList] = useState([]);
@@ -45,11 +46,10 @@ export default function MapResultsScreen({ navigation }) {
     user.activities.map(() => initialMarkerColor)
   );
   const [pressedMarkerIndex, setPressedMarkerIndex] = useState(null);
-
-  // console.log("user.filters: ", userFilters);
-  // console.log("markerColors: ", markerColors);
-
   const dispatch = useDispatch();
+
+  //TEST EMELINE
+  const [selectedActivity, setSelectedActivity] = useState(null);
 
   useEffect(() => {
     // Execute when the component unmounts
@@ -311,27 +311,25 @@ export default function MapResultsScreen({ navigation }) {
     }
   };
 
-  const handleMarkerPress = (activity, index) => {
+  const handleMarkerPress = (index) => {
     console.log("Map Pressed");
     console.log(index)
-    console.log(pressedMarkerIndex)
+    setSelectedActivity(index)
     // console.log("Change background marker color");
     const newColors = [...markerColors];
 
     // Reset the color of the previously pressed marker
-    if (pressedMarkerIndex !== null) {
-      newColors[pressedMarkerIndex] = initialMarkerColor;
+    if (selectedActivity) {
+      newColors[selectedActivity] = initialMarkerColor;
     }
 
     // Set the color of the currently pressed marker
     newColors[index] = pressedMarkerColor;
-    console.log(newColors)
-
+    console.log(newColors);
     setMarkerColors(newColors);
-    setPressedMarkerIndex((prevIndex) => index);
   };
 
-  
+
 
   const handleMapPress = () => {
     console.log("maps")
@@ -343,7 +341,7 @@ export default function MapResultsScreen({ navigation }) {
     reFocusMap();
   };
 
-  const activityMarkers = user.activities.map((activity, i) => {
+  const activityMarkers = user.activities.map((activity, index) => {
     let icon = null;
 
     switch (activity.category) {
@@ -370,21 +368,23 @@ export default function MapResultsScreen({ navigation }) {
 
     return (
       <Marker
-        key={i}
+        key={index}
         style={styles.customMarker}
         id={activity.id}
         coordinate={{
           latitude: activity.latitude,
           longitude: activity.longitude,
         }}
+        zIndex={index}
         title={activity.name}
         description={activity.distance ? `${activity.distance} km` : null}
-        onPress={() => handleMarkerPress(activity, i)}
+        // onPress={() => handleMarkerPress(index)}
+        onPress={() => setSelectedActivity(index)}
       >
         <TouchableOpacity
           style={[
             styles.customMarkerIcon,
-            { backgroundColor: markerColors[i] },
+            { backgroundColor: markerColors[index] },
           ]}
           activeOpacity={0.8}
         >
@@ -393,6 +393,8 @@ export default function MapResultsScreen({ navigation }) {
       </Marker>
     );
   });
+
+  console.log(selectedActivity)
 
   let headerLocalisation;
   let centerLatitude;
@@ -512,107 +514,100 @@ export default function MapResultsScreen({ navigation }) {
     };
   }
 
-  console.log(`marker index : ${pressedMarkerIndex}`)
-
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}
-      >
-        <View style={styles.header}>
-          <View style={styles.topHeader}>
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={styles.goBackButton}
-              activeOpacity={0.8}
-            >
-              <Ionicons name="arrow-back-outline" size={24} color="black" />
-            </TouchableOpacity>
-            {headerLocalisation}
-          </View>
-
-          <View style={styles.searchContainer}>
-            <View style={styles.search}>
-              <View style={styles.searchBar}>
-                <Ionicons name="location-outline" size={24} color="#D0CFD4" />
-                <AutocompleteDropdown
-                  onChangeText={(value) => searchCity(value)}
-                  onSelectItem={(item) => handleSelectItem(item)}
-                  dataSet={suggestionsList}
-                  suggestionsListMaxHeight={
-                    Dimensions.get("window").height * 0.45
-                  }
-                  onClear={onClearPress}
-                  textInputProps={{
-                    placeholder: "Rechercher un lieu...",
-                    style: {
-                      color: "#120D26",
-                      paddingLeft: 20,
-                    },
-                  }}
-                  inputContainerStyle={styles.inputContainer}
-                  containerStyle={styles.dropdownContainer}
-                  suggestionsListContainerStyle={styles.suggestionListContainer}
-                  suggestionsListTextStyle={{
-                    color: "#120D26",
-                    fontSize: 12,
-                  }}
-                  closeOnSubmit
-                />
-              </View>
-              <TouchableOpacity
-                onPress={() => handlePressFilters()}
-                style={styles.filtersButton}
-                activeOpacity={0.8}
-              >
-                <Ionicons name="filter" size={24} color="#4A43EC" />
-                {/* <Text style={styles.textButton}>Filtres</Text> */}
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.body}>
-          <MapView
-            ref={mapViewRef}
-            style={styles.map}
-            region={region}
-            showsUserLocation
-            onPress={handleMapPress}
-          >
-            {centerLatitude && centerLongitude && (
-              <Marker
-                coordinate={{
-                  latitude: centerLatitude,
-                  longitude: centerLongitude,
-                }}
-                title={userFilters.cityFilter}
-                // description="Super ville"
-                pinColor="#fecb2d"
-                onPress={() => handleMapPress()} // Reset all marker colors when clicking on this marker
-              />
-            )}
-            {activityMarkers}
-          </MapView>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <View style={styles.topHeader}>
           <TouchableOpacity
-            onPress={reFocusMap}
-            style={styles.refocusContainer}
+            onPress={() => navigation.goBack()}
+            style={styles.goBackButton}
             activeOpacity={0.8}
           >
-            <Ionicons name="location-outline" size={24} color="#fecb2d" />
+            <Ionicons name="arrow-back-outline" size={24} color="black" />
           </TouchableOpacity>
-
-    
-          
-          {pressedMarkerIndex !== null && (
-            <View style={styles.popupCardContainer}>
-              <Card activity={user.activities[pressedMarkerIndex]} />
-            </View>
-          )}
+          {headerLocalisation}
         </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+
+        <View style={styles.searchContainer}>
+          <View style={styles.search}>
+            <View style={styles.searchBar}>
+              <Ionicons name="location-outline" size={24} color="#D0CFD4" />
+              <AutocompleteDropdown
+                onChangeText={(value) => searchCity(value)}
+                onSelectItem={(item) => handleSelectItem(item)}
+                dataSet={suggestionsList}
+                suggestionsListMaxHeight={
+                  Dimensions.get("window").height * 0.45
+                }
+                onClear={onClearPress}
+                textInputProps={{
+                  placeholder: "Rechercher un lieu...",
+                  style: {
+                    color: "#120D26",
+                    paddingLeft: 20,
+                  },
+                }}
+                inputContainerStyle={styles.inputContainer}
+                containerStyle={styles.dropdownContainer}
+                suggestionsListContainerStyle={styles.suggestionListContainer}
+                suggestionsListTextStyle={{
+                  color: "#120D26",
+                  fontSize: 12,
+                }}
+                closeOnSubmit
+              />
+            </View>
+            <TouchableOpacity
+              onPress={() => handlePressFilters()}
+              style={styles.filtersButton}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="filter" size={24} color="#4A43EC" />
+              {/* <Text style={styles.textButton}>Filtres</Text> */}
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.body}>
+        <MapView
+          provider={PROVIDER_GOOGLE}
+          ref={mapViewRef}
+          style={styles.map}
+          region={region}
+          showsUserLocation
+          onPress={handleMapPress}
+        >
+          {centerLatitude && centerLongitude && (
+            <Marker
+              coordinate={{
+                latitude: centerLatitude,
+                longitude: centerLongitude,
+              }}
+              title={userFilters.cityFilter}
+              // description="Super ville"
+              pinColor="#fecb2d"
+              onPress={() => handleMapPress()} // Reset all marker colors when clicking on this marker
+
+            />
+          )}
+          {activityMarkers}
+        </MapView>
+        <TouchableOpacity
+          onPress={reFocusMap}
+          style={styles.refocusContainer}
+          activeOpacity={0.8}
+        >
+          <Ionicons name="location-outline" size={24} color="#fecb2d" />
+        </TouchableOpacity>
+
+        {selectedActivity && (
+          <View style={styles.popupCardContainer}>
+            <Card activity={user.activities[selectedActivity]} />
+          </View>
+        )}
+      </View>
+    </View>
   );
 }
 
@@ -624,7 +619,7 @@ const styles = StyleSheet.create({
   },
   header: {
     width: "100%",
-    paddingTop: 30,
+    paddingTop: 80,
   },
   topHeader: {
     flexDirection: "row",
@@ -655,7 +650,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   map: {
-    flex: 0.95,
+    flex: 1,
   },
   errorMsg: {
     marginTop: 24,
@@ -730,13 +725,10 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   popupCardContainer: {
-    // position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    marginBottom: 50,
-    flex: 0.15,
+    position: "absolute",
+    bottom: 50,
     backgroundColor: "transparent",
     alignItems: "center",
+    width: '100%',
   },
 });
