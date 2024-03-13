@@ -47,6 +47,13 @@ export default function HomeScreen({ navigation }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    // Execute when the component unmounts
+    return () => {
+      console.log("Unmount HomeScreen");
+    };
+  }, []);
+
+  useEffect(() => {
     let isPositionObtained = false;
 
     (async () => {
@@ -327,7 +334,6 @@ export default function HomeScreen({ navigation }) {
       // Cleanup the timeout when the component unmounts or when the position is obtained
       return () => {
         clearTimeout(timeoutId);
-        console.log("Unmount HomeScreen");
       };
     })();
   }, []);
