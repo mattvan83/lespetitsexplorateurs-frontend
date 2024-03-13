@@ -26,7 +26,7 @@ export default function ActivitySheetScreen({
   const user = useSelector((state) => state.user.value);
   const activities = useSelector((state) => state.activities.value);
   console.log("Activity: ", activity);
-  
+
 
   const handleShare = async () => {
     console.log("share");
@@ -58,18 +58,18 @@ export default function ActivitySheetScreen({
     const activityId = activity.id;
     const userId = user.id;
     const isLiked = activity.isLiked;
-    
+
     fetch(`${BACKEND_ADDRESS}/activities/favorite/${token}/${activityId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token, activityId })
     }).then((response) => response.json())
-    .then(data => {
-      data.result && dispatch(updateLikedActivities({ activityId, userId, isLiked }));
-    })
-    .catch(error => {
-      console.error('Erreur:', error);
-    });
+      .then(data => {
+        data.result && dispatch(updateLikedActivities({ activityId, userId, isLiked }));
+      })
+      .catch(error => {
+        console.error('Erreur:', error);
+      });
   };
 
   /*const handleFollow = () => {
@@ -194,7 +194,12 @@ export default function ActivitySheetScreen({
       </ImageBackground>
 
       <View style={styles.activity}>
-        <Text style={styles.title}>{activity.name}</Text>
+        <View style={styles.namePrice}>
+          <Text style={styles.title}>{activity.name}</Text>
+          <View style={styles.price}>
+            <Text style={styles.priceText}>{activity.price}€</Text>
+          </View>
+        </View>
         <View style={styles.div}>
           <View style={styles.icon}>
             <Ionicons name="calendar" size={24} color="#5669FF" />
@@ -256,6 +261,8 @@ export default function ActivitySheetScreen({
           </View> */}
           </View>
         )}
+
+
 
         <Text style={styles.subtitle}>À propos de l'évènement</Text>
         <ScrollView>
@@ -325,6 +332,25 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
     marginRight: 25,
+  },
+  namePrice: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: "space-between"
+  },
+  price: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: "rgba(255, 180, 89, 0.3)",
+    height: 36,
+    width: 64,
+    borderRadius: 5,
+    marginRight: 20,
+  },
+  priceText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#9B5909",
   },
   icon: {
     display: "flex",
