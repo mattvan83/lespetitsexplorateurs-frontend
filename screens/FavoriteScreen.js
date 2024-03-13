@@ -12,7 +12,7 @@ import globalStyles from "../globalStyles";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { loadFavoriteActivities } from "../reducers/user";
-import CardEditDelete from "../components/CardEditDelete";
+import Card from "../components/Card";
 import { MaterialIcons } from "@expo/vector-icons";
 
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
@@ -21,15 +21,15 @@ export default function FavoriteScreen({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
 
-  useEffect(() => {
-    fetch(`${BACKEND_ADDRESS}/activities/favorite/${user.token}`)
-      .then((response) => response.json())
-      .then((data) => {
-        data.result && dispatch(loadFavoriteActivities(data.activities));
-      });
-  }, []);
+  const userId = user._id;
 
-  const activitiesList = user.favoriteActivities.map((activity, i) => {
+  fetch(`${BACKEND_ADDRESS}/activities/favorite/${userId}`)
+    .then((response) => response.json())
+    .then((data) => {
+      data.result && dispatch(loadFavoriteActivities(data.activities));
+    });
+
+  /*const activitiesList = user.favoriteActivities.map((activity, i) => {
     const inputDate = new Date(activity.date);
     const options = {
       weekday: "long", // full weekday name
@@ -42,20 +42,26 @@ export default function FavoriteScreen({ navigation }) {
       .toLocaleString("fr-FR", options)
       .replace(":", "h")
       .toUpperCase();
+      
+      return (
+        <CardEditDelete
+          key={i}
+          imagePath={activity.imgUrl}
+          activityId={activity.id}
+          activityDate={formattedDate}
+          activityName={activity.name}
+          activityLocation={`${activity.postalCode}, ${activity.city}`}
+          isFavorite={activity.isLiked}
+          activityDistance={0}
+        />
+      );
+    });*/
 
-    return (
-      <CardEditDelete
-        key={i}
-        imagePath={activity.imgUrl}
-        activityId={activity.id}
-        activityDate={formattedDate}
-        activityName={activity.name}
-        activityLocation={`${activity.postalCode}, ${activity.city}`}
-        isFavorite={activity.isLiked}
-        activityDistance={0}
-      />
-    );
+
+  const activitiesList = user.favoriteActivities.map((activity, i) => {
+    return <Card key={i} activity={activity} />;
   });
+
 
   const handleActivitySheet = () => {
     navigation.navigate("ActivitySheet");
@@ -64,7 +70,7 @@ export default function FavoriteScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={globalStyles.title2}>Mes favoris</Text>
-      {activitiesList.length === 0 ? ( // Vérifiez si la liste des activités est vide
+      {activitiesList.length === 0 ? ( // if activitiesList is empty
       <View style={styles.noFavContainer}>
          <Image
           style={styles.img}

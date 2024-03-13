@@ -1,16 +1,18 @@
 import { StyleSheet, Text, Image, View, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useNavigation } from "@react-navigation/native";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
+import { updateFavoriteActivities } from "../reducers/user";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 export default function Card({ activity }) {
   const navigation = useNavigation();
   const user = useSelector((state) => state.user.value);
+  const dispatch = useDispatch();
   const [selectedImage, setSelectedImage] = useState(null);
-  //A SUPPRIMER PLUS TARD
-  let isFavorite = false;
+
+  const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
   const inputDate = new Date(activity.date);
 
@@ -70,6 +72,25 @@ export default function Card({ activity }) {
     chooseRandomImage();
   }, []);
 
+  const token = user.token;
+  const activityId = activity.id;
+
+  const handleLike = () => {
+    
+    fetch(`${BACKEND_ADDRESS}/activities/favorite/${token}/${activityId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token, activityId })
+    }).then((response) => response.json())
+    .then(data => {
+      console.log('DATA:', data);
+      data.result && dispatch(updateFavoriteActivities( data.activityId ));
+    })
+    .catch(error => {
+      console.error('Erreur:', error);
+    });
+  };
+
   return (
     <View style={styles.cardContainer}>
       <TouchableOpacity
@@ -85,8 +106,8 @@ export default function Card({ activity }) {
         <View style={styles.details}>
           <View style={styles.dateFavoriteContainer}>
             <Text style={styles.activityDate}>{formattedDate}</Text>
-            <TouchableOpacity activeOpacity={0.8} style={styles.favorite}>
-              {!isFavorite ? (
+            <TouchableOpacity activeOpacity={0.8} style={styles.favorite} onPress={() => handleLike()}>
+              {!user.favoriteActivities.includes(activityId) ? (
                 <Icon
                   style={styles.heartIcon}
                   name="heart-outline"
@@ -98,7 +119,7 @@ export default function Card({ activity }) {
                   style={styles.heartIcon}
                   name="heart"
                   size={20}
-                  color="#EB5757"
+                  color= "#EB5757"
                 />
               )}
             </TouchableOpacity>

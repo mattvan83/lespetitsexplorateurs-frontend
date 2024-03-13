@@ -153,6 +153,15 @@ export const userSlice = createSlice({
         (activity) => activity.id !== action.payload
       );
     },
+    updateFavoriteActivities: (state, action) => {
+      if (state.value.favoriteActivities.includes(action.payload)) {
+        state.value.favoriteActivities = state.value.favoriteActivities.filter(
+          (activityId) => activityId !== action.payload
+        );
+      } else {
+        state.value.favoriteActivities.push(action.payload);
+      }
+    },
     loadFavoriteActivities: (state, action) => {
       state.value.favoriteActivities = action.payload;
     },
@@ -181,6 +190,7 @@ export const {
   resetPreferences,
   setCitySearched,
   resetCitySearched,
+  updateFavoriteActivities,
   loadUserActivities,
   addUserActivity,
   addUserActivityPhoto,
