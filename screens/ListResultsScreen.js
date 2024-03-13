@@ -400,17 +400,14 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   header: {
-    flex: 0.28,
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     alignItems: "flex-start",
-    // backgroundColor: "#4A43EC",
     width: "100%",
     paddingTop: 50,
   },
   topHeader: {
     flexDirection: "row",
     alignItems: "center",
-    // marginTop: 10,
   },
   goBackButton: {
     marginHorizontal: 20,
@@ -457,11 +454,11 @@ const styles = StyleSheet.create({
     marginRight: 100,
   },
   searchContainer: {
-    flex: 0.3,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "flex-end",
     // backgroundColor: "#4A43EC",
+    marginTop: 20,
     width: "100%",
     paddingBottom: 20,
   },
