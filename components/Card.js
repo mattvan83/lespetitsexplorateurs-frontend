@@ -68,7 +68,7 @@ export default function Card({ activity }) {
 
   useEffect(() => {
     chooseRandomImage();
-  });
+  }, []);
 
   return (
     <View style={styles.cardContainer}>

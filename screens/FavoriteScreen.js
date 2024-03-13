@@ -3,6 +3,7 @@ import {
   Text,
   KeyboardAvoidingView,
   Platform,
+  Image,
   View,
   TouchableOpacity,
   ScrollView,
@@ -65,9 +66,10 @@ export default function FavoriteScreen({ navigation }) {
       <Text style={globalStyles.title2}>Mes favoris</Text>
       {activitiesList.length === 0 ? ( // Vérifiez si la liste des activités est vide
       <View style={styles.noFavContainer}>
-        <View style={styles.img}>
-          <MaterialIcons name='favorite' size={64} color="#BBC3FF" style={styles.icon} />
-        </View>
+         <Image
+          style={styles.img}
+          source={require('../assets/Images/15.jpg')}
+        />
         <Text style={styles.text}>Vous n'avez pas encore de favoris.</Text>
         <Text style={styles.text}>Explorez l'appli pour sauvegarder des activités près de chez vous !</Text>
       </View>
@@ -94,13 +96,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   img: {
-    width: 150,
-    height: 150,
-    borderRadius: 100,
+    width: 250,
+    height: 250,
+    borderRadius: 150,
     marginBottom: 20,
     alignSelf: "center",
-    backgroundColor: '#EEF0FF',
-    borderRadius: 100,
+    // backgroundColor: '#EEF0FF',
     alignItems: 'center',
     justifyContent: 'center',
   },

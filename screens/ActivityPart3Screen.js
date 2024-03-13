@@ -25,9 +25,6 @@ export default function ProfileScreen({ navigation }) {
   const [showError, setShowError] = useState(false);
   const [errorPostalCode, setErrorPostalCode] = useState(false);
 
-
-  console.log(activities)
-
   const handleContinue = () => {
     if ((!activityAddress || activityAddress === '') || (!activityPostalCode || activityPostalCode === '') || (!activityCity || activityCity === '')) {
       setShowError(true);

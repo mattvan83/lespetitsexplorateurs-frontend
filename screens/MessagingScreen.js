@@ -2,6 +2,7 @@ import {
   StyleSheet,
   Text,
   View,
+  Image,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import globalStyles from '../globalStyles';
@@ -11,9 +12,10 @@ export default function MessagingScreen({ navigation }) {
     <View style={styles.container}>
       <Text style={globalStyles.title2}>Mes messages</Text>
       <View style={styles.noMsgContainer}>
-        <View style={styles.img}>
-          <MaterialIcons name='message' size={64} color="#BBC3FF" style={styles.icon} />
-        </View>
+      <Image
+          style={styles.img}
+          source={require('../assets/Images/14.jpg')}
+        />
         <Text style={styles.text} >Vous n'avez pas encore reçus de messages.</Text>
         <Text style={styles.text}>Partagez l'appli avec votre cercle de parents et commencez à échanger vos bons plans !</Text>
       </View>
@@ -32,13 +34,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   img: {
-    width: 150,
-    height: 150,
-    borderRadius: 100,
+    width: 250,
+    height: 250,
+    borderRadius: 150,
     marginBottom: 20,
     alignSelf: "center",
-    backgroundColor: '#EEF0FF',
-    borderRadius: 100,
+    // backgroundColor: '#EEF0FF',
     alignItems: 'center',
     justifyContent: 'center',
   },

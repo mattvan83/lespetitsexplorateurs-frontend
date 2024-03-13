@@ -10,7 +10,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
-export default function ProfileScreen({ navigation }) {
+export default function ActivityPart5Screen({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
   const activities = useSelector((state) => state.activities.value);
@@ -59,7 +59,7 @@ export default function ProfileScreen({ navigation }) {
         locationName: activities.locationName,
         city: activities.city,
         date: activities.date,
-        // image: activities.image,
+        price: activities.price,
       }),
     })
       .then((response) => response.json())
@@ -69,6 +69,7 @@ export default function ProfileScreen({ navigation }) {
 
           // If a photo has been added, we update the activity in database
           if (photo) {
+            console.log(photo)
             const formData = new FormData();
             formData.append("photoFromFront", {
               uri: photo,
@@ -85,13 +86,42 @@ export default function ProfileScreen({ navigation }) {
             )
               .then((response) => response.json())
               .then((data) => {
-                photoAdded = true;
-                dispatch(addUserActivity(activity.activity));
-                dispatch(addUserActivityPhoto({ activityId: activity.activity._id, url: data.url }));
+                dispatch(addUserActivity({
+                  id: activity.activity._id,
+                  name: activity.activity.name,
+                  description: activity.activity.description,
+                  //durationInMilliseconds: activity.activity.duration,
+                  category: activity.activity.category,
+                  concernedAges: activity.activity.ages,
+                  address: activity.activity.address,
+                  postalCode: activity.activity.postalCode,
+                  locationName: activity.activity.locationName,
+                  latitude: activity.activity.latitude,
+                  longitude: activity.activity.longitude,
+                  city: activity.activity.city,
+                  date: activity.activity.date,
+                  price: activity.activity.price,
+                  imgUrl: data.url,
+                }));
                 navigation.navigate("TabNavigator", { screen: "Activité" });
               });
           } else {
-            dispatch(addUserActivity(activity.activity));
+            dispatch(addUserActivity({
+              id: activity.activity._id,
+              name: activity.activity.name,
+              description: activity.activity.description,
+              //durationInMilliseconds: activity.activity.duration,
+              category: activity.activity.category,
+              concernedAges: activity.activity.ages,
+              address: activity.activity.address,
+              postalCode: activity.activity.postalCode,
+              locationName: activity.activity.locationName,
+              latitude: activity.activity.latitude,
+              longitude: activity.activity.longitude,
+              city: activity.activity.city,
+              date: activity.activity.date,
+              price: activity.activity.price,
+            }));
             navigation.navigate("TabNavigator", { screen: "Activité" });
           }
         } else {
@@ -101,6 +131,7 @@ export default function ProfileScreen({ navigation }) {
   };
 
   const handleEdit = () => {
+    console.log("handleEdit")
     fetch(`${BACKEND_ADDRESS}/activities/update`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -138,7 +169,6 @@ export default function ProfileScreen({ navigation }) {
               body: formData,
             }).then((response) => response.json())
               .then((data) => {
-                photoAdded = true;
                 dispatch(modifyUserActivity({
                   activityId: activities.id,
                   activity: {
@@ -154,10 +184,10 @@ export default function ProfileScreen({ navigation }) {
                     price: activities.price,
                     longitude: activities.longitude,
                     latitude: activities.latitude,
+                    imgUrl: data.url,
                   }
                 }
                 ));
-                dispatch(addUserActivityPhoto({ activityId: activities.id, url: data.url }))
                 navigation.navigate("TabNavigator", { screen: "Activité" });
               });
           } else {
@@ -173,7 +203,9 @@ export default function ProfileScreen({ navigation }) {
                 locationName: activities.locationName,
                 city: activities.city,
                 date: activities.date,
-                price: activities.price
+                price: activities.price,
+                longitude: activities.longitude,
+                latitude: activities.latitude,
               }
             }
             ));

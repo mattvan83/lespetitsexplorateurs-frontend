@@ -39,7 +39,6 @@ export default function ProfileScreen({ navigation }) {
     frontCategory = backToFrontCategoryMapping[activities.category];
   }
   const [selectedCategory, setSelectedCategory] = useState(activities.isCurrentlyUpdated ? frontCategory : '');
-  console.log(frontCategory)
 
   const handleContinue = () => {
     if (activityName !== '' && activityDescription !== '' && selectedCategory !== '') {

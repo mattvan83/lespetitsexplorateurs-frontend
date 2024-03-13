@@ -4,6 +4,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   View,
+  Image,
   TouchableOpacity,
   FlatList,
 } from "react-native";
@@ -19,7 +20,6 @@ const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 export default function ActivitiesScreen({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
-  const activities = useSelector((state) => state.activities.value);
 
   useEffect(() => {
     fetch(`${BACKEND_ADDRESS}/activities/allactivities/${user.token}`)
@@ -27,7 +27,7 @@ export default function ActivitiesScreen({ navigation }) {
       .then((data) => {
         data.result && dispatch(loadUserActivities(data.activities));
       });
-  }, [activities]);
+  }, []);
 
 
   const handleSubmit = () => {
@@ -42,13 +42,23 @@ export default function ActivitiesScreen({ navigation }) {
     >
       <Text style={globalStyles.title2}>Mes activités</Text>
 
+      {user.userActivities.length === 0 && (
+        <View style={styles.noMsgContainer}>
+          <Image
+          style={styles.img}
+          source={require('../assets/Images/19.jpg')}
+        />
+          <Text style={styles.text} >Vous n'avez répertorié aucune activité.</Text>
+          <Text style={styles.text}>Commencez dès à présent !</Text>
+        </View>)}
+
       <FlatList
         data={user.userActivities}
         renderItem={({ item, index }) => (
-          <View style={{ marginBottom: index === user.userActivities.length - 1 ? 100 : 0 }}> 
+          <View style={{ marginBottom: index === user.userActivities.length - 1 ? 100 : 0 }}>
             <CardEditDelete key={String(item.id)} activity={item} />
           </View>
-        )} 
+        )}
         keyExtractor={item => String(item.id)}
         style={styles.flatlist}
       />
@@ -93,4 +103,26 @@ const styles = StyleSheet.create({
     padding: 8,
     gap: 8,
   },
+  noMsgContainer: {
+    alignItems: 'center',
+    justifyContent: "center",
+    flex: 1,
+  },
+  img: {
+    width: 250,
+    height: 250,
+    borderRadius: 150,
+    marginTop: 330,
+    marginBottom: 20,
+    alignSelf: "center",
+    backgroundColor: '#EEF0FF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  text: {
+    textAlign: 'center',
+    width: '80%',
+    lineHeight: 24,
+    alignSelf: 'center',
+  }
 });
