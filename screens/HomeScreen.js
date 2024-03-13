@@ -582,7 +582,7 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
+    backgroundColor: "##fcfcfd",
     width: "100%",
   },
   localisation: {
@@ -677,10 +677,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     paddingLeft: 10,
-    paddingRight: 5,
+    paddingRight: 10,
     borderRadius: 12,
-    // borderColor: "#E4dfdf",
-    // borderWidth: 1,
     backgroundColor: "white",
   },
   input: {

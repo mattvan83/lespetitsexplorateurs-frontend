@@ -21,25 +21,13 @@ export default function FiltersScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
   const [price, setPrice] = useState(user.filters.priceFilter);
   const [scope, setScope] = useState(user.preferences.scopePreference);
-  const [selectedCategories, setSelectedCategories] = useState(
-    user.filters.categoryFilter
-  );
+  const [selectedCategories, setSelectedCategories] = useState(user.filters.categoryFilter);
   const [selectedDates, setSelectedDates] = useState(user.filters.dateFilter);
-  const [selectedMoments, setSelectedMoments] = useState(
-    user.filters.momentFilter
-  );
-  const [selectedAges, setSelectedAges] = useState(
-    user.preferences.agePreference
-  );
-  const [selectedCity, setSelectedCity] = useState(
-    user.preferences.cityPreference
-  );
-  const [selectedLongitude, setSelectedLongitude] = useState(
-    user.preferences.longitudePreference
-  );
-  const [selectedLatitude, setSelectedLatitude] = useState(
-    user.preferences.latitudePreference
-  );
+  const [selectedMoments, setSelectedMoments] = useState(user.filters.momentFilter);
+  const [selectedAges, setSelectedAges] = useState(user.preferences.agePreference);
+  const [selectedCity, setSelectedCity] = useState(user.preferences.cityPreference);
+  const [selectedLongitude, setSelectedLongitude] = useState(user.preferences.longitudePreference);
+  const [selectedLatitude, setSelectedLatitude] = useState(user.preferences.latitudePreference);
 
   const categories = ["Sport", "Musique", "Créativité", "Motricité", "Éveil"];
   const dateFilters = ["Aujourd'hui", "Demain", "Cette semaine", "Ce week-end"];

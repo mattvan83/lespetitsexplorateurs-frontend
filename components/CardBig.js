@@ -39,7 +39,7 @@ export default function CardBig({ activity }) {
       user.preferences.longitudePreference !== -200
     ) {
       distanceText = (
-        <Text style={styles.activityLocation}>{`${activity.distance} KM`}</Text>
+        activity.distance && <Text style={styles.activityLocation}>{`${activity.distance} KM`}</Text> 
       );
     }
   } else if (
@@ -47,7 +47,7 @@ export default function CardBig({ activity }) {
     user.filters.longitudeFilter !== -200
   ) {
     distanceText = (
-      <Text style={styles.activityLocation}>{`${activity.distance} KM`}</Text>
+      activity.distance && <Text style={styles.activityLocation}>{`${activity.distance} KM`}</Text>
     );
   }
 

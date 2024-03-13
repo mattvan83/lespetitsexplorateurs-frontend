@@ -1,16 +1,12 @@
 import {
   StyleSheet,
   Text,
-  TextInput,
   View,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   SafeAreaView,
   KeyboardAvoidingView,
   Platform,
-  ScrollView,
   Dimensions,
-  Button,
 } from "react-native";
 // import SearchBar from "../components/SearchBar";
 import Card from "../components/Card";
@@ -452,8 +448,7 @@ export default function MapResultsScreen({ navigation }) {
     ) {
       headerLocalisation = (
         <Text style={styles.localisationBold}>
-          Activités dans un rayon de {user.preferences.scopePreference}km autour
-          de {user.preferences.cityPreference}
+          Activités autour de {user.preferences.cityPreference} (- {user.preferences.scopeFilter}km )
         </Text>
       );
 
@@ -484,8 +479,7 @@ export default function MapResultsScreen({ navigation }) {
   ) {
     headerLocalisation = (
       <Text style={styles.localisationBold}>
-        Activités dans un rayon de {user.filters.scopeFilter}km autour de{" "}
-        {user.filters.cityFilter}
+        Activités autour de {user.filters.cityFilter} (- {user.filters.scopeFilter}km )
       </Text>
     );
 
@@ -599,6 +593,7 @@ export default function MapResultsScreen({ navigation }) {
           >
             <Ionicons name="location-outline" size={24} color="#fecb2d" />
           </TouchableOpacity>
+          
           {pressedMarkerIndex !== null && (
             <View style={styles.popupCardContainer}>
               <Card activity={user.activities[pressedMarkerIndex]} />
@@ -613,22 +608,16 @@ export default function MapResultsScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
-    alignItems: "center",
+    backgroundColor: "#fff",
     width: "100%",
   },
   header: {
-    flex: 0.28,
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    // backgroundColor: "#4A43EC",
     width: "100%",
-    paddingTop: 50,
+    paddingTop: 30,
   },
   topHeader: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 10,
   },
   goBackButton: {
     marginHorizontal: 20,
@@ -664,11 +653,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   searchContainer: {
-    flex: 0.3,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "flex-end",
-    // backgroundColor: "#4A43EC",
+    marginTop: 20,
     width: "100%",
     paddingBottom: 20,
   },
@@ -711,18 +699,13 @@ const styles = StyleSheet.create({
   rightButtonsContainerStyle: {
     backgroundColor: "white",
   },
-  mapButtonContainer: {
-    position: "absolute",
-    alignItems: "center",
-    width: "100%",
-    bottom: 25,
-  },
   refocusContainer: {
     position: "absolute",
-    top: 64,
-    right: 13,
+    bottom: 24,
+    right: 24,
     padding: 6,
-    backgroundColor: "rgba(255, 255, 255, 0.65)",
+    borderRadius: 15,
+    backgroundColor: "rgba(255, 255, 255, 0.70)",
   },
   customMarker: {
     justifyContent: "center",

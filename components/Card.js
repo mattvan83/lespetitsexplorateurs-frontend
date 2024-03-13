@@ -23,7 +23,7 @@ export default function Card({ activity }) {
   };
 
   const formattedDate = inputDate
-    .toLocaleString("fr-FR")
+    .toLocaleString("fr-FR", options)
     .replace(":", "h")
     .toUpperCase();
 
@@ -41,17 +41,13 @@ export default function Card({ activity }) {
       user.preferences.latitudePreference !== -200 &&
       user.preferences.longitudePreference !== -200
     ) {
-      distanceText = (
-        <Text style={styles.activityLocation}>{`${activity.distance} KM`}</Text>
-      );
+      distanceText = (activity.distance === undefined ? <></> : <Text style={styles.activityLocation}>{`${activity.distance} KM`}</Text>);
     }
   } else if (
     user.filters.latitudeFilter !== -200 &&
     user.filters.longitudeFilter !== -200
   ) {
-    distanceText = (
-      <Text style={styles.activityLocation}>{`${activity.distance} KM`}</Text>
-    );
+    distanceText = (activity.distance === undefined ? <></> : <Text style={styles.activityLocation}>{`${activity.distance} KM`}</Text>);
   }
 
   const images = [
@@ -72,7 +68,7 @@ export default function Card({ activity }) {
 
   useEffect(() => {
     chooseRandomImage();
-  });
+  }, []);
 
   return (
     <View style={styles.cardContainer}>
@@ -124,6 +120,7 @@ export default function Card({ activity }) {
 const styles = StyleSheet.create({
   cardContainer: {
     alignItems: "center",
+    width: "100%",
   },
   card: {
     justifyContent: "flex-start",
@@ -152,12 +149,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   details: {
+    flex: 1,
     gap: 4,
     height: 82,
-    width: 215,
     justifyContent: "space-between",
   },
   dateFavoriteContainer: {
+    width: '100%',
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",

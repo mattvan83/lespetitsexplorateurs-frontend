@@ -3,6 +3,8 @@ import {
   Text,
   View,
   TextInput,
+  KeyboardAvoidingView,
+  Platform,
   TouchableOpacity,
 } from "react-native";
 import globalStyles from '../globalStyles';
@@ -21,7 +23,7 @@ export default function ProfileScreen({ navigation }) {
   const [price, setPrice] = useState(0);
   // CF below for concernedAges
   const [showError, setShowError] = useState(false);
-  
+
   const ageCategory = ["3-12 mois", "1-3 ans", "3-6 ans", "6-10 ans", "10+ ans"];
 
   const ageMapping = {
@@ -34,13 +36,13 @@ export default function ProfileScreen({ navigation }) {
   const ages = [];
   for (let element of activities.concernedAges) {
     ages.push(ageMapping[element]);
-  } 
+  }
   const backToFrontAgeMapping = invertMappingTable(ageMapping);
 
   frontConcernedAges = activities.concernedAges.map(
     (age) => backToFrontAgeMapping[age]
   );
- 
+
   const [selectedAges, setSelectedAges] = useState(activities.isCurrentlyUpdated ? frontConcernedAges : []);
 
   const handleAgeList = (category) => {
@@ -64,9 +66,10 @@ export default function ProfileScreen({ navigation }) {
   }
 
   return (
-    <View style={styles.filtersContainer}>
-        <FontAwesome name={'arrow-left'} color={'black'} size={20} style={styles.arrow} onPress={() => navigation.goBack()}/>
-        
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+      <View style={styles.filtersContainer}>
+        <FontAwesome name={'arrow-left'} color={'black'} size={20} style={styles.arrow} onPress={() => navigation.goBack()} />
+
         <Text style={styles.title2}>Dites-nous en plus !</Text>
 
         <Text style={globalStyles.title4}>Âge du public concerné</Text>
@@ -92,21 +95,24 @@ export default function ProfileScreen({ navigation }) {
           <Text style={styles.textSlider}>30€</Text>
         </View>
 
-        <View style={styles.bottom} >
-          <TouchableOpacity
-              onPress={() => handleContinue()}
-              style={styles.button}
-              activeOpacity={0.8}
-            >
-              <Text style={styles.textButton}>Continuer</Text>
-            </TouchableOpacity>
-            {showError && (
-            <Text style={styles.error}>
-              Tous les champs sont requis.
-            </Text>
-          )}
+        {showError && (
+          <Text style={styles.error}>
+            Tous les champs sont requis.
+          </Text>
+        )}
+
       </View>
+
+      <View style={styles.bottom} >
+        <TouchableOpacity
+          onPress={() => handleContinue()}
+          style={styles.button}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.textButton}>Continuer</Text>
+        </TouchableOpacity>
       </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -138,16 +144,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     margin: 15,
   },
-  // a supprimer plus tard 
-  filtersButton: {
-    width: 100,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: '#EBEDFF',
-    borderRadius: 100,
-    padding: 6,
-  },
   textButton: {
     color: '#5669FF',
     fontWeight: 'bold',
@@ -161,9 +157,9 @@ const styles = StyleSheet.create({
   },
   bottom: {
     position: "absolute",
-    bottom: 20,
+    bottom: 30,
     width: "100%",
-    flex: 0.1
+    flex: 0.1,
   },
   button: {
     padding: 10,

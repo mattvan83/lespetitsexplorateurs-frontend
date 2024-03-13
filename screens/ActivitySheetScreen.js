@@ -25,8 +25,6 @@ export default function ActivitySheetScreen({
 }) {
   const user = useSelector((state) => state.user.value);
   const activities = useSelector((state) => state.activities.value);
-  console.log("Activity: ", activity);
-  
 
   const handleShare = async () => {
     console.log("share");
@@ -58,18 +56,18 @@ export default function ActivitySheetScreen({
     const activityId = activity.id;
     const userId = user.id;
     const isLiked = activity.isLiked;
-    
+
     fetch(`${BACKEND_ADDRESS}/activities/favorite/${token}/${activityId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token, activityId })
     }).then((response) => response.json())
-    .then(data => {
-      data.result && dispatch(updateLikedActivities({ activityId, userId, isLiked }));
-    })
-    .catch(error => {
-      console.error('Erreur:', error);
-    });
+      .then(data => {
+        data.result && dispatch(updateLikedActivities({ activityId, userId, isLiked }));
+      })
+      .catch(error => {
+        console.error('Erreur:', error);
+      });
   };
 
   /*const handleFollow = () => {
@@ -99,6 +97,13 @@ export default function ActivitySheetScreen({
 
   //Gestion de la date
   const dateObject = new Date(activity.date);
+  // Pour obtenir heure de fin
+  const dateEnMillisecondes = new Date(activity.date).getTime(); // Get milliseconds
+  const endOfActivity = dateEnMillisecondes + activity.durationInMilliseconds
+  const endDate = new Date(endOfActivity);
+  const endHour = endDate.getHours();
+  const endMinutes = endDate.getMinutes();
+
   const daysOfWeek = [
     "Dimanche",
     "Lundi",
@@ -128,22 +133,14 @@ export default function ActivitySheetScreen({
   const month = months[dateObject.getMonth()];
   const year = dateObject.getFullYear();
   // Obtenir l'heure et les minutes
-  const hours = dateObject.getUTCHours().toString().padStart(2, "0"); // Ajoute un zéro devant si nécessaire
-  const minutes = dateObject.getUTCMinutes().toString().padStart(2, "0"); // Ajoute un zéro devant si nécessaire
+  const hours = dateObject.getHours().toString().padStart(2, "0"); // Ajoute un zéro devant si nécessaire
+  const minutes = dateObject.getMinutes().toString().padStart(2, "0"); // Ajoute un zéro devant si nécessaire
   // Formater date et heure
   const formattedDate = `${day} ${date} ${month} ${year}`;
   const formattedTime = `${hours}h${minutes}`;
 
-  //Gestion de la durée
-  // Conversion en heures, minutes et secondes
-  const durationHours = Math.floor(
-    activity.durationInMilliseconds / (1000 * 60 * 60)
-  );
-  const durationMinutes = Math.floor(
-    (activity.durationInMilliseconds % (1000 * 60 * 60)) / (1000 * 60)
-  );
   // Formater la durée
-  const formattedDuration = `${durationHours}h${durationMinutes}`;
+  const formattedDuration = `${endHour}h${endMinutes === 0 ? "00" : endMinutes}`;
 
   const handleClickOnOrganizer = () => {
     fetch(`${BACKEND_ADDRESS}/organizers/${activity.organizerId}`)
@@ -194,7 +191,12 @@ export default function ActivitySheetScreen({
       </ImageBackground>
 
       <View style={styles.activity}>
-        <Text style={styles.title}>{activity.name}</Text>
+        <View style={styles.namePrice}>
+          <Text style={styles.title}>{activity.name}</Text>
+          <View style={styles.price}>
+            <Text style={styles.priceText}>{activity.price === 0 ?  "Gratuit" : activity.price + "€"}</Text>
+          </View>
+        </View>
         <View style={styles.div}>
           <View style={styles.icon}>
             <Ionicons name="calendar" size={24} color="#5669FF" />
@@ -202,7 +204,7 @@ export default function ActivitySheetScreen({
           <View marginLeft={20}>
             <Text style={styles.bold}>{formattedDate}</Text>
             <Text style={styles.small}>
-              {formattedTime} - Durée de l'activité : {formattedDuration}
+              De {formattedTime} à {formattedDuration}
             </Text>
           </View>
         </View>
@@ -256,6 +258,8 @@ export default function ActivitySheetScreen({
           </View> */}
           </View>
         )}
+
+
 
         <Text style={styles.subtitle}>À propos de l'évènement</Text>
         <ScrollView>
@@ -325,6 +329,25 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
     marginRight: 25,
+  },
+  namePrice: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: "space-between"
+  },
+  price: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: "rgba(255, 180, 89, 0.3)",
+    height: 36,
+    width: 80,
+    borderRadius: 5,
+    marginRight: 20,
+  },
+  priceText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#9B5909",
   },
   icon: {
     display: "flex",

@@ -464,8 +464,7 @@ export default function ListResultsScreen({ navigation, route }) {
     ) {
       headerLocalisation = (
         <Text style={styles.localisationBold}>
-          Activités dans un rayon de {user.preferences.scopePreference}km autour
-          de {user.preferences.cityPreference}
+          Activités autour de {user.preferences.cityPreference} (- {user.preferences.scopePreference}km)
         </Text>
       );
     }
@@ -475,8 +474,8 @@ export default function ListResultsScreen({ navigation, route }) {
   ) {
     headerLocalisation = (
       <Text style={styles.localisationBold}>
-        Activités dans un rayon de {user.filters.scopeFilter}km autour de{" "}
-        {user.filters.cityFilter}
+        Activités autour de  {user.filters.cityFilter} (- {user.filters.scopeFilter}km)
+       
       </Text>
     );
   }
@@ -578,17 +577,14 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   header: {
-    flex: 0.28,
-    justifyContent: "space-between",
+    justifyContent: "flex-start",
     alignItems: "flex-start",
-    // backgroundColor: "#4A43EC",
     width: "100%",
-    paddingTop: 50,
+    paddingTop: 30,
   },
   topHeader: {
     flexDirection: "row",
     alignItems: "center",
-    // marginTop: 10,
   },
   goBackButton: {
     marginHorizontal: 20,
@@ -635,11 +631,11 @@ const styles = StyleSheet.create({
     marginRight: 100,
   },
   searchContainer: {
-    flex: 0.3,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "flex-end",
     // backgroundColor: "#4A43EC",
+    marginTop: 20,
     width: "100%",
     paddingBottom: 20,
   },

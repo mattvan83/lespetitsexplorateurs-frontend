@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
 // import globalStyles from '../globalStyles';
 import { useDispatch, useSelector } from "react-redux";
 import { addUserActivity, addUserActivityPhoto, modifyUserActivity } from "../reducers/user";
@@ -10,7 +10,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
-export default function ProfileScreen({ navigation }) {
+export default function ActivityPart5Screen({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
   const activities = useSelector((state) => state.activities.value);
@@ -52,6 +52,7 @@ export default function ProfileScreen({ navigation }) {
         description: activities.description,
         category: activities.category,
         concernedAges: activities.concernedAges,
+        durationInMilliseconds: activities.durationInMilliseconds,
         address: activities.address,
         postalCode: activities.postalCode,
         longitude: activities.longitude,
@@ -59,7 +60,7 @@ export default function ProfileScreen({ navigation }) {
         locationName: activities.locationName,
         city: activities.city,
         date: activities.date,
-        // image: activities.image,
+        price: activities.price,
       }),
     })
       .then((response) => response.json())
@@ -69,6 +70,7 @@ export default function ProfileScreen({ navigation }) {
 
           // If a photo has been added, we update the activity in database
           if (photo) {
+            console.log(photo)
             const formData = new FormData();
             formData.append("photoFromFront", {
               uri: photo,
@@ -85,13 +87,42 @@ export default function ProfileScreen({ navigation }) {
             )
               .then((response) => response.json())
               .then((data) => {
-                photoAdded = true;
-                dispatch(addUserActivity(activity.activity));
-                dispatch(addUserActivityPhoto({ activityId: activity.activity._id, url: data.url }));
+                dispatch(addUserActivity({
+                  id: activity.activity._id,
+                  name: activity.activity.name,
+                  description: activity.activity.description,
+                  //durationInMilliseconds: activity.activity.duration,
+                  category: activity.activity.category,
+                  concernedAges: activity.activity.ages,
+                  address: activity.activity.address,
+                  postalCode: activity.activity.postalCode,
+                  locationName: activity.activity.locationName,
+                  latitude: activity.activity.latitude,
+                  longitude: activity.activity.longitude,
+                  city: activity.activity.city,
+                  date: activity.activity.date,
+                  price: activity.activity.price,
+                  imgUrl: data.url,
+                }));
                 navigation.navigate("TabNavigator", { screen: "Activité" });
               });
           } else {
-            dispatch(addUserActivity(activity.activity));
+            dispatch(addUserActivity({
+              id: activity.activity._id,
+              name: activity.activity.name,
+              description: activity.activity.description,
+              //durationInMilliseconds: activity.activity.duration,
+              category: activity.activity.category,
+              concernedAges: activity.activity.ages,
+              address: activity.activity.address,
+              postalCode: activity.activity.postalCode,
+              locationName: activity.activity.locationName,
+              latitude: activity.activity.latitude,
+              longitude: activity.activity.longitude,
+              city: activity.activity.city,
+              date: activity.activity.date,
+              price: activity.activity.price,
+            }));
             navigation.navigate("TabNavigator", { screen: "Activité" });
           }
         } else {
@@ -101,6 +132,7 @@ export default function ProfileScreen({ navigation }) {
   };
 
   const handleEdit = () => {
+    console.log("handleEdit")
     fetch(`${BACKEND_ADDRESS}/activities/update`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -138,7 +170,6 @@ export default function ProfileScreen({ navigation }) {
               body: formData,
             }).then((response) => response.json())
               .then((data) => {
-                photoAdded = true;
                 dispatch(modifyUserActivity({
                   activityId: activities.id,
                   activity: {
@@ -154,10 +185,10 @@ export default function ProfileScreen({ navigation }) {
                     price: activities.price,
                     longitude: activities.longitude,
                     latitude: activities.latitude,
+                    imgUrl: data.url,
                   }
                 }
                 ));
-                dispatch(addUserActivityPhoto({ activityId: activities.id, url: data.url }))
                 navigation.navigate("TabNavigator", { screen: "Activité" });
               });
           } else {
@@ -173,7 +204,9 @@ export default function ProfileScreen({ navigation }) {
                 locationName: activities.locationName,
                 city: activities.city,
                 date: activities.date,
-                price: activities.price
+                price: activities.price,
+                longitude: activities.longitude,
+                latitude: activities.latitude,
               }
             }
             ));
@@ -186,38 +219,40 @@ export default function ProfileScreen({ navigation }) {
   }
 
   return (
-    <View style={styles.filtersContainer}>
-      <FontAwesome
-        name={"arrow-left"}
-        color={"black"}
-        size={20}
-        style={styles.arrow}
-        onPress={() => navigation.goBack()}
-      />
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+      <View style={styles.filtersContainer}>
+        <FontAwesome
+          name={"arrow-left"}
+          color={"black"}
+          size={20}
+          style={styles.arrow}
+          onPress={() => navigation.goBack()}
+        />
 
-      <Text style={styles.title2}>Une photo vaut 1000 mots !</Text>
+        <Text style={styles.title2}>Une photo vaut 1000 mots !</Text>
 
-      <View style={styles.text}>
-        <Text>Mettez en valeur l'activité proposée.</Text>
-        <Text>
-          Les photos de l'activité proposée permettent aux parents d'avoir une
-          idée du cadre proposé aux enfants.
-        </Text>
-        <Text style={styles.importantText}>
-          Veillez à ce que les visages soient floutés !
-        </Text>
+        <View style={styles.text}>
+          <Text>Mettez en valeur l'activité proposée.</Text>
+          <Text>
+            Les photos de l'activité proposée permettent aux parents d'avoir une
+            idée du cadre proposé aux enfants.
+          </Text>
+          <Text style={styles.importantText}>
+            Veillez à ce que les visages soient floutés !
+          </Text>
+        </View>
+
+        <TouchableOpacity onPress={handleChoosePhoto} style={styles.img}>
+          {photo && (
+            <Image
+              source={{ uri: photo }}
+              style={{ width: 150, height: 150, borderRadius: 15 }}
+            />
+          )}
+          {!photo && <Ionicons name="camera" size={64} color="#BBC3FF" />}
+          {!photo && <Text style={styles.textImg}>Choisir une photo</Text>}
+        </TouchableOpacity>
       </View>
-
-      <TouchableOpacity onPress={handleChoosePhoto} style={styles.img}>
-        {photo && (
-          <Image
-            source={{ uri: photo }}
-            style={{ width: 150, height: 150, borderRadius: 15 }}
-          />
-        )}
-        {!photo && <Ionicons name="camera" size={64} color="#BBC3FF" />}
-        {!photo && <Text style={styles.textImg}>Choisir une photo</Text>}
-      </TouchableOpacity>
 
       {!activities.isCurrentlyUpdated && (
         <View style={styles.bottom}>
@@ -241,7 +276,8 @@ export default function ProfileScreen({ navigation }) {
           </TouchableOpacity>
         </View>
       )}
-    </View>
+
+    </KeyboardAvoidingView>
   );
 }
 const styles = StyleSheet.create({
@@ -315,7 +351,7 @@ const styles = StyleSheet.create({
   },
   bottom: {
     position: "absolute",
-    bottom: 20,
+    bottom: 30,
     width: "100%",
     flex: 0.1,
   },

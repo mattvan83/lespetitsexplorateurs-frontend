@@ -217,6 +217,7 @@ const styles = StyleSheet.create({
   },
   profilNamePic: {
     alignSelf: "center",
+    justifyContent: 'center',
     marginBottom: 20,
   },
   username: {

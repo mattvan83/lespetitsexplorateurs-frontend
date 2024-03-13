@@ -25,9 +25,6 @@ export default function ProfileScreen({ navigation }) {
   const [showError, setShowError] = useState(false);
   const [errorPostalCode, setErrorPostalCode] = useState(false);
 
-
-  console.log(activities)
-
   const handleContinue = () => {
     if ((!activityAddress || activityAddress === '') || (!activityPostalCode || activityPostalCode === '') || (!activityCity || activityCity === '')) {
       setShowError(true);
@@ -44,7 +41,7 @@ export default function ProfileScreen({ navigation }) {
   }
 
   useEffect(() => {
-    const searchAddress = activityAddress + activityPostalCode
+    const searchAddress = activityCity + activityPostalCode
     fetch(
       `https://api-adresse.data.gouv.fr/search/?q=${searchAddress}`
     )
@@ -66,7 +63,7 @@ export default function ProfileScreen({ navigation }) {
             });
         }
       });
-  }, [activityAddress, activityPostalCode])
+  }, [activityCity, activityPostalCode])
 
 
   return (
@@ -202,7 +199,7 @@ const styles = StyleSheet.create({
   },
   bottom: {
     position: "absolute",
-    bottom: 20,
+    bottom: 30,
     width: "100%",
     flex: 0.1
   },

@@ -18,18 +18,23 @@ export default function HomeCategoryMedium({ category }) {
   switch (category) {
     case "Sport":
       icon = "tennisball";
+      color= "#EE544A";
       break;
     case "Musique":
       icon = "musical-notes";
+      color= '#FFB459';
       break;
     case "Créativité":
       icon = "color-palette";
+      color= "#39C3F2";
       break;
     case "Motricité":
       icon = "balloon";
+      color= "#5669FF";
       break;
     case "Éveil":
       icon = "sparkles";
+      color= "#FDC400";
       break;
     default:
       console.log(`${category} not found`);
@@ -39,10 +44,10 @@ export default function HomeCategoryMedium({ category }) {
     <View style={styles.container}>
       <TouchableOpacity
         onPress={() => handleSubmit(category)}
-        style={styles.categoryButton}
+        style={[styles.categoryButton, { backgroundColor: color }]}
         activeOpacity={0.8}
       >
-        <Ionicons name={icon} size={35} color="#120D26" />
+        <Ionicons name={icon} size={35} color="#fff" />
       </TouchableOpacity>
       <Text style={styles.textButton}>{category}</Text>
     </View>
@@ -59,8 +64,8 @@ const styles = StyleSheet.create({
     padding: 10,
     width: 64,
     height: 64,
-    borderWidth: 1,
-    borderColor: "#E6E6E6",
+    // borderWidth: 1,
+    // borderColor: "#E6E6E6",
     borderRadius: 100,
     justifyContent: "center",
     alignItems: "center",
