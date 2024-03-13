@@ -507,7 +507,7 @@ export default function ListResultsScreen({ navigation, route }) {
         <View style={styles.body}>
           <View style={styles.listActivities}>
             {user.errorMsg ? (
-              <TextInput style={styles.errorMsg}>{user.errorMsg}</TextInput>
+              <Text style={styles.errorMsg}>{user.errorMsg}</Text>
             ) : (
               <></>
             )}
@@ -588,9 +588,9 @@ const styles = StyleSheet.create({
   },
   errorMsg: {
     marginTop: 24,
-    marginLeft: 20,
-    color: "red",
-    fontWeight: "bold",
+    marginHorizontal: 20,
+    width: "90%",
+    lineHeight: 25,
   },
   scrollView: {
     paddingBottom: 70,

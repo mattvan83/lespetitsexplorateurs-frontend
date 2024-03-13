@@ -523,10 +523,11 @@ export default function HomeScreen({ navigation }) {
           </ScrollView>
           {activitiesSectionTitle}
           {user.errorMsg ? (
-            <TextInput style={styles.errorMsg}>{user.errorMsg}</TextInput>
+            <Text style={styles.errorMsg}>{user.errorMsg}</Text>
           ) : (
             <></>
           )}
+
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -613,9 +614,9 @@ const styles = StyleSheet.create({
   },
   errorMsg: {
     marginTop: 24,
-    marginLeft: 20,
-    color: "red",
-    fontWeight: "bold",
+    marginHorizontal: 20,
+    width: "90%",
+    lineHeight: 25,
   },
   scrollView: {
     paddingHorizontal: 10,
