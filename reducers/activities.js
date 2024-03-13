@@ -21,7 +21,7 @@ const initialState = {
     isRecurrent: false,
     recurrence: null,
     imgUrl: null,
-    isLiked: false,
+    isLiked: null,
     likes: [],
     //For updates
     isCurrentlyUpdated: false,
@@ -77,26 +77,9 @@ export const activitiesSlice = createSlice({
       state.value.id = null;
       state.value.price = 0;
     },
-    updateLikedActivities: (state, action) => {
-      const index = state.value.findIndex(activity => activity.id === action.payload.activityId);
-      
-      // check if activitity is liked by the user
-      const isLiked = state.value[index].isLiked;
-    
-      if (isLiked) {
-        // if liked, remove from likes
-        state.value.likes = state.value.likes.filter(
-          (userId) => userId !== action.payload.userId
-        );
-        state.value.isLiked = false;
-      } else {
-        state.value.likes.push(action.payload.userId);
-        state.value.isLiked = true;
-      }
-    },
   },
 });
 
-export const { addActivityInfoScreen1, addActivityInfoScreen2, addActivityInfoScreen3, addActivityInfoScreen4, addActivityInfoScreen5, resetActivityInfos, startUpdate, updateLikedActivities } =
+export const { addActivityInfoScreen1, addActivityInfoScreen2, addActivityInfoScreen3, addActivityInfoScreen4, addActivityInfoScreen5, resetActivityInfos, startUpdate } =
   activitiesSlice.actions;
 export default activitiesSlice.reducer;

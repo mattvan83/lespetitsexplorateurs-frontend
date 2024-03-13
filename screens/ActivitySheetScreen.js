@@ -12,8 +12,8 @@ import {
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { updateLikedActivities } from "../reducers/activities";
+import { useSelector, useDispatch } from "react-redux";
+import { updateFavoriteActivities } from "../reducers/user";
 
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
@@ -25,6 +25,7 @@ export default function ActivitySheetScreen({
 }) {
   const user = useSelector((state) => state.user.value);
   const activities = useSelector((state) => state.activities.value);
+  const dispatch = useDispatch();
   console.log("Activity: ", activity);
   
 
@@ -49,15 +50,11 @@ export default function ActivitySheetScreen({
     }
   };
 
+  const token = user.token;
+  const activityId = activity.id;
+  
   const handleLike = () => {
-    console.log("add to or remove from favorites");
-    console.log("isLiked BDD: ", activity.isLiked);
     console.log("isLiked reducer: ", activities);
-
-    const token = user.token;
-    const activityId = activity.id;
-    const userId = user.id;
-    const isLiked = activity.isLiked;
     
     fetch(`${BACKEND_ADDRESS}/activities/favorite/${token}/${activityId}`, {
       method: "PUT",
@@ -65,12 +62,15 @@ export default function ActivitySheetScreen({
       body: JSON.stringify({ token, activityId })
     }).then((response) => response.json())
     .then(data => {
-      data.result && dispatch(updateLikedActivities({ activityId, userId, isLiked }));
+      console.log('DATA:', data);
+      data.result && dispatch(updateFavoriteActivities( data.activityId ));
     })
     .catch(error => {
       console.error('Erreur:', error);
     });
   };
+
+  
 
   /*const handleFollow = () => {
     console.log("follow or unfollow");
@@ -186,7 +186,7 @@ export default function ActivitySheetScreen({
               <Ionicons
                 name="heart"
                 size={24}
-                style={{ color: activities.isLiked ? "red" : "white" }}
+                style={{ color: user.favoriteActivities.includes(activityId) ? "red" : "white" }}
               />
             </TouchableOpacity>
           </View>
