@@ -41,7 +41,7 @@ export default function CardBig({ activity }) {
       user.preferences.longitudePreference !== -200
     ) {
       distanceText = (
-        activity.distance && <Text style={styles.activityLocation}>{`${activity.distance} KM`}</Text> 
+        <Text style={styles.activityLocation}>{`${activity.distance} KM`}</Text>
       );
     }
   } else if (
@@ -49,7 +49,7 @@ export default function CardBig({ activity }) {
     user.filters.longitudeFilter !== -200
   ) {
     distanceText = (
-      activity.distance && <Text style={styles.activityLocation}>{`${activity.distance} KM`}</Text>
+      <Text style={styles.activityLocation}>{`${activity.distance} KM`}</Text>
     );
   }
 
@@ -57,19 +57,19 @@ export default function CardBig({ activity }) {
   const activityId = activity.id;
 
   const handleLike = () => {
-    
     fetch(`${BACKEND_ADDRESS}/activities/favorite/${token}/${activityId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token, activityId })
-    }).then((response) => response.json())
-    .then(data => {
-      console.log('DATA:', data);
-      data.result && dispatch(updateFavoriteActivities( data.activityId ));
+      body: JSON.stringify({ token, activityId }),
     })
-    .catch(error => {
-      console.error('Erreur:', error);
-    });
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("DATA:", data);
+        data.result && dispatch(updateFavoriteActivities(data.activityId));
+      })
+      .catch((error) => {
+        console.error("Erreur:", error);
+      });
   };
 
   return (
@@ -90,7 +90,11 @@ export default function CardBig({ activity }) {
         <View style={styles.details}>
           <View style={styles.dateFavoriteContainer}>
             <Text style={styles.activityDate}>{formattedDate}</Text>
-            <TouchableOpacity activeOpacity={0.8} style={styles.favorite} onPress={() => handleLike()}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={styles.favorite}
+              onPress={() => handleLike()}
+            >
               {!user.favoriteActivities.includes(activityId) ? (
                 <Icon
                   style={styles.heartIcon}
