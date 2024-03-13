@@ -284,8 +284,7 @@ export default function ListResultsScreen({ navigation }) {
     ) {
       headerLocalisation = (
         <Text style={styles.localisationBold}>
-          Activités dans un rayon de {user.preferences.scopePreference}km autour
-          de {user.preferences.cityPreference}
+          Activités autour de {user.preferences.cityPreference} (- {user.preferences.scopePreference}km)
         </Text>
       );
     }
@@ -295,8 +294,8 @@ export default function ListResultsScreen({ navigation }) {
   ) {
     headerLocalisation = (
       <Text style={styles.localisationBold}>
-        Activités dans un rayon de {user.filters.scopeFilter}km autour de{" "}
-        {user.filters.cityFilter}
+        Activités autour de  {user.filters.cityFilter} (- {user.filters.scopeFilter}km)
+       
       </Text>
     );
   }
@@ -403,7 +402,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "flex-start",
     width: "100%",
-    paddingTop: 50,
+    paddingTop: 30,
   },
   topHeader: {
     flexDirection: "row",

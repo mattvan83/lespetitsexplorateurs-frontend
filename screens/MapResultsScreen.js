@@ -440,8 +440,7 @@ export default function MapResultsScreen({ navigation }) {
     ) {
       headerLocalisation = (
         <Text style={styles.localisationBold}>
-          Activités dans un rayon de {user.preferences.scopePreference}km autour
-          de {user.preferences.cityPreference}
+          Activités autour de {user.preferences.cityPreference} (- {user.preferences.scopeFilter}km )
         </Text>
       );
 
@@ -472,8 +471,7 @@ export default function MapResultsScreen({ navigation }) {
   ) {
     headerLocalisation = (
       <Text style={styles.localisationBold}>
-        Activités dans un rayon de {user.filters.scopeFilter}km autour de{" "}
-        {user.filters.cityFilter}
+        Activités autour de {user.filters.cityFilter} (- {user.filters.scopeFilter}km )
       </Text>
     );
 
@@ -607,12 +605,11 @@ const styles = StyleSheet.create({
   },
   header: {
     width: "100%",
-    paddingTop: 50,
+    paddingTop: 30,
   },
   topHeader: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 10,
   },
   goBackButton: {
     marginHorizontal: 20,
