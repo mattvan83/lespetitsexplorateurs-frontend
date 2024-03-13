@@ -52,6 +52,7 @@ export default function ActivityPart5Screen({ navigation }) {
         description: activities.description,
         category: activities.category,
         concernedAges: activities.concernedAges,
+        durationInMilliseconds: activities.durationInMilliseconds,
         address: activities.address,
         postalCode: activities.postalCode,
         longitude: activities.longitude,

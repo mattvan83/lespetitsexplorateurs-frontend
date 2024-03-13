@@ -7,7 +7,7 @@ const initialState = {
     createdAt: null,
     name: null,
     description: null,
-    durationInMilliseconds: null,
+    durationInMilliseconds: 3600000, // 1H by default
     category: null,
     concernedAges: [],
     address: null,
@@ -52,6 +52,7 @@ export const activitiesSlice = createSlice({
     },
     addActivityInfoScreen4: (state, action) => {
       state.value.date = action.payload.date;
+      state.value.durationInMilliseconds = action.payload.durationInMilliseconds;
     },
     addActivityInfoScreen5: (state, action) => {
       state.value.imgUrl = action.payload.imgUrl;
@@ -72,6 +73,7 @@ export const activitiesSlice = createSlice({
       state.value.city = null;
       state.value.locationName = null;
       state.value.date = null;
+      state.value.durationInMilliseconds = 3600000;
       state.value.imgUrl = null;
       state.value.isCurrentlyUpdated = false;
       state.value.id = null;

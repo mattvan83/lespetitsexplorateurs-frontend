@@ -24,11 +24,11 @@ export default function CardEditDelete({ activity }) {
   }
 
   const handleEditSubmit = () => {
-    console.log(activity.address)
+    console.log(activity.durationInMilliseconds)
     dispatch(addActivityInfoScreen1({ name: activity.name, description: activity.description, category: activity.category }));
     dispatch(addActivityInfoScreen2({ concernedAges: activity.concernedAges }));
     dispatch(addActivityInfoScreen3({ address: activity.address, postalCode: activity.postalCode, city: activity.city, locationName: activity.locationName }));
-    dispatch(addActivityInfoScreen4({ date: activity.date }));
+    dispatch(addActivityInfoScreen4({ date: activity.date, durationInMilliseconds: activity.durationInMilliseconds }));
     dispatch(addActivityInfoScreen5({ imgUrl: activity.imgUrl }));
     dispatch(startUpdate({id: activity.id}));
     navigation.navigate("ActivityPart1");
