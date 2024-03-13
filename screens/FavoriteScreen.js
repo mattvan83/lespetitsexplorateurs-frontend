@@ -29,6 +29,8 @@ export default function FavoriteScreen({ navigation }) {
       data.result && dispatch(loadFavoriteActivities(data.activities));
     });
 
+    console.log(user.favoriteActivities)
+
   /*const activitiesList = user.favoriteActivities.map((activity, i) => {
     const inputDate = new Date(activity.date);
     const options = {
