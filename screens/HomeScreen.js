@@ -23,6 +23,7 @@ import {
   setLocationFilters,
   setLocationPreferences,
   setErrorMsg,
+  setErrorOrganizersMsg,
 } from "../reducers/user";
 import Organizers from "../components/Organizers";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
@@ -42,7 +43,8 @@ export default function HomeScreen({ navigation }) {
   // console.log("user.filters: ", user.filters);
   // console.log("user.preferences: ", user.preferences);
   // console.log("user.errorMsg: ", user.errorMsg);
-  // console.log("organizers: ", organizers);
+  console.log("organizers: ", organizers);
+  console.log("user.errorOrganizersMsg: ", user.errorOrganizersMsg);
 
   const dispatch = useDispatch();
 
@@ -167,7 +169,12 @@ export default function HomeScreen({ navigation }) {
                 )
                   .then((response) => response.json())
                   .then((data) => {
-                    data.result && dispatch(loadOrganizers(data.organizers));
+                    data.result &&
+                      dispatch(loadOrganizers(data.organizers)) &&
+                      dispatch(setErrorOrganizersMsg(null));
+                    !data.result &&
+                      dispatch(loadOrganizers([])) &&
+                      dispatch(setErrorOrganizersMsg(data.error));
                   });
               } else if (
                 user.preferences.latitudePreference !== -200 &&
@@ -216,7 +223,12 @@ export default function HomeScreen({ navigation }) {
                 )
                   .then((response) => response.json())
                   .then((data) => {
-                    data.result && dispatch(loadOrganizers(data.organizers));
+                    data.result &&
+                      dispatch(loadOrganizers(data.organizers)) &&
+                      dispatch(setErrorOrganizersMsg(null));
+                    !data.result &&
+                      dispatch(loadOrganizers([])) &&
+                      dispatch(setErrorOrganizersMsg(data.error));
                   });
               }
             }
@@ -281,7 +293,12 @@ export default function HomeScreen({ navigation }) {
             fetch(`${BACKEND_ADDRESS}/organizers/nogeoloc`)
               .then((response) => response.json())
               .then((data) => {
-                data.result && dispatch(loadOrganizers(data.organizers));
+                data.result &&
+                  dispatch(loadOrganizers(data.organizers)) &&
+                  dispatch(setErrorOrganizersMsg(null));
+                !data.result &&
+                  dispatch(loadOrganizers([])) &&
+                  dispatch(setErrorOrganizersMsg(data.error));
               });
           } else if (
             user.preferences.latitudePreference !== -200 &&
@@ -325,7 +342,12 @@ export default function HomeScreen({ navigation }) {
             )
               .then((response) => response.json())
               .then((data) => {
-                data.result && dispatch(loadOrganizers(data.organizers));
+                data.result &&
+                  dispatch(loadOrganizers(data.organizers)) &&
+                  dispatch(setErrorOrganizersMsg(null));
+                !data.result &&
+                  dispatch(loadOrganizers([])) &&
+                  dispatch(setErrorOrganizersMsg(data.error));
               });
           }
         }
@@ -378,6 +400,7 @@ export default function HomeScreen({ navigation }) {
 
   const organizersMax10 =
     organizers.length > 10 ? organizers.slice(0, 10) : organizers;
+  console.log("organizersMax10: ", organizersMax10);
   const organizersList = organizersMax10.map((data, i) => {
     return <Organizers key={i} {...data} />;
   });
@@ -537,6 +560,11 @@ export default function HomeScreen({ navigation }) {
           </ScrollView>
 
           <Text style={globalStyles.title3}>Organisateurs</Text>
+          {user.errorOrganizersMsg ? (
+            <Text style={styles.errorMsg}>{user.errorOrganizersMsg}</Text>
+          ) : (
+            <></>
+          )}
           <ScrollView horizontal={true} style={styles.organizers}>
             {organizersList}
           </ScrollView>

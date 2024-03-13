@@ -22,6 +22,7 @@ import {
   importActivities,
   setLocationFilters,
   setErrorMsg,
+  setErrorOrganizersMsg,
   setCategoryFilters,
 } from "../reducers/user";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
@@ -93,7 +94,12 @@ export default function ListResultsScreen({ navigation, route }) {
         fetch(`${BACKEND_ADDRESS}/organizers/nogeoloc`)
           .then((response) => response.json())
           .then((data) => {
-            data.result && dispatch(loadOrganizers(data.organizers));
+            data.result &&
+              dispatch(loadOrganizers(data.organizers)) &&
+              dispatch(setErrorOrganizersMsg(null));
+            !data.result &&
+              dispatch(loadOrganizers([])) &&
+              dispatch(setErrorOrganizersMsg(data.error));
           });
       } else if (
         user.preferences.latitudePreference !== -200 &&
@@ -133,7 +139,12 @@ export default function ListResultsScreen({ navigation, route }) {
         )
           .then((response) => response.json())
           .then((data) => {
-            data.result && dispatch(loadOrganizers(data.organizers));
+            data.result &&
+              dispatch(loadOrganizers(data.organizers)) &&
+              dispatch(setErrorOrganizersMsg(null));
+            !data.result &&
+              dispatch(loadOrganizers([])) &&
+              dispatch(setErrorOrganizersMsg(data.error));
           });
       }
     } else if (latitudeFilter !== -200 || longitudeFilter !== -200) {
@@ -171,7 +182,12 @@ export default function ListResultsScreen({ navigation, route }) {
       )
         .then((response) => response.json())
         .then((data) => {
-          data.result && dispatch(loadOrganizers(data.organizers));
+          data.result &&
+            dispatch(loadOrganizers(data.organizers)) &&
+            dispatch(setErrorOrganizersMsg(null));
+          !data.result &&
+            dispatch(loadOrganizers([])) &&
+            dispatch(setErrorOrganizersMsg(data.error));
         });
     }
 
@@ -261,7 +277,12 @@ export default function ListResultsScreen({ navigation, route }) {
       )
         .then((response) => response.json())
         .then((data) => {
-          data.result && dispatch(loadOrganizers(data.organizers));
+          data.result &&
+            dispatch(loadOrganizers(data.organizers)) &&
+            dispatch(setErrorOrganizersMsg(null));
+          !data.result &&
+            dispatch(loadOrganizers([])) &&
+            dispatch(setErrorOrganizersMsg(data.error));
         });
     }
   };
@@ -312,7 +333,12 @@ export default function ListResultsScreen({ navigation, route }) {
           fetch(`${BACKEND_ADDRESS}/organizers/nogeoloc`)
             .then((response) => response.json())
             .then((data) => {
-              data.result && dispatch(loadOrganizers(data.organizers));
+              data.result &&
+                dispatch(loadOrganizers(data.organizers)) &&
+                dispatch(setErrorOrganizersMsg(null));
+              !data.result &&
+                dispatch(loadOrganizers([])) &&
+                dispatch(setErrorOrganizersMsg(data.error));
             });
         } else if (
           user.preferences.latitudePreference !== -200 &&
@@ -352,7 +378,12 @@ export default function ListResultsScreen({ navigation, route }) {
           )
             .then((response) => response.json())
             .then((data) => {
-              data.result && dispatch(loadOrganizers(data.organizers));
+              data.result &&
+                dispatch(loadOrganizers(data.organizers)) &&
+                dispatch(setErrorOrganizersMsg(null));
+              !data.result &&
+                dispatch(loadOrganizers([])) &&
+                dispatch(setErrorOrganizersMsg(data.error));
             });
         }
       } else if (latitudeFilter !== -200 || longitudeFilter !== -200) {
@@ -390,7 +421,12 @@ export default function ListResultsScreen({ navigation, route }) {
         )
           .then((response) => response.json())
           .then((data) => {
-            data.result && dispatch(loadOrganizers(data.organizers));
+            data.result &&
+              dispatch(loadOrganizers(data.organizers)) &&
+              dispatch(setErrorOrganizersMsg(null));
+            !data.result &&
+              dispatch(loadOrganizers([])) &&
+              dispatch(setErrorOrganizersMsg(data.error));
           });
       }
     }

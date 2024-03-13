@@ -29,6 +29,7 @@ const initialState = {
       scopePreference: 50,
     },
     errorMsg: null,
+    errorOrganizersMsg: null,
   },
 };
 
@@ -139,6 +140,9 @@ export const userSlice = createSlice({
     setErrorMsg: (state, action) => {
       state.value.errorMsg = action.payload;
     },
+    setErrorOrganizersMsg: (state, action) => {
+      state.value.errorOrganizersMsg = action.payload;
+    },
   },
 });
 
@@ -163,5 +167,6 @@ export const {
   addUserActivityPhoto,
   deleteUserActivity,
   setErrorMsg,
+  setErrorOrganizersMsg,
 } = userSlice.actions;
 export default userSlice.reducer;
