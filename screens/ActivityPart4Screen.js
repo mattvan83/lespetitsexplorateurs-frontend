@@ -3,8 +3,8 @@ import {
   Text,
   View,
   TouchableOpacity,
-  TextInput,
-  Modal,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import globalStyles from '../globalStyles';
 import { useDispatch, useSelector } from 'react-redux';
@@ -38,7 +38,7 @@ export default function ProfileScreen({ navigation }) {
     const currentDateTime = new Date().toISOString();
 
     if (formattedDateTime !== currentDateTime) {
-      dispatch(addActivityInfoScreen4({ date: formattedDateTime, durationInMilliseconds: milliseconds}));
+      dispatch(addActivityInfoScreen4({ date: formattedDateTime, durationInMilliseconds: milliseconds }));
       navigation.navigate('ActivityPart5');
     } else {
       setShowError(true);
@@ -61,43 +61,51 @@ export default function ProfileScreen({ navigation }) {
 
 
   return (
-    <View style={styles.filtersContainer}>
-      <FontAwesome name={'arrow-left'} color={'black'} size={20} style={styles.arrow} onPress={() => navigation.goBack()} />
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+      <View style={styles.filtersContainer}>
+        <FontAwesome name={'arrow-left'} color={'black'} size={20} style={styles.arrow} onPress={() => navigation.goBack()} />
 
-      <Text style={styles.title2}>Quand aura-t-elle lieu ?</Text>
+        <Text style={styles.title2}>Quand aura-t-elle lieu ?</Text>
 
-      <View style={styles.datetime}>
-        <Text style={globalStyles.title4}>Sélectionnez une date :</Text>
-        <DateTimePicker
-          margin={10}
-          value={date}
-          mode={'date'}
-          onChange={onChangeDate}
-        />
-      </View>
-      <View style={styles.datetime}>
-        <Text style={globalStyles.title4}>Sélectionnez une heure :</Text>
-        <DateTimePicker
-          margin={10}
-          value={time}
-          mode={'time'}
-          onChange={onChangeTime}
-        />
-      </View>
-
-      <Text style={globalStyles.title4}>Sélectionnez une durée :</Text>
-      <View style={styles.buttonGroup}>
-        <TouchableOpacity style={styles.buttonDuration} onPress={decrementMilliseconds}>
-          <Text style={styles.buttonText}>-</Text>
-        </TouchableOpacity>
-        <View style={styles.buttonDuration}>
-          <Text style={styles.buttonText}>{durationHours}H{durationMinutes=== 0 ? "00": durationMinutes}</Text>
+        <View style={styles.datetime}>
+          <Text style={globalStyles.title4}>Sélectionnez une date :</Text>
+          <DateTimePicker
+            margin={10}
+            value={date}
+            mode={'date'}
+            onChange={onChangeDate}
+          />
         </View>
-        <TouchableOpacity style={styles.buttonDuration} onPress={incrementMilliseconds}>
-          <Text style={styles.buttonText}>+</Text>
-        </TouchableOpacity>
-      </View>
+        <View style={styles.datetime}>
+          <Text style={globalStyles.title4}>Sélectionnez une heure :</Text>
+          <DateTimePicker
+            margin={10}
+            value={time}
+            mode={'time'}
+            onChange={onChangeTime}
+          />
+        </View>
 
+        <Text style={globalStyles.title4}>Sélectionnez une durée :</Text>
+        <View style={styles.buttonGroup}>
+          <TouchableOpacity style={styles.buttonDuration} onPress={decrementMilliseconds}>
+            <Text style={styles.buttonText}>-</Text>
+          </TouchableOpacity>
+          <View style={styles.buttonDuration}>
+            <Text style={styles.buttonText}>{durationHours}H{durationMinutes === 0 ? "00" : durationMinutes}</Text>
+          </View>
+          <TouchableOpacity style={styles.buttonDuration} onPress={incrementMilliseconds}>
+            <Text style={styles.buttonText}>+</Text>
+          </TouchableOpacity>
+        </View>
+
+        {showError && (
+          <Text style={styles.error}>
+            Tous les champs sont requis.
+          </Text>
+        )}
+
+      </View>
       <View style={styles.bottom}>
         <TouchableOpacity
           onPress={() => handleContinue()}
@@ -106,16 +114,9 @@ export default function ProfileScreen({ navigation }) {
         >
           <Text style={styles.textButton}>Continuer</Text>
         </TouchableOpacity>
-
-
-
-        {showError && (
-          <Text style={styles.error}>
-            Tous les champs sont requis.
-          </Text>
-        )}
       </View>
-    </View>
+
+    </KeyboardAvoidingView>
   );
 }
 
@@ -186,7 +187,7 @@ const styles = StyleSheet.create({
   },
   bottom: {
     position: "absolute",
-    bottom: 20,
+    bottom: 30,
     width: "100%",
     flex: 0.1
   },

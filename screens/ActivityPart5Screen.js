@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
 // import globalStyles from '../globalStyles';
 import { useDispatch, useSelector } from "react-redux";
 import { addUserActivity, addUserActivityPhoto, modifyUserActivity } from "../reducers/user";
@@ -219,38 +219,40 @@ export default function ActivityPart5Screen({ navigation }) {
   }
 
   return (
-    <View style={styles.filtersContainer}>
-      <FontAwesome
-        name={"arrow-left"}
-        color={"black"}
-        size={20}
-        style={styles.arrow}
-        onPress={() => navigation.goBack()}
-      />
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+      <View style={styles.filtersContainer}>
+        <FontAwesome
+          name={"arrow-left"}
+          color={"black"}
+          size={20}
+          style={styles.arrow}
+          onPress={() => navigation.goBack()}
+        />
 
-      <Text style={styles.title2}>Une photo vaut 1000 mots !</Text>
+        <Text style={styles.title2}>Une photo vaut 1000 mots !</Text>
 
-      <View style={styles.text}>
-        <Text>Mettez en valeur l'activité proposée.</Text>
-        <Text>
-          Les photos de l'activité proposée permettent aux parents d'avoir une
-          idée du cadre proposé aux enfants.
-        </Text>
-        <Text style={styles.importantText}>
-          Veillez à ce que les visages soient floutés !
-        </Text>
+        <View style={styles.text}>
+          <Text>Mettez en valeur l'activité proposée.</Text>
+          <Text>
+            Les photos de l'activité proposée permettent aux parents d'avoir une
+            idée du cadre proposé aux enfants.
+          </Text>
+          <Text style={styles.importantText}>
+            Veillez à ce que les visages soient floutés !
+          </Text>
+        </View>
+
+        <TouchableOpacity onPress={handleChoosePhoto} style={styles.img}>
+          {photo && (
+            <Image
+              source={{ uri: photo }}
+              style={{ width: 150, height: 150, borderRadius: 15 }}
+            />
+          )}
+          {!photo && <Ionicons name="camera" size={64} color="#BBC3FF" />}
+          {!photo && <Text style={styles.textImg}>Choisir une photo</Text>}
+        </TouchableOpacity>
       </View>
-
-      <TouchableOpacity onPress={handleChoosePhoto} style={styles.img}>
-        {photo && (
-          <Image
-            source={{ uri: photo }}
-            style={{ width: 150, height: 150, borderRadius: 15 }}
-          />
-        )}
-        {!photo && <Ionicons name="camera" size={64} color="#BBC3FF" />}
-        {!photo && <Text style={styles.textImg}>Choisir une photo</Text>}
-      </TouchableOpacity>
 
       {!activities.isCurrentlyUpdated && (
         <View style={styles.bottom}>
@@ -274,7 +276,8 @@ export default function ActivityPart5Screen({ navigation }) {
           </TouchableOpacity>
         </View>
       )}
-    </View>
+
+    </KeyboardAvoidingView>
   );
 }
 const styles = StyleSheet.create({
@@ -348,7 +351,7 @@ const styles = StyleSheet.create({
   },
   bottom: {
     position: "absolute",
-    bottom: 20,
+    bottom: 30,
     width: "100%",
     flex: 0.1,
   },

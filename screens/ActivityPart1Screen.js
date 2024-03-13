@@ -104,6 +104,12 @@ export default function ProfileScreen({ navigation }) {
         </ScrollView>
       </View>
 
+      {showError && (
+          <Text style={styles.error}>
+            Tous les champs sont requis.
+          </Text>
+        )}
+
       <View style={styles.bottom}>
         <TouchableOpacity
           onPress={() => handleContinue()}
@@ -112,11 +118,6 @@ export default function ProfileScreen({ navigation }) {
         >
           <Text style={styles.textButton}>Continuer</Text>
         </TouchableOpacity>
-        {showError && (
-          <Text style={styles.error}>
-            Tous les champs sont requis.
-          </Text>
-        )}
       </View>
     </KeyboardAvoidingView>
   );
@@ -150,16 +151,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     margin: 15,
   },
-  // a supprimer plus tard 
-  filtersButton: {
-    width: 100,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: '#EBEDFF',
-    borderRadius: 100,
-    padding: 6,
-  },
   textButton: {
     color: '#5669FF',
     fontWeight: 'bold',
@@ -173,9 +164,9 @@ const styles = StyleSheet.create({
   },
   bottom: {
     position: "absolute",
-    bottom: 20,
+    bottom: 30,
     width: "100%",
-    flex: 0.1
+    flex: 0.1,
   },
   button: {
     padding: 10,
