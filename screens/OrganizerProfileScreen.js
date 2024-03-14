@@ -16,22 +16,22 @@ import Card from "../components/Card";
 
 
 export default function OrganizerProfileScreen({ navigation, route }) {
-  const { organizer } = route.params;
+  const { organizerDetailed } = route.params;
 
   const layout = useWindowDimensions();
 
   const FirstRoute = () => (
     <View style={{ flex: 1 }} >
-      <Text style={styles.text}>{organizer.about}</Text>
+      <Text style={styles.text}>{organizerDetailed.about}</Text>
     </View>
   );
 
   const SecondRoute = () => (
     <View style={{ flex: 1 }} >
       <FlatList
-        data={organizer.activities}
+        data={organizerDetailed.activities}
         renderItem={({ item, index }) => (
-          <View style={{ marginBottom: index === organizer.activities.length - 1 ? 50 : 0 }}> 
+          <View style={{ marginBottom: index === organizerDetailed.activities.length - 1 ? 50 : 0 }}> 
             <Card key={item._id} activity={item} />
           </View>
         )} 
@@ -81,13 +81,13 @@ export default function OrganizerProfileScreen({ navigation, route }) {
     >
       <FontAwesome style={styles.iconReturnButton} name={'arrow-left'} color={'black'} size={20} onPress={() => navigation.goBack()} />
       <View style={styles.img}>
-        {organizer.imgUrl && <Image source={{ uri: organizer.imgUrl }} style={{ width: 150, height: 150, borderRadius: 100 }} />}
-        {organizer.imgUrl === "" && <Text style={styles.initiale}>{organizer.name.slice(0, 1)}</Text>}
+        {organizerDetailed.imgUrl && <Image source={{ uri: organizerDetailed.imgUrl }} style={{ width: 150, height: 150, borderRadius: 100 }} />}
+        {organizerDetailed.imgUrl === "" && <Text style={styles.initiale}>{organizerDetailed.name.slice(0, 1)}</Text>}
       </View>
       
 
-      <Text style={styles.title}>{organizer.name}</Text>
-      <Text style={styles.subtitle}>{organizer.title}</Text>
+      <Text style={styles.title}>{organizerDetailed.name}</Text>
+      <Text style={styles.subtitle}>{organizerDetailed.title}</Text>
 
       <TabView
         navigationState={{ index, routes }}

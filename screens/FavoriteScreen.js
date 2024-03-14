@@ -21,15 +21,12 @@ export default function FavoriteScreen({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
 
-  const userId = user._id;
-
-  fetch(`${BACKEND_ADDRESS}/activities/favorite/${userId}`)
+  fetch(`${BACKEND_ADDRESS}/activities/allfavorites/${user.token}`)
     .then((response) => response.json())
     .then((data) => {
       data.result && dispatch(loadFavoriteActivities(data.activities));
     });
 
-    console.log(user.favoriteActivities)
 
   /*const activitiesList = user.favoriteActivities.map((activity, i) => {
     const inputDate = new Date(activity.date);

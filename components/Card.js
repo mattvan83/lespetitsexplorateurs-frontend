@@ -91,6 +91,8 @@ export default function Card({ activity }) {
     });
   };
 
+  console.log(user.favoriteActivities.includes(activityId))
+
   return (
     <View style={styles.cardContainer}>
       <TouchableOpacity
