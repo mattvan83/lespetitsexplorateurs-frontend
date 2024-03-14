@@ -48,6 +48,7 @@ export default function MapResultsScreen({ navigation }) {
 
   // console.log("user.filters: ", userFilters);
   // console.log("markerColors: ", markerColors);
+  console.log("pressedMarkerIndex: ", pressedMarkerIndex);
 
   const dispatch = useDispatch();
 
@@ -86,6 +87,7 @@ export default function MapResultsScreen({ navigation }) {
               dateFilter,
               momentFilter,
               ageFilter,
+              priceFilter,
             },
           }),
         })
@@ -126,6 +128,7 @@ export default function MapResultsScreen({ navigation }) {
               dateFilter,
               momentFilter,
               ageFilter: user.preferences.agePreference,
+              priceFilter,
             },
           }),
         })
@@ -169,6 +172,7 @@ export default function MapResultsScreen({ navigation }) {
             dateFilter,
             momentFilter,
             ageFilter,
+            priceFilter,
           },
         }),
       })
@@ -263,6 +267,7 @@ export default function MapResultsScreen({ navigation }) {
             dateFilter,
             momentFilter,
             ageFilter,
+            priceFilter,
           },
         }),
       })
@@ -448,7 +453,8 @@ export default function MapResultsScreen({ navigation }) {
     ) {
       headerLocalisation = (
         <Text style={styles.localisationBold}>
-          Activités autour de {user.preferences.cityPreference} (- {user.preferences.scopeFilter}km )
+          Activités autour de {user.preferences.cityPreference} (-{" "}
+          {user.preferences.scopeFilter}km )
         </Text>
       );
 
@@ -479,7 +485,8 @@ export default function MapResultsScreen({ navigation }) {
   ) {
     headerLocalisation = (
       <Text style={styles.localisationBold}>
-        Activités autour de {user.filters.cityFilter} (- {user.filters.scopeFilter}km )
+        Activités autour de {user.filters.cityFilter} (-{" "}
+        {user.filters.scopeFilter}km )
       </Text>
     );
 
@@ -593,7 +600,7 @@ export default function MapResultsScreen({ navigation }) {
           >
             <Ionicons name="location-outline" size={24} color="#fecb2d" />
           </TouchableOpacity>
-          
+
           {pressedMarkerIndex !== null && (
             <View style={styles.popupCardContainer}>
               <Card activity={user.activities[pressedMarkerIndex]} />
@@ -701,11 +708,10 @@ const styles = StyleSheet.create({
   },
   refocusContainer: {
     position: "absolute",
-    bottom: 24,
-    right: 24,
+    top: 64,
+    right: 13,
     padding: 6,
-    borderRadius: 15,
-    backgroundColor: "rgba(255, 255, 255, 0.70)",
+    backgroundColor: "rgba(255, 255, 255, 0.65)",
   },
   customMarker: {
     justifyContent: "center",

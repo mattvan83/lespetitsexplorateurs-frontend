@@ -78,6 +78,7 @@ export default function ListResultsScreen({ navigation, route }) {
               dateFilter,
               momentFilter,
               ageFilter,
+              priceFilter,
             },
           }),
         })
@@ -118,6 +119,7 @@ export default function ListResultsScreen({ navigation, route }) {
               dateFilter,
               momentFilter,
               ageFilter: user.preferences.agePreference,
+              priceFilter,
             },
           }),
         })
@@ -161,6 +163,7 @@ export default function ListResultsScreen({ navigation, route }) {
             dateFilter,
             momentFilter,
             ageFilter,
+            priceFilter,
           },
         }),
       })
@@ -256,6 +259,7 @@ export default function ListResultsScreen({ navigation, route }) {
             dateFilter,
             momentFilter,
             ageFilter,
+            priceFilter,
           },
         }),
       })
@@ -317,6 +321,7 @@ export default function ListResultsScreen({ navigation, route }) {
                 dateFilter,
                 momentFilter,
                 ageFilter,
+                priceFilter,
               },
             }),
           })
@@ -357,6 +362,7 @@ export default function ListResultsScreen({ navigation, route }) {
                 dateFilter,
                 momentFilter,
                 ageFilter: user.preferences.agePreference,
+                priceFilter,
               },
             }),
           })
@@ -400,6 +406,7 @@ export default function ListResultsScreen({ navigation, route }) {
               dateFilter,
               momentFilter,
               ageFilter,
+              priceFilter,
             },
           }),
         })
@@ -464,7 +471,8 @@ export default function ListResultsScreen({ navigation, route }) {
     ) {
       headerLocalisation = (
         <Text style={styles.localisationBold}>
-          Activités autour de {user.preferences.cityPreference} (- {user.preferences.scopePreference}km)
+          Activités autour de {user.preferences.cityPreference} (-{" "}
+          {user.preferences.scopePreference}km)
         </Text>
       );
     }
@@ -474,8 +482,8 @@ export default function ListResultsScreen({ navigation, route }) {
   ) {
     headerLocalisation = (
       <Text style={styles.localisationBold}>
-        Activités autour de  {user.filters.cityFilter} (- {user.filters.scopeFilter}km)
-       
+        Activités autour de {user.filters.cityFilter} (-{" "}
+        {user.filters.scopeFilter}km)
       </Text>
     );
   }

@@ -150,6 +150,7 @@ export default function HomeScreen({ navigation }) {
                       dateFilter,
                       momentFilter,
                       ageFilter,
+                      priceFilter,
                     },
                   }),
                 })
@@ -203,6 +204,7 @@ export default function HomeScreen({ navigation }) {
                       dateFilter,
                       momentFilter,
                       ageFilter: user.preferences.agePreference,
+                      priceFilter,
                     },
                   }),
                 })
@@ -279,6 +281,7 @@ export default function HomeScreen({ navigation }) {
                   dateFilter,
                   momentFilter,
                   ageFilter,
+                  priceFilter,
                 },
               }),
             })
@@ -323,6 +326,7 @@ export default function HomeScreen({ navigation }) {
                   dateFilter,
                   momentFilter,
                   ageFilter: user.preferences.agePreference,
+                  priceFilter,
                 },
               }),
             })

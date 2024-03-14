@@ -15,7 +15,7 @@ const initialState = {
       dateFilter: [],
       momentFilter: [],
       ageFilter: [],
-      priceFilter: null,
+      priceFilter: 50,
       cityFilter: null,
       latitudeFilter: -200,
       longitudeFilter: -200,
@@ -88,7 +88,7 @@ export const userSlice = createSlice({
       state.value.filters.dateFilter = [];
       state.value.filters.momentFilter = [];
       state.value.filters.ageFilter = [];
-      state.value.filters.priceFilter = null;
+      state.value.filters.priceFilter = 50;
       state.value.filters.cityFilter = null;
       state.value.filters.longitudeFilter = -200;
       state.value.filters.latitudeFilter = -200;
@@ -118,15 +118,15 @@ export const userSlice = createSlice({
       state.value.preferences.scopePreference = 50;
     },
     loadUserActivities: (state, action) => {
-      console.log("loaduserActivities")
+      console.log("loaduserActivities");
       state.value.userActivities = action.payload;
     },
     addUserActivity: (state, action) => {
-      console.log("adduserActivities")
+      console.log("adduserActivities");
       state.value.userActivities.push(action.payload);
     },
     modifyUserActivity: (state, action) => {
-      console.log("modifyuserActivities")
+      console.log("modifyuserActivities");
       const index = state.value.userActivities.findIndex(
         (activity) => activity.id === action.payload.activityId
       );
@@ -134,18 +134,26 @@ export const userSlice = createSlice({
       state.value.userActivities[index].description =
         action.payload.activity.description;
       // state.value.userActivities[index].durationInMilliseconds = action.payload.activity.durationInMilliseconds;
-      state.value.userActivities[index].category = action.payload.activity.category;
-      state.value.userActivities[index].concernedAges = action.payload.activity.concernedAges;
-      state.value.userActivities[index].address = action.payload.activity.address;
-      state.value.userActivities[index].postalCode = action.payload.activity.postalCode;
+      state.value.userActivities[index].category =
+        action.payload.activity.category;
+      state.value.userActivities[index].concernedAges =
+        action.payload.activity.concernedAges;
+      state.value.userActivities[index].address =
+        action.payload.activity.address;
+      state.value.userActivities[index].postalCode =
+        action.payload.activity.postalCode;
       state.value.userActivities[index].city = action.payload.activity.city;
-      state.value.userActivities[index].locationName = action.payload.activity.locationName;
+      state.value.userActivities[index].locationName =
+        action.payload.activity.locationName;
       state.value.userActivities[index].date = action.payload.activity.date;
       state.value.userActivities[index].price = action.payload.activity.price;
-      state.value.userActivities[index].latitude = action.payload.activity.latitude;
-      state.value.userActivities[index].longitude = action.payload.activity.longitude;
-      if(action.payload.activity.imgUrl){
-        state.value.userActivities[index].imgUrl = action.payload.activity.imgUrl;
+      state.value.userActivities[index].latitude =
+        action.payload.activity.latitude;
+      state.value.userActivities[index].longitude =
+        action.payload.activity.longitude;
+      if (action.payload.activity.imgUrl) {
+        state.value.userActivities[index].imgUrl =
+          action.payload.activity.imgUrl;
       }
     },
     deleteUserActivity: (state, action) => {

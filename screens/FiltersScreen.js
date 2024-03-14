@@ -21,13 +21,25 @@ export default function FiltersScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
   const [price, setPrice] = useState(user.filters.priceFilter);
   const [scope, setScope] = useState(user.preferences.scopePreference);
-  const [selectedCategories, setSelectedCategories] = useState(user.filters.categoryFilter);
+  const [selectedCategories, setSelectedCategories] = useState(
+    user.filters.categoryFilter
+  );
   const [selectedDates, setSelectedDates] = useState(user.filters.dateFilter);
-  const [selectedMoments, setSelectedMoments] = useState(user.filters.momentFilter);
-  const [selectedAges, setSelectedAges] = useState(user.preferences.agePreference);
-  const [selectedCity, setSelectedCity] = useState(user.preferences.cityPreference);
-  const [selectedLongitude, setSelectedLongitude] = useState(user.preferences.longitudePreference);
-  const [selectedLatitude, setSelectedLatitude] = useState(user.preferences.latitudePreference);
+  const [selectedMoments, setSelectedMoments] = useState(
+    user.filters.momentFilter
+  );
+  const [selectedAges, setSelectedAges] = useState(
+    user.preferences.agePreference
+  );
+  const [selectedCity, setSelectedCity] = useState(
+    user.preferences.cityPreference
+  );
+  const [selectedLongitude, setSelectedLongitude] = useState(
+    user.preferences.longitudePreference
+  );
+  const [selectedLatitude, setSelectedLatitude] = useState(
+    user.preferences.latitudePreference
+  );
 
   const categories = ["Sport", "Musique", "Créativité", "Motricité", "Éveil"];
   const dateFilters = ["Aujourd'hui", "Demain", "Cette semaine", "Ce week-end"];
@@ -163,7 +175,7 @@ export default function FiltersScreen({ navigation }) {
     setSelectedDates([]);
     setSelectedMoments([]);
     setSelectedAges([]);
-    setPrice(30);
+    setPrice(50);
     setSelectedLongitude(-200);
     setSelectedLatitude(-200);
     setSelectedCity(null);
@@ -222,8 +234,8 @@ export default function FiltersScreen({ navigation }) {
           style={styles.slider}
           lowerLimit={0}
           minimumValue={0}
-          maximumValue={30}
-          upperLimit={30}
+          maximumValue={50}
+          upperLimit={50}
           minimumTrackTintColor="#5669FF"
           maximumTrackTintColor="#E7E7E9"
           step={1}
@@ -232,7 +244,7 @@ export default function FiltersScreen({ navigation }) {
         />
         <View style={styles.sliderBottom}>
           <Text style={styles.textSlider}>0€</Text>
-          <Text style={styles.textSlider}>30€</Text>
+          <Text style={styles.textSlider}>50€</Text>
         </View>
 
         <Text style={globalStyles.title4}>Localisation</Text>
