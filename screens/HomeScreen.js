@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import * as Location from "expo-location";
 import { useDispatch, useSelector } from "react-redux";
 import { loadOrganizers } from "../reducers/organizers";
+import { loadFavoriteActivities } from "../reducers/user";
 import {
   addCurrentLocation,
   addCurrentCity,
@@ -494,6 +495,14 @@ export default function HomeScreen({ navigation }) {
       </View>
     );
   }
+
+  useEffect(() => {
+    fetch(`${BACKEND_ADDRESS}/activities/allfavorites/${user.token}`)
+      .then((response) => response.json())
+      .then((data) => {
+        data.result && dispatch(loadFavoriteActivities(data.activities));
+      });
+    }, []);
 
   return (
     // <SafeAreaView style={styles.container}>

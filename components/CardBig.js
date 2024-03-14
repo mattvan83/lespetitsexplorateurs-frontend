@@ -57,19 +57,18 @@ export default function CardBig({ activity }) {
   const activityId = activity.id;
 
   const handleLike = () => {
+
     fetch(`${BACKEND_ADDRESS}/activities/favorite/${token}/${activityId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token, activityId }),
+      body: JSON.stringify({ token, activityId })
+    }).then((response) => response.json())
+    .then(data => {
+      data.result && dispatch(updateFavoriteActivities( data.activity ));
     })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("DATA:", data);
-        data.result && dispatch(updateFavoriteActivities(data.activityId));
-      })
-      .catch((error) => {
-        console.error("Erreur:", error);
-      });
+    .catch(error => {
+      console.error("Erreur:", error);
+    });
   };
 
   return (

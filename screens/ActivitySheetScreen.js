@@ -63,7 +63,7 @@ export default function ActivitySheetScreen({
     }).then((response) => response.json())
     .then(data => {
       console.log('DATA:', data);
-      data.result && dispatch(updateFavoriteActivities( data.activityId ));
+      data.result && dispatch(updateFavoriteActivities( data.activity ));
     })
     .catch(error => {
       console.error('Erreur:', error);

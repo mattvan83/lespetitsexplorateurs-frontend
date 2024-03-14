@@ -21,16 +21,20 @@ export default function FavoriteScreen({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
 
-  const userId = user._id;
+  const token = user.token;
+  console.log("Favorites in reducer: ", user.favoriteActivities);
 
-  fetch(`${BACKEND_ADDRESS}/activities/favorite/${userId}`)
-    .then((response) => response.json())
-    .then((data) => {
-      data.result && dispatch(loadFavoriteActivities(data.activities));
-    });
+  /*useEffect(() => {
+    fetch(`${BACKEND_ADDRESS}/activities/allfavorites/${token}`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        data.result && dispatch(loadFavoriteActivities(data.activities));
+      });
+  }, []);*/
 
   /*const activitiesList = user.favoriteActivities.map((activity, i) => {
-    const inputDate = new Date(activity.date);
+      const inputDate = new Date(activity.date);
     const options = {
       weekday: "long", // full weekday name
       day: "numeric", // day of the month
@@ -42,7 +46,7 @@ export default function FavoriteScreen({ navigation }) {
       .toLocaleString("fr-FR", options)
       .replace(":", "h")
       .toUpperCase();
-      
+
       return (
         <CardEditDelete
           key={i}
@@ -59,7 +63,10 @@ export default function FavoriteScreen({ navigation }) {
 
 
   const activitiesList = user.favoriteActivities.map((activity, i) => {
-    return <Card key={i} activity={activity} />;
+
+    return <Card 
+    key={i} 
+    activity={activity} />;
   });
 
 
