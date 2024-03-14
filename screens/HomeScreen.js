@@ -151,6 +151,7 @@ export default function HomeScreen({ navigation }) {
                       dateFilter,
                       momentFilter,
                       ageFilter,
+                      priceFilter,
                     },
                   }),
                 })
@@ -204,6 +205,7 @@ export default function HomeScreen({ navigation }) {
                       dateFilter,
                       momentFilter,
                       ageFilter: user.preferences.agePreference,
+                      priceFilter,
                     },
                   }),
                 })
@@ -237,7 +239,8 @@ export default function HomeScreen({ navigation }) {
             }
           }
         } catch (error) {
-          console.error("Error obtaining user coordinates: ", error);
+          // console.error("Error obtaining user coordinates: ", error);
+          console.log("Error obtaining user coordinates: ", error);
         }
       }
 
@@ -280,6 +283,7 @@ export default function HomeScreen({ navigation }) {
                   dateFilter,
                   momentFilter,
                   ageFilter,
+                  priceFilter,
                 },
               }),
             })
@@ -324,6 +328,7 @@ export default function HomeScreen({ navigation }) {
                   dateFilter,
                   momentFilter,
                   ageFilter: user.preferences.agePreference,
+                  priceFilter,
                 },
               }),
             })
@@ -420,7 +425,11 @@ export default function HomeScreen({ navigation }) {
     return <Organizers key={i} {...data} />;
   });
 
-  const activitiesList = user.activities.map((activity, i) => {
+  const activitiesListMax15 =
+    user.activities.length > 15
+      ? user.activities.slice(0, 15)
+      : user.activities;
+  const activitiesList = activitiesListMax15.map((activity, i) => {
     return <CardBig key={i} activity={activity} />;
   });
 

@@ -48,6 +48,7 @@ export default function MapResultsScreen({ navigation }) {
 
   // console.log("user.filters: ", userFilters);
   // console.log("markerColors: ", markerColors);
+  // console.log("pressedMarkerIndex: ", pressedMarkerIndex);
 
   const dispatch = useDispatch();
 
@@ -86,6 +87,7 @@ export default function MapResultsScreen({ navigation }) {
               dateFilter,
               momentFilter,
               ageFilter,
+              priceFilter,
             },
           }),
         })
@@ -126,6 +128,7 @@ export default function MapResultsScreen({ navigation }) {
               dateFilter,
               momentFilter,
               ageFilter: user.preferences.agePreference,
+              priceFilter,
             },
           }),
         })
@@ -169,6 +172,7 @@ export default function MapResultsScreen({ navigation }) {
             dateFilter,
             momentFilter,
             ageFilter,
+            priceFilter,
           },
         }),
       })
@@ -263,6 +267,7 @@ export default function MapResultsScreen({ navigation }) {
             dateFilter,
             momentFilter,
             ageFilter,
+            priceFilter,
           },
         }),
       })
@@ -313,8 +318,8 @@ export default function MapResultsScreen({ navigation }) {
 
   const handleMarkerPress = (activity, index) => {
     console.log("Map Pressed");
-    console.log(index)
-    console.log(pressedMarkerIndex)
+    console.log(index);
+    console.log(pressedMarkerIndex);
     // console.log("Change background marker color");
     const newColors = [...markerColors];
 
@@ -325,16 +330,14 @@ export default function MapResultsScreen({ navigation }) {
 
     // Set the color of the currently pressed marker
     newColors[index] = pressedMarkerColor;
-    console.log(newColors)
+    console.log(newColors);
 
     setMarkerColors(newColors);
     setPressedMarkerIndex((prevIndex) => index);
   };
 
-  
-
   const handleMapPress = () => {
-    console.log("maps")
+    console.log("maps");
     // Reset all markers to the initial color
     setMarkerColors(user.activities.map(() => initialMarkerColor));
     // Reset pressedMarkerIndex
@@ -455,7 +458,8 @@ export default function MapResultsScreen({ navigation }) {
     ) {
       headerLocalisation = (
         <Text style={styles.localisationBold}>
-          Activités autour de {user.preferences.cityPreference} (- {user.preferences.scopeFilter}km )
+          Activités autour de {user.preferences.cityPreference} (-{" "}
+          {user.preferences.scopeFilter}km )
         </Text>
       );
 
@@ -486,7 +490,8 @@ export default function MapResultsScreen({ navigation }) {
   ) {
     headerLocalisation = (
       <Text style={styles.localisationBold}>
-        Activités autour de {user.filters.cityFilter} (- {user.filters.scopeFilter}km )
+        Activités autour de {user.filters.cityFilter} (-{" "}
+        {user.filters.scopeFilter}km )
       </Text>
     );
 
@@ -512,7 +517,7 @@ export default function MapResultsScreen({ navigation }) {
     };
   }
 
-  console.log(`marker index : ${pressedMarkerIndex}`)
+  console.log(`marker index : ${pressedMarkerIndex}`);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -603,8 +608,6 @@ export default function MapResultsScreen({ navigation }) {
             <Ionicons name="location-outline" size={24} color="#fecb2d" />
           </TouchableOpacity>
 
-    
-          
           {pressedMarkerIndex !== null && (
             <View style={styles.popupCardContainer}>
               <Card activity={user.activities[pressedMarkerIndex]} />
@@ -624,7 +627,7 @@ const styles = StyleSheet.create({
   },
   header: {
     width: "100%",
-    paddingTop: 30,
+    paddingTop: 40,
   },
   topHeader: {
     flexDirection: "row",
