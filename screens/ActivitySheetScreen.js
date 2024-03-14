@@ -142,12 +142,12 @@ export default function ActivitySheetScreen({
   const formattedDuration = `${endHour}h${endMinutes === 0 ? "00" : endMinutes}`;
 
   const handleClickOnOrganizer = () => {
-    fetch(`${BACKEND_ADDRESS}/organizers/${activity.organizerId}`)
+    fetch(`${BACKEND_ADDRESS}/organizers/byId/${activity.organizerId}`)
       .then((response) => response.json())
       .then((data) => {
         data.result &&
           navigation.navigate("OrganizerProfile", {
-            organizer: data.organizer,
+            organizerDetailed: data.organizer,
           });
       });
   };
