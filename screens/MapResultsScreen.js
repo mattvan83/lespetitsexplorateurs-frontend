@@ -48,7 +48,7 @@ export default function MapResultsScreen({ navigation }) {
 
   // console.log("user.filters: ", userFilters);
   // console.log("markerColors: ", markerColors);
-  console.log("pressedMarkerIndex: ", pressedMarkerIndex);
+  // console.log("pressedMarkerIndex: ", pressedMarkerIndex);
 
   const dispatch = useDispatch();
 

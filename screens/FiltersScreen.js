@@ -20,7 +20,7 @@ export default function FiltersScreen({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
   const [price, setPrice] = useState(user.filters.priceFilter);
-  const [scope, setScope] = useState(user.preferences.scopePreference);
+  const [scope, setScope] = useState(user.filters.scopeFilter);
   const [selectedCategories, setSelectedCategories] = useState(
     user.filters.categoryFilter
   );
@@ -28,17 +28,13 @@ export default function FiltersScreen({ navigation }) {
   const [selectedMoments, setSelectedMoments] = useState(
     user.filters.momentFilter
   );
-  const [selectedAges, setSelectedAges] = useState(
-    user.preferences.agePreference
-  );
-  const [selectedCity, setSelectedCity] = useState(
-    user.preferences.cityPreference
-  );
+  const [selectedAges, setSelectedAges] = useState(user.filters.ageFilter);
+  const [selectedCity, setSelectedCity] = useState(user.filters.cityFilter);
   const [selectedLongitude, setSelectedLongitude] = useState(
-    user.preferences.longitudePreference
+    user.filters.longitudeFilter
   );
   const [selectedLatitude, setSelectedLatitude] = useState(
-    user.preferences.latitudePreference
+    user.filters.latitudeFilter
   );
 
   const categories = ["Sport", "Musique", "Créativité", "Motricité", "Éveil"];
