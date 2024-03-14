@@ -588,7 +588,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "flex-start",
     width: "100%",
-    paddingTop: 30,
+    paddingTop: 40,
   },
   topHeader: {
     flexDirection: "row",

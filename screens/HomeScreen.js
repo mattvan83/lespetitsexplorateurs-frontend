@@ -238,7 +238,8 @@ export default function HomeScreen({ navigation }) {
             }
           }
         } catch (error) {
-          console.error("Error obtaining user coordinates: ", error);
+          // console.error("Error obtaining user coordinates: ", error);
+          console.log("Error obtaining user coordinates: ", error);
         }
       }
 
