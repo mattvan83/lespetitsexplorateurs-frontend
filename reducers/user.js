@@ -154,21 +154,16 @@ export const userSlice = createSlice({
       );
     },
     updateFavoriteActivities: (state, action) => {
-      console.log("Id: ", action.payload.id);
-      console.log("activity ID: ", state.value.favoriteActivities[1].id);
       if( state.value.favoriteActivities.length > 0) {
         const foundActivity = state.value.favoriteActivities.find(activity => activity.id === action.payload.id);
-        console.log("found: ", foundActivity);
         if (foundActivity !== undefined) {
           state.value.favoriteActivities = state.value.favoriteActivities.filter(
           (activity) => activity.id !== action.payload.id
           );
         } else {
-          console.log("else1");
           state.value.favoriteActivities.push(action.payload);
         }
       } else {
-        console.log("else2");
         state.value.favoriteActivities.push(action.payload);
       }
     },
