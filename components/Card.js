@@ -91,6 +91,8 @@ export default function Card({ activity }) {
     });
   };
 
+  console.log(user.favoriteActivities.includes(activityId))
+
   return (
     <View style={styles.cardContainer}>
       <TouchableOpacity
@@ -142,6 +144,7 @@ const styles = StyleSheet.create({
   cardContainer: {
     alignItems: "center",
     width: "100%",
+    backgroundColor: 'transparent',
   },
   card: {
     justifyContent: "flex-start",

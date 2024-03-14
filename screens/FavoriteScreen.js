@@ -21,17 +21,8 @@ export default function FavoriteScreen({ navigation }) {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
 
-  const token = user.token;
-  console.log("Favorites in reducer: ", user.favoriteActivities);
+ 
 
-  /*useEffect(() => {
-    fetch(`${BACKEND_ADDRESS}/activities/allfavorites/${token}`)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        data.result && dispatch(loadFavoriteActivities(data.activities));
-      });
-  }, []);*/
 
   /*const activitiesList = user.favoriteActivities.map((activity, i) => {
       const inputDate = new Date(activity.date);
