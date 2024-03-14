@@ -336,7 +336,8 @@ export default function MapResultsScreenTest({ navigation }) {
     // Reset all markers to the initial color
     setMarkerColors(user.activities.map(() => initialMarkerColor));
     // Reset pressedMarkerIndex
-    setPressedMarkerIndex(null);
+    // setSelectedActivity(null);
+    // setPressedMarkerIndex(null);
     // Refocus map to center Location
     reFocusMap();
   };
@@ -601,7 +602,7 @@ export default function MapResultsScreenTest({ navigation }) {
           <Ionicons name="location-outline" size={24} color="#fecb2d" />
         </TouchableOpacity>
 
-        {selectedActivity && (
+        {selectedActivity !== null && (
           <View style={styles.popupCardContainer}>
             <Card activity={user.activities[selectedActivity]} />
           </View>
