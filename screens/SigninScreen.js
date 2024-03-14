@@ -9,7 +9,7 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { login, setPreferences, setPreferencesFilters } from "../reducers/user";
 import globalStyles from "../globalStyles";
 import { Ionicons } from "@expo/vector-icons";
@@ -19,7 +19,7 @@ const EMAIL_REGEX =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
-console.log(BACKEND_ADDRESS)
+console.log(BACKEND_ADDRESS);
 export default function SigninScreen({ navigation }) {
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
@@ -81,7 +81,9 @@ export default function SigninScreen({ navigation }) {
     >
       <Image
         style={styles.img}
-        source={{ uri: "https://res.cloudinary.com/ddoqxafok/image/upload/v1710230637/iufea3u7hgp5l3rzxi7o.jpg" }}
+        source={{
+          uri: "https://res.cloudinary.com/ddoqxafok/image/upload/v1710230637/iufea3u7hgp5l3rzxi7o.jpg",
+        }}
       />
       <Text style={styles.title}>Identification</Text>
 
@@ -158,7 +160,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   img: {
-    width: '100%',
+    width: "100%",
     height: 200,
     // marginTop: 100,
     marginBottom: 50,

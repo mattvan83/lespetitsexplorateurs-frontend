@@ -36,11 +36,8 @@ const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 export default function HomeScreen({ navigation }) {
   const [suggestionsList, setSuggestionsList] = useState([]);
   const user = useSelector((state) => state.user.value);
-  // const userFilters = useSelector((state) => state.user.value.filters);
   const organizers = useSelector((state) => state.organizers.value);
-  // const [activities, setActivities] = useState([]);
   const categories = ["Sport", "Musique", "Créativité", "Motricité", "Éveil"];
-  // const [isInitialRender, setIsInitialRender] = useState(true);
 
   // console.log("user: ", user);
   // console.log("user.filters: ", user.filters);
@@ -511,7 +508,7 @@ export default function HomeScreen({ navigation }) {
       .then((data) => {
         data.result && dispatch(loadFavoriteActivities(data.activities));
       });
-    }, []);
+  }, []);
 
   return (
     // <SafeAreaView style={styles.container}>

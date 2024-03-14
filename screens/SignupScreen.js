@@ -11,7 +11,7 @@ import {
   Keyboard,
 } from "react-native";
 import { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { login } from "../reducers/user";
 import globalStyles from "../globalStyles";
 import { AntDesign } from "@expo/vector-icons";
@@ -75,7 +75,9 @@ export default function SignupScreen({ navigation }) {
     >
       <Image
         style={styles.img}
-        source={{ uri : "https://res.cloudinary.com/ddoqxafok/image/upload/v1710191558/rnhxlupxbteo1kw5nf0c.jpg" }}
+        source={{
+          uri: "https://res.cloudinary.com/ddoqxafok/image/upload/v1710191558/rnhxlupxbteo1kw5nf0c.jpg",
+        }}
       />
       <Text style={styles.title}>Créer un compte</Text>
 
@@ -172,7 +174,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   img: {
-    width: '100%',
+    width: "100%",
     height: 200,
     borderRadius: 100,
     // marginTop: 100,
