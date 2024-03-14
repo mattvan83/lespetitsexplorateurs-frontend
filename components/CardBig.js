@@ -61,7 +61,6 @@ export default function CardBig({ activity }) {
     fetch(`${BACKEND_ADDRESS}/activities/favorite/${token}/${activityId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token, activityId })
     }).then((response) => response.json())
     .then(data => {
       data.result && dispatch(updateFavoriteActivities( data.activity ));
