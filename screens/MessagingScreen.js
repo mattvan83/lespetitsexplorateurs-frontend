@@ -16,7 +16,7 @@ export default function MessagingScreen({ navigation }) {
           style={styles.img}
           source={require('../assets/Images/14.jpg')}
         />
-        <Text style={styles.text} >Vous n'avez pas encore reçus de messages.</Text>
+        <Text style={styles.text} >Vous n'avez pas encore reçu de messages.</Text>
         <Text style={styles.text}>Partagez l'appli avec votre cercle de parents et commencez à échanger vos bons plans !</Text>
       </View>
     </View>

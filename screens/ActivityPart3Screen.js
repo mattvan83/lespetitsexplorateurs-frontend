@@ -5,6 +5,7 @@ import {
   View,
   TouchableOpacity,
   KeyboardAvoidingView,
+  Keyboard,
   Platform,
 } from "react-native";
 import globalStyles from '../globalStyles';
@@ -65,85 +66,93 @@ export default function ProfileScreen({ navigation }) {
       });
   }, [activityCity, activityPostalCode])
 
+  const handleBackgroundPress = () => {
+    Keyboard.dismiss(); // Dismiss the keyboard
+  };
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-      <View style={styles.filtersContainer}>
-        <FontAwesome name={'arrow-left'} color={'black'} size={20} style={styles.arrow} onPress={() => navigation.goBack()} />
+    <TouchableOpacity
+      style={{ flex: 1 }}
+      activeOpacity={1}
+      onPress={handleBackgroundPress}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+        <View style={styles.filtersContainer}>
+          <FontAwesome name={'arrow-left'} color={'black'} size={20} style={styles.arrow} onPress={() => navigation.goBack()} />
 
-        <Text style={styles.title2}>Comment trouver l'activité ?</Text>
+          <Text style={styles.title2}>Comment trouver l'activité ?</Text>
 
-        {showError && (
-          <Text style={styles.error}>
-            Les champs "Adresse", "Code postal" et "Ville" sont requis.
-          </Text>
-        )}
-        <Text style={globalStyles.title4}>Adresse</Text>
-        <View style={globalStyles.border} marginLeft={20}>
-          <TextInput
-            placeholder="Adresse précise"
-            autoCapitalize="sentences"
-            keyboardType="default"
-            onChangeText={(value) => setActivityAddress(value)}
-            value={activityAddress}
-            style={globalStyles.input}
-          />
-        </View>
-
-        {errorPostalCode && (
-          <View>
-            <Text style={styles.error}>Code postal non reconnu</Text>
+          {showError && (
+            <Text style={styles.error}>
+              Les champs "Adresse", "Code postal" et "Ville" sont requis.
+            </Text>
+          )}
+          <Text style={globalStyles.title4}>Adresse</Text>
+          <View style={globalStyles.border} marginLeft={20}>
+            <TextInput
+              placeholder="Adresse précise"
+              autoCapitalize="sentences"
+              keyboardType="default"
+              onChangeText={(value) => setActivityAddress(value)}
+              value={activityAddress}
+              style={globalStyles.input}
+            />
           </View>
-        )}
-        <Text style={globalStyles.title4}>Code postal</Text>
-        <View style={globalStyles.border} marginLeft={20} width={150}>
-          <TextInput
-            placeholder="Code postal"
-            maxLength={5}
-            autoCapitalize="sentences"
-            keyboardType="number-pad"
-            onChangeText={(value) => setActivityPostalCode(value)}
-            value={activityPostalCode}
-            style={globalStyles.input}
-          />
+
+          {errorPostalCode && (
+            <View>
+              <Text style={styles.error}>Code postal non reconnu</Text>
+            </View>
+          )}
+          <Text style={globalStyles.title4}>Code postal</Text>
+          <View style={globalStyles.border} marginLeft={20} width={150}>
+            <TextInput
+              placeholder="Code postal"
+              maxLength={5}
+              autoCapitalize="sentences"
+              keyboardType="number-pad"
+              onChangeText={(value) => setActivityPostalCode(value)}
+              value={activityPostalCode}
+              style={globalStyles.input}
+            />
+          </View>
+          <Text style={globalStyles.title4}>Ville</Text>
+          <View style={globalStyles.border} marginLeft={20}>
+            <TextInput
+              placeholder="Ville"
+              autoCapitalize="sentences"
+              keyboardType="default"
+              onChangeText={(value) => setActivityCity(value)}
+              value={activityCity}
+              style={globalStyles.input}
+            />
+          </View>
+
+          <Text style={globalStyles.title4}>Nom du lieu</Text>
+          <View style={globalStyles.border} marginLeft={20}>
+            <TextInput
+              placeholder="ex : Gymnase, Ludothèque, Bibliothèque..."
+              autoCapitalize="sentences"
+              keyboardType="default"
+              onChangeText={(value) => setActivityPlace(value)}
+              value={activityPlace}
+              style={globalStyles.input}
+            />
+          </View>
+
         </View>
-        <Text style={globalStyles.title4}>Ville</Text>
-        <View style={globalStyles.border} marginLeft={20}>
-          <TextInput
-            placeholder="Ville"
-            autoCapitalize="sentences"
-            keyboardType="default"
-            onChangeText={(value) => setActivityCity(value)}
-            value={activityCity}
-            style={globalStyles.input}
-          />
+
+        <View style={styles.bottom}>
+          <TouchableOpacity
+            onPress={() => handleContinue()}
+            style={styles.button}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.textButton}>Continuer</Text>
+          </TouchableOpacity>
+
         </View>
-
-        <Text style={globalStyles.title4}>Nom du lieu</Text>
-        <View style={globalStyles.border} marginLeft={20}>
-          <TextInput
-            placeholder="ex : Gymnase, Ludothèque, Bibliothèque..."
-            autoCapitalize="sentences"
-            keyboardType="default"
-            onChangeText={(value) => setActivityPlace(value)}
-            value={activityPlace}
-            style={globalStyles.input}
-          />
-        </View>
-
-      </View>
-
-      <View style={styles.bottom}>
-        <TouchableOpacity
-          onPress={() => handleContinue()}
-          style={styles.button}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.textButton}>Continuer</Text>
-        </TouchableOpacity>
-
-      </View>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </TouchableOpacity>
   );
 }
 

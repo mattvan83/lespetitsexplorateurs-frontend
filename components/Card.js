@@ -107,7 +107,7 @@ export default function Card({ activity }) {
           <View style={styles.dateFavoriteContainer}>
             <Text style={styles.activityDate}>{formattedDate}</Text>
             <TouchableOpacity activeOpacity={0.8} style={styles.favorite} onPress={() => handleLike()}>
-              {!user.favoriteActivities.includes(activityId) ? (
+              {!user.favoriteActivities.find(activity => activity.id === activityId) ? (
                 <Icon
                   style={styles.heartIcon}
                   name="heart-outline"

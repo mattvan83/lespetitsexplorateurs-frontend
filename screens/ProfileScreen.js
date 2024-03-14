@@ -150,7 +150,7 @@ export default function ProfileScreen({ navigation }) {
           </TouchableOpacity>
         </View>
 
-        <Text style={globalStyles.title4}>Âges des enfants</Text>
+        <Text style={globalStyles.title4}>Âge des enfants</Text>
         <ScrollView horizontal={true} style={styles.filters}>
           {ageList}
         </ScrollView>

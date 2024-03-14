@@ -6,6 +6,7 @@ import {
   View,
   TouchableOpacity,
   KeyboardAvoidingView,
+  Keyboard,
   Platform,
 } from "react-native";
 import globalStyles from '../globalStyles';
@@ -65,61 +66,71 @@ export default function ProfileScreen({ navigation }) {
     navigation.goBack()
   }
 
+  const handleBackgroundPress = () => {
+    Keyboard.dismiss(); // Dismiss the keyboard
+  };
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-      <View style={styles.filtersContainer}>
-        <FontAwesome name={'arrow-left'} color={'black'} size={20} style={styles.arrow} onPress={() => handleReturnClick()} />
+    <TouchableOpacity
+      style={{ flex: 1 }}
+      activeOpacity={1}
+      onPress={handleBackgroundPress}>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+        <View style={styles.filtersContainer}>
+          <FontAwesome name={'arrow-left'} color={'black'} size={20} style={styles.arrow} onPress={() => handleReturnClick()} />
 
-        <Text style={styles.title2}>Dites-nous tout</Text>
+          <Text style={styles.title2}>Dites-nous tout</Text>
 
-        <Text style={globalStyles.title4}>Nom de l'activité</Text>
-        <View style={globalStyles.border} marginLeft={20}>
-          <TextInput
-            placeholder="Nom de l'activité (max. 23 caractères)"
-            autoCapitalize="sentences"
-            keyboardType="default"
-            maxLength={23}
-            onChangeText={(value) => setActivityName(value)}
-            value={activityName}
-            style={globalStyles.input}
-          />
+          <Text style={globalStyles.title4}>Nom de l'activité</Text>
+          <View style={globalStyles.border} marginLeft={20}>
+            <TextInput
+              placeholder="Nom de l'activité (max. 23 caractères)"
+              autoCapitalize="sentences"
+              keyboardType="default"
+              maxLength={23}
+              onChangeText={(value) => setActivityName(value)}
+              value={activityName}
+              style={globalStyles.input}
+            />
+          </View>
+
+          <Text style={globalStyles.title4}>Description</Text>
+          <View style={globalStyles.border} marginLeft={20} height={200}>
+            <TextInput
+              placeholder="Décrivez l'activité en quelques mots..."
+              autoCapitalize="sentences"
+              keyboardType="default"
+              onChangeText={(value) => setActivityDescription(value)}
+              value={activityDescription}
+              style={styles.descriptionInput}
+              multiline={true}
+              numberOfLines={6}
+            />
+          </View>
+
+          <Text style={globalStyles.title4}>Sélectionnez une catégorie</Text>
+          <ScrollView horizontal={true} style={styles.categoryFilters}>
+            {categoryList}
+          </ScrollView>
         </View>
 
-        <Text style={globalStyles.title4}>Description</Text>
-        <View style={globalStyles.border} marginLeft={20} height={200}>
-          <TextInput
-            placeholder="Décrivez l'activité en quelques mots"
-            autoCapitalize="sentences"
-            keyboardType="default"
-            onChangeText={(value) => setActivityDescription(value)}
-            value={activityDescription}
-            style={globalStyles.input}
-          />
+        {showError && (
+            <Text style={styles.error}>
+              Tous les champs sont requis.
+            </Text>
+          )}
+
+        <View style={styles.bottom}>
+          <TouchableOpacity
+            onPress={() => handleContinue()}
+            style={styles.button}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.textButton}>Continuer</Text>
+          </TouchableOpacity>
         </View>
-
-        <Text style={globalStyles.title4}>Sélectionnez une catégorie</Text>
-        <ScrollView horizontal={true} style={styles.categoryFilters}>
-          {categoryList}
-        </ScrollView>
-      </View>
-
-      {showError && (
-          <Text style={styles.error}>
-            Tous les champs sont requis.
-          </Text>
-        )}
-
-      <View style={styles.bottom}>
-        <TouchableOpacity
-          onPress={() => handleContinue()}
-          style={styles.button}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.textButton}>Continuer</Text>
-        </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </TouchableOpacity>
   );
 }
 
@@ -184,4 +195,12 @@ const styles = StyleSheet.create({
     color: "#fff",
     textTransform: "uppercase",
   },
+  descriptionInput: {
+    width: "90%",
+    height: 160,
+    color: "#7887FF",
+    fontSize: 14,
+    marginLeft: 10,
+    textAlignVertical: "top",
+  }
 });

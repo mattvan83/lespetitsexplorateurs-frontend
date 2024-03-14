@@ -185,7 +185,7 @@ export default function ActivitySheetScreen({
               <Ionicons
                 name="heart"
                 size={24}
-                style={{ color: user.favoriteActivities.includes(activityId) ? "red" : "white" }}
+                style={{ color: user.favoriteActivities.find(activity => activity.id === activityId) ? "red" : "white" }}
               />
             </TouchableOpacity>
           </View>

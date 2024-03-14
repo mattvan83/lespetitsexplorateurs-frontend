@@ -94,7 +94,7 @@ export default function CardBig({ activity }) {
               style={styles.favorite}
               onPress={() => handleLike()}
             >
-              {!user.favoriteActivities.includes(activityId) ? (
+              {!user.favoriteActivities.find(activity => activity.id === activityId) ? (
                 <Icon
                   style={styles.heartIcon}
                   name="heart-outline"
