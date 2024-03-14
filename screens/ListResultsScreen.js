@@ -39,7 +39,7 @@ export default function ListResultsScreen({ navigation, route }) {
   const [suggestionsList, setSuggestionsList] = useState([]);
 
   console.log("user.filters: ", userFilters);
-  console.log("category: ", category);
+  // console.log("category: ", category);
 
   const dispatch = useDispatch();
 
