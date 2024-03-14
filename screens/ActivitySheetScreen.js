@@ -51,15 +51,14 @@ export default function ActivitySheetScreen({
   };
 
   const token = user.token;
-  const activityId = activity.id;
-  
+  const activityId = activity.id ? activity.id : activity._id;
+
   const handleLike = () => {
-    console.log("isLiked reducer: ", activities);
+    console.log("Handle like");
     
     fetch(`${BACKEND_ADDRESS}/activities/favorite/${token}/${activityId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token, activityId })
     }).then((response) => response.json())
     .then(data => {
       console.log('DATA:', data);
@@ -68,9 +67,7 @@ export default function ActivitySheetScreen({
     .catch(error => {
       console.error('Erreur:', error);
     });
-  };
-
-  
+  };  
 
   /*const handleFollow = () => {
     console.log("follow or unfollow");

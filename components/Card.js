@@ -14,6 +14,8 @@ export default function Card({ activity }) {
 
   const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
+  console.log(activity)
+
   const inputDate = new Date(activity.date);
 
   const options = {
@@ -73,7 +75,8 @@ export default function Card({ activity }) {
   }, []);
 
   const token = user.token;
-  const activityId = activity.id;
+  const activityId = activity.id ? activity.id : activity._id;
+  console.log("Id : " + activityId)
 
   const handleLike = () => {
     
