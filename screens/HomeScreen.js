@@ -423,7 +423,11 @@ export default function HomeScreen({ navigation }) {
     return <Organizers key={i} {...data} />;
   });
 
-  const activitiesList = user.activities.map((activity, i) => {
+  const activitiesListMax15 =
+    user.activities.length > 15
+      ? user.activities.slice(0, 15)
+      : user.activities;
+  const activitiesList = activitiesListMax15.map((activity, i) => {
     return <CardBig key={i} activity={activity} />;
   });
 
