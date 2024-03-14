@@ -313,8 +313,8 @@ export default function MapResultsScreenTest({ navigation }) {
 
   const handleMarkerPress = (index) => {
     console.log("Map Pressed");
-    console.log(index)
-    setSelectedActivity(index)
+    console.log(index);
+    setSelectedActivity(index);
     // console.log("Change background marker color");
     const newColors = [...markerColors];
 
@@ -329,10 +329,8 @@ export default function MapResultsScreenTest({ navigation }) {
     setMarkerColors(newColors);
   };
 
-
-
   const handleMapPress = () => {
-    console.log("maps")
+    console.log("maps");
     // Reset all markers to the initial color
     setMarkerColors(user.activities.map(() => initialMarkerColor));
     // Reset pressedMarkerIndex
@@ -395,7 +393,7 @@ export default function MapResultsScreenTest({ navigation }) {
     );
   });
 
-  console.log(selectedActivity)
+  // console.log(selectedActivity)
 
   let headerLocalisation;
   let centerLatitude;
@@ -458,7 +456,8 @@ export default function MapResultsScreenTest({ navigation }) {
     ) {
       headerLocalisation = (
         <Text style={styles.localisationBold}>
-          Activités autour de {user.preferences.cityPreference} (- {user.preferences.scopeFilter}km )
+          Activités autour de {user.preferences.cityPreference} (-{" "}
+          {user.preferences.scopeFilter}km )
         </Text>
       );
 
@@ -489,7 +488,8 @@ export default function MapResultsScreenTest({ navigation }) {
   ) {
     headerLocalisation = (
       <Text style={styles.localisationBold}>
-        Activités autour de {user.filters.cityFilter} (- {user.filters.scopeFilter}km )
+        Activités autour de {user.filters.cityFilter} (-{" "}
+        {user.filters.scopeFilter}km )
       </Text>
     );
 
@@ -589,7 +589,6 @@ export default function MapResultsScreenTest({ navigation }) {
               // description="Super ville"
               pinColor="#fecb2d"
               onPress={() => handleMapPress()} // Reset all marker colors when clicking on this marker
-
             />
           )}
           {activityMarkers}
@@ -730,6 +729,6 @@ const styles = StyleSheet.create({
     bottom: 50,
     backgroundColor: "transparent",
     alignItems: "center",
-    width: '100%',
+    width: "100%",
   },
 });

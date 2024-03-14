@@ -317,9 +317,6 @@ export default function MapResultsScreen({ navigation }) {
   };
 
   const handleMarkerPress = (activity, index) => {
-    console.log("Map Pressed");
-    console.log(index);
-    console.log(pressedMarkerIndex);
     // console.log("Change background marker color");
     const newColors = [...markerColors];
 
@@ -333,11 +330,11 @@ export default function MapResultsScreen({ navigation }) {
     console.log(newColors);
 
     setMarkerColors(newColors);
-    setPressedMarkerIndex((prevIndex) => index);
+    setPressedMarkerIndex(index);
   };
 
   const handleMapPress = () => {
-    console.log("maps");
+    // console.log("maps");
     // Reset all markers to the initial color
     setMarkerColors(user.activities.map(() => initialMarkerColor));
     // Reset pressedMarkerIndex
