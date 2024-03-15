@@ -7,13 +7,13 @@ import {
   Platform,
   TouchableOpacity,
 } from "react-native";
-import globalStyles from '../globalStyles';
-import { useDispatch, useSelector } from 'react-redux';
-import { addActivityInfoScreen2 } from '../reducers/activities';
-import { useState, useEffect } from 'react';
+import globalStyles from "../globalStyles";
+import { useDispatch, useSelector } from "react-redux";
+import { addActivityInfoScreen2 } from "../reducers/activities";
+import { useState, useEffect } from "react";
 import FilterTextCategory from "../components/FilterTextCategory";
-import { handleFilterButtonClick } from '../modules/handleFilterButtonClick';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { handleFilterButtonClick } from "../modules/handleFilterButtonClick";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Slider from "@react-native-community/slider";
 const { invertMappingTable } = require("../modules/invertMapping");
 
@@ -24,7 +24,13 @@ export default function ProfileScreen({ navigation }) {
   // CF below for concernedAges
   const [showError, setShowError] = useState(false);
 
-  const ageCategory = ["3-12 mois", "1-3 ans", "3-6 ans", "6-10 ans", "10+ ans"];
+  const ageCategory = [
+    "3-12 mois",
+    "1-3 ans",
+    "3-6 ans",
+    "6-10 ans",
+    "10+ ans",
+  ];
 
   const ageMapping = {
     "3-12 mois": "3_12months",
@@ -43,39 +49,58 @@ export default function ProfileScreen({ navigation }) {
     (age) => backToFrontAgeMapping[age]
   );
 
-  const [selectedAges, setSelectedAges] = useState(activities.isCurrentlyUpdated ? frontConcernedAges : []);
+  const [selectedAges, setSelectedAges] = useState(
+    activities.isCurrentlyUpdated ? frontConcernedAges : []
+  );
 
   const handleAgeList = (category) => {
     handleFilterButtonClick(category, selectedAges, setSelectedAges);
-  }
+  };
 
   const ageList = ageCategory.map((category, i) => {
     const isActive = selectedAges.includes(category);
-    return <FilterTextCategory key={i} category={category} style={styles.box} handleCategoryList={handleAgeList} isActive={isActive} />
-  })
+    return (
+      <FilterTextCategory
+        key={i}
+        category={category}
+        style={styles.box}
+        handleCategoryList={handleAgeList}
+        isActive={isActive}
+      />
+    );
+  });
 
   const handleContinue = () => {
     if (selectedAges.length !== 0) {
-      console.log(price)
-      dispatch(addActivityInfoScreen2({ concernedAges: selectedAges, price: price }));
-      console.log('Ages: ', selectedAges);
-      navigation.navigate('ActivityPart3');
+      // console.log(price)
+      dispatch(
+        addActivityInfoScreen2({ concernedAges: selectedAges, price: price })
+      );
+      // console.log('Ages: ', selectedAges);
+      navigation.navigate("ActivityPart3");
     } else {
       setShowError(true);
     }
-  }
+  };
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
       <View style={styles.filtersContainer}>
-        <FontAwesome name={'arrow-left'} color={'black'} size={20} style={styles.arrow} onPress={() => navigation.goBack()} />
+        <FontAwesome
+          name={"arrow-left"}
+          color={"black"}
+          size={20}
+          style={styles.arrow}
+          onPress={() => navigation.goBack()}
+        />
 
         <Text style={styles.title2}>Dites-nous en plus !</Text>
 
         <Text style={globalStyles.title4}>Âge du public concerné</Text>
-        <View style={styles.filters} >
-          {ageList}
-        </View>
+        <View style={styles.filters}>{ageList}</View>
 
         <Text style={globalStyles.title4}>Prix de l'activité : {price} €</Text>
         <Slider
@@ -96,14 +121,11 @@ export default function ProfileScreen({ navigation }) {
         </View>
 
         {showError && (
-          <Text style={styles.error}>
-            Tous les champs sont requis.
-          </Text>
+          <Text style={styles.error}>Tous les champs sont requis.</Text>
         )}
-
       </View>
 
-      <View style={styles.bottom} >
+      <View style={styles.bottom}>
         <TouchableOpacity
           onPress={() => handleContinue()}
           style={styles.button}
@@ -119,7 +141,7 @@ export default function ProfileScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column',
+    flexDirection: "column",
     backgroundColor: "white",
   },
   arrow: {
@@ -140,14 +162,14 @@ const styles = StyleSheet.create({
     marginLeft: 20,
   },
   error: {
-    color: 'red',
-    fontWeight: 'bold',
+    color: "red",
+    fontWeight: "bold",
     margin: 15,
   },
   textButton: {
-    color: '#5669FF',
-    fontWeight: 'bold',
-    fontSize: 16
+    color: "#5669FF",
+    fontWeight: "bold",
+    fontSize: 16,
   },
   text: {
     fontSize: 16,
@@ -169,7 +191,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     justifyContent: "center",
     alignItems: "center",
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   textButton: {
     fontSize: 16,

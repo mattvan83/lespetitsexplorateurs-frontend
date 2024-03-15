@@ -26,11 +26,10 @@ export default function ActivitySheetScreen({
   const user = useSelector((state) => state.user.value);
   const activities = useSelector((state) => state.activities.value);
   const dispatch = useDispatch();
-  console.log("Activity: ", activity);
-  
+  // console.log("Activity: ", activity);
 
   const handleShare = async () => {
-    console.log("share");
+    // console.log("share");
 
     try {
       const result = await Share.share({
@@ -54,20 +53,21 @@ export default function ActivitySheetScreen({
   const activityId = activity.id ? activity.id : activity._id;
 
   const handleLike = () => {
-    console.log("Handle like");
-    
+    // console.log("Handle like");
+
     fetch(`${BACKEND_ADDRESS}/activities/favorite/${token}/${activityId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-    }).then((response) => response.json())
-    .then(data => {
-      console.log('DATA:', data);
-      data.result && dispatch(updateFavoriteActivities( data.activity ));
     })
-    .catch(error => {
-      console.error('Erreur:', error);
-    });
-  };  
+      .then((response) => response.json())
+      .then((data) => {
+        // console.log("DATA:", data);
+        data.result && dispatch(updateFavoriteActivities(data.activity));
+      })
+      .catch((error) => {
+        console.error("Erreur:", error);
+      });
+  };
 
   /*const handleFollow = () => {
     console.log("follow or unfollow");
@@ -98,7 +98,7 @@ export default function ActivitySheetScreen({
   const dateObject = new Date(activity.date);
   // Pour obtenir heure de fin
   const dateEnMillisecondes = new Date(activity.date).getTime(); // Get milliseconds
-  const endOfActivity = dateEnMillisecondes + activity.durationInMilliseconds
+  const endOfActivity = dateEnMillisecondes + activity.durationInMilliseconds;
   const endDate = new Date(endOfActivity);
   const endHour = endDate.getHours();
   const endMinutes = endDate.getMinutes();
@@ -139,7 +139,9 @@ export default function ActivitySheetScreen({
   const formattedTime = `${hours}h${minutes}`;
 
   // Formater la durée
-  const formattedDuration = `${endHour}h${endMinutes === 0 ? "00" : endMinutes}`;
+  const formattedDuration = `${endHour}h${
+    endMinutes === 0 ? "00" : endMinutes
+  }`;
 
   const handleClickOnOrganizer = () => {
     fetch(`${BACKEND_ADDRESS}/organizers/byId/${activity.organizerId}`)
@@ -157,7 +159,11 @@ export default function ActivitySheetScreen({
       <ImageBackground
         resizeMode="cover"
         style={styles.image}
-        source={{ uri: activity.imgUrl ? activity.imgUrl : "https://res.cloudinary.com/ddoqxafok/image/upload/v1710193256/htkhybdxefcsm7ktpqbp.jpg" }}
+        source={{
+          uri: activity.imgUrl
+            ? activity.imgUrl
+            : "https://res.cloudinary.com/ddoqxafok/image/upload/v1710193256/htkhybdxefcsm7ktpqbp.jpg",
+        }}
       >
         <View style={styles.iconPosition}>
           <View>
@@ -182,7 +188,13 @@ export default function ActivitySheetScreen({
               <Ionicons
                 name="heart"
                 size={24}
-                style={{ color: user.favoriteActivities.find(activity => activity.id === activityId) ? "red" : "white" }}
+                style={{
+                  color: user.favoriteActivities.find(
+                    (activity) => activity.id === activityId
+                  )
+                    ? "red"
+                    : "white",
+                }}
               />
             </TouchableOpacity>
           </View>
@@ -193,7 +205,9 @@ export default function ActivitySheetScreen({
         <View style={styles.namePrice}>
           <Text style={styles.title}>{activity.name}</Text>
           <View style={styles.price}>
-            <Text style={styles.priceText}>{activity.price === 0 ?  "Gratuit" : activity.price + "€"}</Text>
+            <Text style={styles.priceText}>
+              {activity.price === 0 ? "Gratuit" : activity.price + "€"}
+            </Text>
           </View>
         </View>
         <View style={styles.div}>
@@ -246,7 +260,6 @@ export default function ActivitySheetScreen({
               </View>
             </TouchableOpacity>
 
-
             {/* <View style={styles.followWrite}>
             <TouchableOpacity onPress={() => handleFollow()} style={styles.btn}>
               <Text style={styles.btnOrganizer}>Suivre</Text>
@@ -257,8 +270,6 @@ export default function ActivitySheetScreen({
           </View> */}
           </View>
         )}
-
-
 
         <Text style={styles.subtitle}>À propos de l'évènement</Text>
         <ScrollView>
@@ -330,13 +341,13 @@ const styles = StyleSheet.create({
     marginRight: 25,
   },
   namePrice: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: "space-between"
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   price: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: "rgba(255, 180, 89, 0.3)",
     height: 36,
     width: 80,

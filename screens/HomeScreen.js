@@ -91,18 +91,18 @@ export default function HomeScreen({ navigation }) {
               dispatch(addCurrentCity(city));
               console.log("user city: ", city);
 
-              console.log(
-                "user.preferences.cityPreference: ",
-                user.preferences.cityPreference
-              );
-              console.log(
-                "user.preferences.latitudePreference: ",
-                user.preferences.latitudePreference
-              );
-              console.log(
-                "user.preferences.longitudePreference: ",
-                user.preferences.longitudePreference
-              );
+              // console.log(
+              //   "user.preferences.cityPreference: ",
+              //   user.preferences.cityPreference
+              // );
+              // console.log(
+              //   "user.preferences.latitudePreference: ",
+              //   user.preferences.latitudePreference
+              // );
+              // console.log(
+              //   "user.preferences.longitudePreference: ",
+              //   user.preferences.longitudePreference
+              // );
               // Set location details in user preferences if not defined -> indirectly set user location filters as default state
               // ToDo: Call fetch PUT /updatePreferences to update partially user preferences?
               if (

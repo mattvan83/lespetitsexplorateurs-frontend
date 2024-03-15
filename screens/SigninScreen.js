@@ -19,7 +19,7 @@ const EMAIL_REGEX =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
-console.log(BACKEND_ADDRESS);
+// console.log(BACKEND_ADDRESS);
 export default function SigninScreen({ navigation }) {
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");

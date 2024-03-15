@@ -14,7 +14,7 @@ export default function Card({ activity }) {
 
   const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
-  console.log(activity)
+  // console.log(activity)
 
   const inputDate = new Date(activity.date);
 
@@ -45,13 +45,25 @@ export default function Card({ activity }) {
       user.preferences.latitudePreference !== -200 &&
       user.preferences.longitudePreference !== -200
     ) {
-      distanceText = (activity.distance === undefined ? <></> : <Text style={styles.activityLocation}>{`${activity.distance} KM`}</Text>);
+      distanceText =
+        activity.distance === undefined ? (
+          <></>
+        ) : (
+          <Text
+            style={styles.activityLocation}
+          >{`${activity.distance} KM`}</Text>
+        );
     }
   } else if (
     user.filters.latitudeFilter !== -200 &&
     user.filters.longitudeFilter !== -200
   ) {
-    distanceText = (activity.distance === undefined ? <></> : <Text style={styles.activityLocation}>{`${activity.distance} KM`}</Text>);
+    distanceText =
+      activity.distance === undefined ? (
+        <></>
+      ) : (
+        <Text style={styles.activityLocation}>{`${activity.distance} KM`}</Text>
+      );
   }
 
   const images = [
@@ -76,24 +88,24 @@ export default function Card({ activity }) {
 
   const token = user.token;
   const activityId = activity.id ? activity.id : activity._id;
-  console.log("Id : " + activityId)
+  // console.log("Id : " + activityId);
 
   const handleLike = () => {
-    
     fetch(`${BACKEND_ADDRESS}/activities/favorite/${token}/${activityId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-    }).then((response) => response.json())
-    .then(data => {
-      console.log('DATA:', data);
-      data.result && dispatch(updateFavoriteActivities( data.activity ));
     })
-    .catch(error => {
-      console.error('Erreur:', error);
-    });
+      .then((response) => response.json())
+      .then((data) => {
+        // console.log("DATA:", data);
+        data.result && dispatch(updateFavoriteActivities(data.activity));
+      })
+      .catch((error) => {
+        console.error("Erreur:", error);
+      });
   };
 
-  console.log(user.favoriteActivities.includes(activityId))
+  // console.log(user.favoriteActivities.includes(activityId));
 
   return (
     <View style={styles.cardContainer}>
@@ -110,8 +122,14 @@ export default function Card({ activity }) {
         <View style={styles.details}>
           <View style={styles.dateFavoriteContainer}>
             <Text style={styles.activityDate}>{formattedDate}</Text>
-            <TouchableOpacity activeOpacity={0.8} style={styles.favorite} onPress={() => handleLike()}>
-              {!user.favoriteActivities.find(activity => activity.id === activityId) ? (
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={styles.favorite}
+              onPress={() => handleLike()}
+            >
+              {!user.favoriteActivities.find(
+                (activity) => activity.id === activityId
+              ) ? (
                 <Icon
                   style={styles.heartIcon}
                   name="heart-outline"
@@ -123,7 +141,7 @@ export default function Card({ activity }) {
                   style={styles.heartIcon}
                   name="heart"
                   size={20}
-                  color= "#EB5757"
+                  color="#EB5757"
                 />
               )}
             </TouchableOpacity>
@@ -146,7 +164,7 @@ const styles = StyleSheet.create({
   cardContainer: {
     alignItems: "center",
     width: "100%",
-    backgroundColor: 'transparent',
+    backgroundColor: "transparent",
   },
   card: {
     justifyContent: "flex-start",
@@ -181,7 +199,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   dateFavoriteContainer: {
-    width: '100%',
+    width: "100%",
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
