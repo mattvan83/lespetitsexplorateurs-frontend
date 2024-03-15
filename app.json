@@ -11,9 +11,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
@@ -28,14 +26,16 @@
     },
     "extra": {
       "eas": {
-        "projectId": "d4ec6766-f3f4-431b-84a2-d6a1b4e4a95a"
+        "projectId": "e15d1785-1fdd-4649-8790-19a9b0838d53"
       }
     },
     "runtimeVersion": {
       "policy": "appVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/d4ec6766-f3f4-431b-84a2-d6a1b4e4a95a"
-    }
+      "url": "https://u.expo.dev/e15d1785-1fdd-4649-8790-19a9b0838d53"
+    },
+    "nodeModulesPaths": ["./node_modules/expo/"],
+    "main": "./node_modules/expo/AppEntry.js"
   }
 }

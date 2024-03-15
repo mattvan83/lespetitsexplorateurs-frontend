@@ -8,17 +8,19 @@ import {
   Keyboard,
   Platform,
 } from "react-native";
-import globalStyles from '../globalStyles';
-import { useDispatch, useSelector } from 'react-redux';
-import { addActivityInfoScreen3 } from '../reducers/activities';
-import { useState, useEffect } from 'react';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import globalStyles from "../globalStyles";
+import { useDispatch, useSelector } from "react-redux";
+import { addActivityInfoScreen3 } from "../reducers/activities";
+import { useState, useEffect } from "react";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 export default function ProfileScreen({ navigation }) {
   const dispatch = useDispatch();
   const activities = useSelector((state) => state.activities.value);
   const [activityAddress, setActivityAddress] = useState(activities.address);
-  const [activityPostalCode, setActivityPostalCode] = useState(activities.postalCode);
+  const [activityPostalCode, setActivityPostalCode] = useState(
+    activities.postalCode
+  );
   const [activityCity, setActivityCity] = useState(activities.city);
   const [activityPlace, setActivityPlace] = useState(activities.locationName);
   const [longitude, setLongitude] = useState(null);
@@ -27,25 +29,39 @@ export default function ProfileScreen({ navigation }) {
   const [errorPostalCode, setErrorPostalCode] = useState(false);
 
   const handleContinue = () => {
-    if ((!activityAddress || activityAddress === '') || (!activityPostalCode || activityPostalCode === '') || (!activityCity || activityCity === '')) {
+    if (
+      !activityAddress ||
+      activityAddress === "" ||
+      !activityPostalCode ||
+      activityPostalCode === "" ||
+      !activityCity ||
+      activityCity === ""
+    ) {
       setShowError(true);
     } else {
       if (!longitude || !latitude) {
         setErrorPostalCode(true);
       } else {
-        console.log(longitude)
-        console.log(latitude)
-        dispatch(addActivityInfoScreen3({ address: activityAddress, postalCode: activityPostalCode, city: activityCity, locationName: activityPlace, longitude: longitude, latitude: latitude }));
-        navigation.navigate('ActivityPart4');
+        // console.log(longitude)
+        // console.log(latitude)
+        dispatch(
+          addActivityInfoScreen3({
+            address: activityAddress,
+            postalCode: activityPostalCode,
+            city: activityCity,
+            locationName: activityPlace,
+            longitude: longitude,
+            latitude: latitude,
+          })
+        );
+        navigation.navigate("ActivityPart4");
       }
     }
-  }
+  };
 
   useEffect(() => {
-    const searchAddress = activityCity + activityPostalCode
-    fetch(
-      `https://api-adresse.data.gouv.fr/search/?q=${searchAddress}`
-    )
+    const searchAddress = activityCity + activityPostalCode;
+    fetch(`https://api-adresse.data.gouv.fr/search/?q=${searchAddress}`)
       .then((response) => response.json())
       .then((apiData) => {
         if (apiData && apiData.features && apiData.features.length > 0) {
@@ -64,7 +80,7 @@ export default function ProfileScreen({ navigation }) {
             });
         }
       });
-  }, [activityCity, activityPostalCode])
+  }, [activityCity, activityPostalCode]);
 
   const handleBackgroundPress = () => {
     Keyboard.dismiss(); // Dismiss the keyboard
@@ -74,10 +90,20 @@ export default function ProfileScreen({ navigation }) {
     <TouchableOpacity
       style={{ flex: 1 }}
       activeOpacity={1}
-      onPress={handleBackgroundPress}>
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+      onPress={handleBackgroundPress}
+    >
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.container}
+      >
         <View style={styles.filtersContainer}>
-          <FontAwesome name={'arrow-left'} color={'black'} size={20} style={styles.arrow} onPress={() => navigation.goBack()} />
+          <FontAwesome
+            name={"arrow-left"}
+            color={"black"}
+            size={20}
+            style={styles.arrow}
+            onPress={() => navigation.goBack()}
+          />
 
           <Text style={styles.title2}>Comment trouver l'activité ?</Text>
 
@@ -138,7 +164,6 @@ export default function ProfileScreen({ navigation }) {
               style={globalStyles.input}
             />
           </View>
-
         </View>
 
         <View style={styles.bottom}>
@@ -149,7 +174,6 @@ export default function ProfileScreen({ navigation }) {
           >
             <Text style={styles.textButton}>Continuer</Text>
           </TouchableOpacity>
-
         </View>
       </KeyboardAvoidingView>
     </TouchableOpacity>
@@ -159,7 +183,7 @@ export default function ProfileScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column',
+    flexDirection: "column",
     backgroundColor: "white",
   },
   arrow: {
@@ -185,20 +209,20 @@ const styles = StyleSheet.create({
     color: "#EB5757",
     width: "90%",
   },
-  // a supprimer plus tard 
+  // a supprimer plus tard
   filtersButton: {
     width: 100,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    backgroundColor: '#EBEDFF',
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+    backgroundColor: "#EBEDFF",
     borderRadius: 100,
     padding: 6,
   },
   textButton: {
-    color: '#5669FF',
-    fontWeight: 'bold',
-    fontSize: 16
+    color: "#5669FF",
+    fontWeight: "bold",
+    fontSize: 16,
   },
   text: {
     fontSize: 16,
@@ -210,7 +234,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 30,
     width: "100%",
-    flex: 0.1
+    flex: 0.1,
   },
   button: {
     padding: 10,
@@ -220,7 +244,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     justifyContent: "center",
     alignItems: "center",
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   textButton: {
     fontSize: 16,
