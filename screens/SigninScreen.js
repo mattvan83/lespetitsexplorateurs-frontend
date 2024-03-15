@@ -28,6 +28,14 @@ export default function SigninScreen({ navigation }) {
   const [authentificationError, setAuthentificationError] = useState(Boolean);
   const [showPassword, setShowPassword] = useState(false);
 
+  const backToFrontAgeMapping = {
+    "3_12months": "3-12 mois",
+    "1_3years": "1-3 ans",
+    "3_6years": "3-6 ans",
+    "6_10years": "6-10 ans",
+    "10+years": "10+ ans",
+  };
+
   const handleSubmit = () => {
     if (EMAIL_REGEX.test(email)) {
       fetch(`${BACKEND_ADDRESS}/users/signin`, {
@@ -38,10 +46,15 @@ export default function SigninScreen({ navigation }) {
         .then((response) => response.json())
         .then((data) => {
           if (data.result) {
+            // Mapping between frontend and backend age
+            const mappedSelectedAges = data.userPreferences.concernedAges.map(
+              (age) => backToFrontAgeMapping[age]
+            );
+
             dispatch(login({ token: data.token, username: data.username }));
             dispatch(
               setPreferences({
-                agePreference: data.userPreferences.concernedAges,
+                agePreference: mappedSelectedAges,
                 cityPreference: data.userPreferences.city,
                 latitudePreference: data.userPreferences.latitude,
                 longitudePreference: data.userPreferences.longitude,
@@ -50,7 +63,7 @@ export default function SigninScreen({ navigation }) {
             );
             dispatch(
               setPreferencesFilters({
-                agePreference: data.userPreferences.concernedAges,
+                agePreference: mappedSelectedAges,
                 cityPreference: data.userPreferences.city,
                 latitudePreference: data.userPreferences.latitude,
                 longitudePreference: data.userPreferences.longitude,
