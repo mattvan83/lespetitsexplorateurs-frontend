@@ -8,7 +8,8 @@ import SignupScreen from "./screens/SignupScreen";
 import SigninScreen from "./screens/SigninScreen";
 import FiltersScreen from "./screens/FiltersScreen";
 import ListResultsScreen from "./screens/ListResultsScreen";
-import MapResultsScreenTest from "./screens/MapResultsScreenTest";
+import MapResultsScreen from "./screens/MapResultsScreen";
+// import MapResultsScreenTest from "./screens/MapResultsScreenTest";
 import ActivitySheetScreen from "./screens/ActivitySheetScreen";
 import OrganizerProfileScreen from "./screens/OrganizerProfileScreen";
 import ActivityPart1Screen from "./screens/ActivityPart1Screen";
@@ -113,7 +114,7 @@ export default function App() {
           <Stack.Screen name="Signin" component={SigninScreen} />
           <Stack.Screen name="Filters" component={FiltersScreen} />
           <Stack.Screen name="ListResults" component={ListResultsScreen} />
-          <Stack.Screen name="MapResults" component={MapResultsScreenTest} />
+          <Stack.Screen name="MapResults" component={MapResultsScreen} />
           <Stack.Screen name="NewOrganizer" component={NewOrganizerScreen} />
           <Stack.Screen name="ActivitySheet" component={ActivitySheetScreen} />
           <Stack.Screen

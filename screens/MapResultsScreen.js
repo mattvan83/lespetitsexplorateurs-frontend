@@ -24,7 +24,7 @@ import {
 } from "../reducers/user";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 import { Ionicons } from "@expo/vector-icons";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import {
   calculateBarycenter,
   convertCoordsToKm,
@@ -577,6 +577,7 @@ export default function MapResultsScreen({ navigation }) {
 
         <View style={styles.body}>
           <MapView
+            provider={PROVIDER_GOOGLE}
             ref={mapViewRef}
             style={styles.map}
             region={region}
@@ -655,7 +656,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   map: {
-    flex: 0.95,
+    flex: 1,
   },
   errorMsg: {
     marginTop: 24,
@@ -730,13 +731,10 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   popupCardContainer: {
-    // position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    marginBottom: 50,
-    flex: 0.15,
+    position: "absolute",
+    bottom: 50,
     backgroundColor: "transparent",
     alignItems: "center",
+    width: "100%",
   },
 });
