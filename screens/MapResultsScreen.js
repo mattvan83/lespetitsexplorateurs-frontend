@@ -7,6 +7,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Dimensions,
+  Modal,
 } from "react-native";
 // import SearchBar from "../components/SearchBar";
 import Card from "../components/Card";
@@ -45,10 +46,15 @@ export default function MapResultsScreen({ navigation }) {
     user.activities.map(() => initialMarkerColor)
   );
   const [pressedMarkerIndex, setPressedMarkerIndex] = useState(null);
+  const [tempCity, setTempCity] = useState("");
+  const [tempCoordinates, setTempCoordinates] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   // console.log("user.filters: ", userFilters);
   // console.log("markerColors: ", markerColors);
   // console.log("pressedMarkerIndex: ", pressedMarkerIndex);
+  console.log("tempCity: ", tempCity);
+  console.log("tempCoordinates: ", tempCoordinates);
 
   const dispatch = useDispatch();
 
@@ -343,6 +349,28 @@ export default function MapResultsScreen({ navigation }) {
     reFocusMap();
   };
 
+  const handleLongPress = (e) => {
+    const { latitude, longitude } = e.nativeEvent.coordinate;
+
+    fetch(
+      `https://geo.api.gouv.fr/communes?lat=${latitude}&lon=${longitude}&fields=nom,codesPostaux,centre`
+    )
+      .then((response) => response.json())
+      .then((apiData) => {
+        if (apiData.length) {
+          setTempCity(apiData[0].nom);
+          setTempCoordinates({ latitude, longitude });
+          setModalVisible(true);
+        }
+      });
+  };
+
+  const handleClose = () => {
+    setTempCity("");
+    setTempCoordinates(null);
+    setModalVisible(false);
+  };
+
   const activityMarkers = user.activities.map((activity, i) => {
     let icon = null;
 
@@ -514,7 +542,7 @@ export default function MapResultsScreen({ navigation }) {
     };
   }
 
-  console.log(`marker index : ${pressedMarkerIndex}`);
+  // console.log(`marker index : ${pressedMarkerIndex}`);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -576,6 +604,30 @@ export default function MapResultsScreen({ navigation }) {
         </View>
 
         <View style={styles.body}>
+          {tempCity && (
+            <Modal visible={modalVisible} animationType="fade" transparent>
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <Text>{tempCity}</Text>
+                  <TouchableOpacity
+                    // onPress={() => handleNewSearch()}
+                    style={styles.button}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={styles.textButton}>Nouvelle recherche</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => handleClose()}
+                    style={styles.button}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={styles.textButton}>Fermer</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
+          )}
+
           <MapView
             provider={PROVIDER_GOOGLE}
             ref={mapViewRef}
@@ -583,6 +635,7 @@ export default function MapResultsScreen({ navigation }) {
             region={region}
             showsUserLocation
             onPress={handleMapPress}
+            onLongPress={(e) => handleLongPress(e)}
           >
             {centerLatitude && centerLongitude && (
               <Marker
@@ -646,17 +699,50 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 6,
   },
-  textButton: {
-    color: "#5669FF",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
+  // textButton: {
+  //   color: "#5669FF",
+  //   fontWeight: "bold",
+  //   fontSize: 16,
+  // },
   body: {
     flex: 1,
     width: "100%",
   },
   map: {
     flex: 1,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalView: {
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 30,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    width: 150,
+    alignItems: "center",
+    marginTop: 20,
+    paddingVertical: 8,
+    backgroundColor: "#ec6e5b",
+    borderRadius: 10,
+  },
+  textButton: {
+    color: "#ffffff",
+    height: 24,
+    fontWeight: "600",
+    fontSize: 15,
   },
   errorMsg: {
     marginTop: 24,
