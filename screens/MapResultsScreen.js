@@ -49,6 +49,7 @@ export default function MapResultsScreen({ navigation }) {
   const [tempCity, setTempCity] = useState(null);
   const [tempCoordinates, setTempCoordinates] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const addToRadiusKms = 45;
 
   // console.log("user.filters: ", userFilters);
   // console.log("markerColors: ", markerColors);
@@ -368,6 +369,77 @@ export default function MapResultsScreen({ navigation }) {
       });
   };
 
+  const handleNewSearch = () => {
+    if (tempCoordinates && tempCity) {
+      dispatch(
+        setLocationFilters({
+          cityFilter: tempCity.cityName,
+          longitudeFilter: tempCoordinates.longitude,
+          latitudeFilter: tempCoordinates.latitude,
+        })
+      );
+
+      // Get user filters
+      const {
+        categoryFilter,
+        dateFilter,
+        momentFilter,
+        ageFilter,
+        priceFilter,
+        scopeFilter,
+      } = user.filters;
+
+      fetch(`${BACKEND_ADDRESS}/activities/geoloc`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          token: user.token,
+          latitude: tempCoordinates.latitude,
+          longitude: tempCoordinates.longitude,
+          scope: scopeFilter,
+          filters: {
+            categoryFilter,
+            dateFilter,
+            momentFilter,
+            ageFilter,
+            priceFilter,
+          },
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // console.log("data.result: ", data.result);
+          // console.log("data.error: ", data.error);
+          // console.log("data.activities: ", data.activities);
+          data.result &&
+            dispatch(importActivities(data.activities)) &&
+            dispatch(setErrorMsg(null)) &&
+            setMarkerColors(data.activities.map(() => initialMarkerColor));
+          !data.result &&
+            dispatch(importActivities([])) &&
+            dispatch(setErrorMsg(data.error)) &&
+            setMarkerColors([]);
+          setPressedMarkerIndex(null);
+          setTempCity(null);
+          setTempCoordinates(null);
+          setModalVisible(false);
+        });
+
+      fetch(
+        `${BACKEND_ADDRESS}/organizers/geoloc/${scopeFilter}/${tempCoordinates.longitude}/${tempCoordinates.latitude}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          data.result &&
+            dispatch(loadOrganizers(data.organizers)) &&
+            dispatch(setErrorOrganizersMsg(null));
+          !data.result &&
+            dispatch(loadOrganizers([])) &&
+            dispatch(setErrorOrganizersMsg(data.error));
+        });
+    }
+  };
+
   const handleClose = () => {
     setTempCity(null);
     setTempCoordinates(null);
@@ -463,7 +535,7 @@ export default function MapResultsScreen({ navigation }) {
       // console.log("maxRadius: ", maxRadius);
 
       // Radius in kilometers
-      const radiusInKm = Math.max(...maxRadius) + 20;
+      const radiusInKm = Math.max(...maxRadius) + addToRadiusKms;
       // console.log("radiusInKm: ", radiusInKm);
 
       // Calculate bounding box coordinates
@@ -496,7 +568,7 @@ export default function MapResultsScreen({ navigation }) {
       centerLongitude = user.preferences.longitudePreference; // Example longitude
 
       // Radius in kilometers
-      const radiusInKm = user.preferences.scopePreference + 20;
+      const radiusInKm = user.preferences.scopePreference + addToRadiusKms;
 
       // Calculate bounding box coordinates
       const oneDegreeOfLatitudeInKm = 111.32;
@@ -528,7 +600,7 @@ export default function MapResultsScreen({ navigation }) {
     centerLongitude = user.filters.longitudeFilter; // Example longitude
 
     // Radius in kilometers
-    const radiusInKm = user.filters.scopeFilter + 20;
+    const radiusInKm = user.filters.scopeFilter + addToRadiusKms;
 
     // Calculate bounding box coordinates
     const oneDegreeOfLatitudeInKm = 111.32;
@@ -612,7 +684,7 @@ export default function MapResultsScreen({ navigation }) {
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
                   <TouchableOpacity
-                    // onPress={() => handleNewSearch()}
+                    onPress={() => handleNewSearch()}
                     style={styles.modalButton}
                     activeOpacity={0.8}
                   >
