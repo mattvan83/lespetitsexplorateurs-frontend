@@ -46,7 +46,7 @@ export default function MapResultsScreen({ navigation }) {
     user.activities.map(() => initialMarkerColor)
   );
   const [pressedMarkerIndex, setPressedMarkerIndex] = useState(null);
-  const [tempCity, setTempCity] = useState("");
+  const [tempCity, setTempCity] = useState(null);
   const [tempCoordinates, setTempCoordinates] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -358,7 +358,10 @@ export default function MapResultsScreen({ navigation }) {
       .then((response) => response.json())
       .then((apiData) => {
         if (apiData.length) {
-          setTempCity(apiData[0].nom);
+          setTempCity({
+            cityName: apiData[0].nom,
+            cityPostalCode: apiData[0].codesPostaux[0],
+          });
           setTempCoordinates({ latitude, longitude });
           setModalVisible(true);
         }
@@ -366,7 +369,7 @@ export default function MapResultsScreen({ navigation }) {
   };
 
   const handleClose = () => {
-    setTempCity("");
+    setTempCity(null);
     setTempCoordinates(null);
     setModalVisible(false);
   };
@@ -608,20 +611,23 @@ export default function MapResultsScreen({ navigation }) {
             <Modal visible={modalVisible} animationType="fade" transparent>
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                  <Text>{tempCity}</Text>
                   <TouchableOpacity
                     // onPress={() => handleNewSearch()}
-                    style={styles.button}
+                    style={styles.modalButton}
                     activeOpacity={0.8}
                   >
-                    <Text style={styles.textButton}>Nouvelle recherche</Text>
+                    <Text style={styles.textModalButton}>
+                      Nouvelle recherche sur :{"\n"}
+                      {"\n"}
+                      {tempCity.cityName} ({tempCity.cityPostalCode})
+                    </Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => handleClose()}
-                    style={styles.button}
+                    style={styles.modalButtonClose}
                     activeOpacity={0.8}
                   >
-                    <Text style={styles.textButton}>Fermer</Text>
+                    <Text style={styles.textModalButtonClose}>Fermer</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -719,8 +725,10 @@ const styles = StyleSheet.create({
   modalView: {
     backgroundColor: "white",
     borderRadius: 20,
-    padding: 30,
+    padding: 20,
+    justifyContent: "space-between",
     alignItems: "center",
+    gap: 20,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -730,19 +738,36 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  button: {
-    width: 150,
+  modalButton: {
+    width: 210,
+    height: 64,
     alignItems: "center",
-    marginTop: 20,
+    // marginTop: 10,
     paddingVertical: 8,
     backgroundColor: "#ec6e5b",
     borderRadius: 10,
   },
-  textButton: {
+  textModalButton: {
     color: "#ffffff",
-    height: 24,
-    fontWeight: "600",
-    fontSize: 15,
+    height: 54,
+    fontWeight: "bold",
+    fontSize: 12,
+    textAlign: "center",
+  },
+  modalButtonClose: {
+    width: 210,
+    alignItems: "center",
+    // marginTop: 10,
+    paddingVertical: 8,
+    backgroundColor: "#ec6e5b",
+    borderRadius: 10,
+  },
+  textModalButtonClose: {
+    color: "#ffffff",
+    height: 20,
+    fontWeight: "bold",
+    fontSize: 12,
+    textAlign: "center",
   },
   errorMsg: {
     marginTop: 24,
