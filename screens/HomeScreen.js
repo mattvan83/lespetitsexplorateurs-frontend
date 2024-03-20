@@ -18,8 +18,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { loadOrganizers } from "../reducers/organizers";
 import { loadFavoriteActivities } from "../reducers/user";
 import {
-  addCurrentLocation,
-  addCurrentCity,
   importActivities,
   setLocationFilters,
   setLocationPreferences,
