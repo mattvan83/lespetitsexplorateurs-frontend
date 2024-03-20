@@ -816,7 +816,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     // marginTop: 10,
     paddingVertical: 8,
-    backgroundColor: "#ec6e5b",
+    backgroundColor: "#5669FF",
     borderRadius: 10,
   },
   textModalButton: {
@@ -831,7 +831,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     // marginTop: 10,
     paddingVertical: 8,
-    backgroundColor: "#ec6e5b",
+    backgroundColor: "#5669FF",
     borderRadius: 10,
   },
   textModalButtonClose: {
