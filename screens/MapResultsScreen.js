@@ -559,7 +559,7 @@ export default function MapResultsScreen({ navigation }) {
       headerLocalisation = (
         <Text style={styles.localisationBold}>
           Activités autour de {user.preferences.cityPreference} (-{" "}
-          {user.preferences.scopeFilter}km )
+          {user.preferences.scopePreference}km )
         </Text>
       );
 
