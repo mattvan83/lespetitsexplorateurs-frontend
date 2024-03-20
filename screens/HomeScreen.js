@@ -74,156 +74,53 @@ export default function HomeScreen({ navigation }) {
           isPositionObtained = true;
 
           if (isPositionObtained) {
-            // console.log("User coordinates available");
+            console.log("User coordinates available");
+            console.log(
+              "geolocalization coordinates: ",
+              coordinates.latitude,
+              coordinates.longitude
+            );
 
-            // Set the geo-localization coordinates in user reducer
-            dispatch(addCurrentLocation(coordinates));
-            console.log("user coordinates: ", coordinates);
+            const response = await fetch(
+              `https://geo.api.gouv.fr/communes?lat=${coordinates.latitude}&lon=${coordinates.longitude}&fields=nom,codesPostaux,centre`
+            );
+            const apiData = await response.json();
+            const cityName = apiData[0].nom;
+            console.log("Geolocalized cityName: ", cityName);
 
-            // Set the city name in user reducer
-            let geoLocationInfo = await Location.reverseGeocodeAsync({
-              latitude: coordinates.latitude,
-              longitude: coordinates.longitude,
-            });
+            // Set location details in user preferences if not defined -> indirectly set user location filters as default state
+            // ToDo: Call fetch PUT /updatePreferences to update partially user preferences?
+            // Get user filters
+            const {
+              latitudeFilter,
+              longitudeFilter,
+              categoryFilter,
+              dateFilter,
+              momentFilter,
+              ageFilter,
+              priceFilter,
+              scopeFilter,
+            } = user.filters;
 
-            if (geoLocationInfo.length > 0) {
-              const city = geoLocationInfo[0].city;
-              dispatch(addCurrentCity(city));
-              console.log("user city: ", city);
+            if (latitudeFilter === -200 || longitudeFilter === -200) {
+              if (
+                user.preferences.latitudePreference === -200 ||
+                user.preferences.longitudePreference === -200
+              ) {
+                console.log("Use geolocalization");
+                console.log(
+                  "geolocalization coordinates: ",
+                  coordinates.latitude,
+                  coordinates.longitude
+                );
 
-              // Set location details in user preferences if not defined -> indirectly set user location filters as default state
-              // ToDo: Call fetch PUT /updatePreferences to update partially user preferences?
-              // Get user filters
-              const {
-                latitudeFilter,
-                longitudeFilter,
-                categoryFilter,
-                dateFilter,
-                momentFilter,
-                ageFilter,
-                priceFilter,
-                scopeFilter,
-              } = user.filters;
-
-              if (latitudeFilter === -200 || longitudeFilter === -200) {
-                if (
-                  user.preferences.latitudePreference === -200 ||
-                  user.preferences.longitudePreference === -200
-                ) {
-                  dispatch(
-                    setLocationPreferences({
-                      cityPreference: city,
-                      latitudePreference: coordinates.latitude,
-                      longitudePreference: coordinates.longitude,
-                    })
-                  );
-
-                  dispatch(
-                    setLocationFilters({
-                      cityFilter: city,
-                      latitudeFilter: coordinates.latitude,
-                      longitudeFilter: coordinates.longitude,
-                    })
-                  );
-
-                  fetch(`${BACKEND_ADDRESS}/activities/geoloc`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      token: user.token,
-                      latitude: coordinates.latitude,
-                      longitude: coordinates.longitude,
-                      scope: scopeFilter,
-                      filters: {
-                        categoryFilter,
-                        dateFilter,
-                        momentFilter,
-                        ageFilter,
-                        priceFilter,
-                      },
-                    }),
-                  })
-                    .then((response) => response.json())
-                    .then((data) => {
-                      // console.log("data.result: ", data.result);
-                      // console.log("data.error: ", data.error);
-                      // console.log("data.activities: ", data.activities);
-                      data.result &&
-                        dispatch(importActivities(data.activities)) &&
-                        dispatch(setErrorMsg(null));
-                      !data.result &&
-                        dispatch(importActivities([])) &&
-                        dispatch(setErrorMsg(data.error));
-                    });
-
-                  fetch(
-                    `${BACKEND_ADDRESS}/organizers/geoloc/${scopeFilter}/${coordinates.longitude}/${coordinates.latitude}`
-                  )
-                    .then((response) => response.json())
-                    .then((data) => {
-                      data.result &&
-                        dispatch(loadOrganizers(data.organizers)) &&
-                        dispatch(setErrorOrganizersMsg(null));
-                      !data.result &&
-                        dispatch(loadOrganizers([])) &&
-                        dispatch(setErrorOrganizersMsg(data.error));
-                    });
-                } else if (
-                  user.preferences.latitudePreference !== -200 &&
-                  user.preferences.longitudePreference !== -200
-                ) {
-                  fetch(`${BACKEND_ADDRESS}/activities/geoloc`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                      token: user.token,
-                      latitude: user.preferences.latitudePreference,
-                      longitude: user.preferences.longitudePreference,
-                      scope: user.preferences.scopePreference,
-                      filters: {
-                        categoryFilter,
-                        dateFilter,
-                        momentFilter,
-                        ageFilter: user.preferences.agePreference,
-                        priceFilter,
-                      },
-                    }),
-                  })
-                    .then((response) => response.json())
-                    .then((data) => {
-                      // console.log("data.result: ", data.result);
-                      // console.log("data.error: ", data.error);
-                      // console.log("data.activities: ", data.activities);
-                      data.result &&
-                        dispatch(importActivities(data.activities)) &&
-                        dispatch(setErrorMsg(null));
-                      !data.result &&
-                        dispatch(importActivities([])) &&
-                        dispatch(setErrorMsg(data.error));
-                      // data.result && setActivities(data.activities);
-                    });
-
-                  fetch(
-                    `${BACKEND_ADDRESS}/organizers/geoloc/${user.preferences.scopePreference}/${user.preferences.longitudePreference}/${user.preferences.latitudePreference}`
-                  )
-                    .then((response) => response.json())
-                    .then((data) => {
-                      data.result &&
-                        dispatch(loadOrganizers(data.organizers)) &&
-                        dispatch(setErrorOrganizersMsg(null));
-                      !data.result &&
-                        dispatch(loadOrganizers([])) &&
-                        dispatch(setErrorOrganizersMsg(data.error));
-                    });
-                }
-              } else if (latitudeFilter !== -200 || longitudeFilter !== -200) {
                 fetch(`${BACKEND_ADDRESS}/activities/geoloc`, {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({
                     token: user.token,
-                    latitude: latitudeFilter,
-                    longitude: longitudeFilter,
+                    latitude: coordinates.latitude,
+                    longitude: coordinates.longitude,
                     scope: scopeFilter,
                     filters: {
                       categoryFilter,
@@ -245,11 +142,75 @@ export default function HomeScreen({ navigation }) {
                     !data.result &&
                       dispatch(importActivities([])) &&
                       dispatch(setErrorMsg(data.error));
+                    dispatch(
+                      setLocationPreferences({
+                        cityPreference: cityName,
+                        latitudePreference: coordinates.latitude,
+                        longitudePreference: coordinates.longitude,
+                      })
+                    );
+
+                    dispatch(
+                      setLocationFilters({
+                        cityFilter: cityName,
+                        latitudeFilter: coordinates.latitude,
+                        longitudeFilter: coordinates.longitude,
+                      })
+                    );
+                  });
+
+                fetch(
+                  `${BACKEND_ADDRESS}/organizers/geoloc/${scopeFilter}/${coordinates.longitude}/${coordinates.latitude}`
+                )
+                  .then((response) => response.json())
+                  .then((data) => {
+                    data.result &&
+                      dispatch(loadOrganizers(data.organizers)) &&
+                      dispatch(setErrorOrganizersMsg(null));
+                    !data.result &&
+                      dispatch(loadOrganizers([])) &&
+                      dispatch(setErrorOrganizersMsg(data.error));
+                  });
+              } else if (
+                user.preferences.latitudePreference !== -200 &&
+                user.preferences.longitudePreference !== -200
+              ) {
+                console.log("Use preferences localization");
+                console.log("user.preferences: ", user.preferences);
+
+                fetch(`${BACKEND_ADDRESS}/activities/geoloc`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    token: user.token,
+                    latitude: user.preferences.latitudePreference,
+                    longitude: user.preferences.longitudePreference,
+                    scope: user.preferences.scopePreference,
+                    filters: {
+                      categoryFilter,
+                      dateFilter,
+                      momentFilter,
+                      ageFilter: user.preferences.agePreference,
+                      priceFilter,
+                    },
+                  }),
+                })
+                  .then((response) => response.json())
+                  .then((data) => {
+                    // console.log("data.result: ", data.result);
+                    // console.log("data.error: ", data.error);
+                    // console.log("data.activities: ", data.activities);
+                    data.result &&
+                      dispatch(importActivities(data.activities)) &&
+                      dispatch(setErrorMsg(null));
+                    !data.result &&
+                      dispatch(importActivities([])) &&
+                      dispatch(setErrorMsg(data.error));
                     // data.result && setActivities(data.activities);
                   });
 
                 fetch(
-                  `${BACKEND_ADDRESS}/organizers/geoloc/${scopeFilter}/${longitudeFilter}/${latitudeFilter}`
+                  `${BACKEND_ADDRESS}/organizers/geoloc/${user.preferences.scopePreference}/${user.preferences.longitudePreference}/${user.preferences.latitudePreference}`
                 )
                   .then((response) => response.json())
                   .then((data) => {
@@ -261,7 +222,55 @@ export default function HomeScreen({ navigation }) {
                       dispatch(setErrorOrganizersMsg(data.error));
                   });
               }
+            } else if (latitudeFilter !== -200 || longitudeFilter !== -200) {
+              console.log("Use filters localization");
+              console.log("user.filters: ", user.filters);
+
+              fetch(`${BACKEND_ADDRESS}/activities/geoloc`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  token: user.token,
+                  latitude: latitudeFilter,
+                  longitude: longitudeFilter,
+                  scope: scopeFilter,
+                  filters: {
+                    categoryFilter,
+                    dateFilter,
+                    momentFilter,
+                    ageFilter,
+                    priceFilter,
+                  },
+                }),
+              })
+                .then((response) => response.json())
+                .then((data) => {
+                  // console.log("data.result: ", data.result);
+                  // console.log("data.error: ", data.error);
+                  // console.log("data.activities: ", data.activities);
+                  data.result &&
+                    dispatch(importActivities(data.activities)) &&
+                    dispatch(setErrorMsg(null));
+                  !data.result &&
+                    dispatch(importActivities([])) &&
+                    dispatch(setErrorMsg(data.error));
+                  // data.result && setActivities(data.activities);
+                });
+
+              fetch(
+                `${BACKEND_ADDRESS}/organizers/geoloc/${scopeFilter}/${longitudeFilter}/${latitudeFilter}`
+              )
+                .then((response) => response.json())
+                .then((data) => {
+                  data.result &&
+                    dispatch(loadOrganizers(data.organizers)) &&
+                    dispatch(setErrorOrganizersMsg(null));
+                  !data.result &&
+                    dispatch(loadOrganizers([])) &&
+                    dispatch(setErrorOrganizersMsg(data.error));
+                });
             }
+            // }
           }
         } catch (error) {
           // console.error("Error obtaining user coordinates: ", error);
