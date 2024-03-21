@@ -46,6 +46,30 @@ export const userSlice = createSlice({
       state.value.username = null;
       state.value.latitude = -200;
       state.value.longitude = -200;
+      state.value.cityName = null;
+      state.value.activities = [];
+      state.value.userActivities = [];
+      state.value.favoriteActivities = [];
+      state.value.filters = {
+        categoryFilter: [],
+        dateFilter: [],
+        momentFilter: [],
+        ageFilter: [],
+        priceFilter: 50,
+        cityFilter: null,
+        latitudeFilter: -200,
+        longitudeFilter: -200,
+        scopeFilter: 50,
+      };
+      state.value.preferences = {
+        agePreference: [],
+        cityPreference: null,
+        latitudePreference: -200,
+        longitudePreference: -200,
+        scopePreference: 50,
+      };
+      state.value.errorMsg = null;
+      state.value.errorOrganizersMsg = null;
     },
     addCurrentLocation: (state, action) => {
       state.value.latitude = action.payload.latitude;
