@@ -7,6 +7,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Dimensions,
+  Modal,
 } from "react-native";
 // import SearchBar from "../components/SearchBar";
 import Card from "../components/Card";
@@ -24,7 +25,7 @@ import {
 } from "../reducers/user";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 import { Ionicons } from "@expo/vector-icons";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import {
   calculateBarycenter,
   convertCoordsToKm,
@@ -45,10 +46,16 @@ export default function MapResultsScreen({ navigation }) {
     user.activities.map(() => initialMarkerColor)
   );
   const [pressedMarkerIndex, setPressedMarkerIndex] = useState(null);
+  const [tempCity, setTempCity] = useState(null);
+  const [tempCoordinates, setTempCoordinates] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const addToRadiusKms = 45;
 
   // console.log("user.filters: ", userFilters);
   // console.log("markerColors: ", markerColors);
   // console.log("pressedMarkerIndex: ", pressedMarkerIndex);
+  console.log("tempCity: ", tempCity);
+  console.log("tempCoordinates: ", tempCoordinates);
 
   const dispatch = useDispatch();
 
@@ -343,6 +350,102 @@ export default function MapResultsScreen({ navigation }) {
     reFocusMap();
   };
 
+  const handleLongPress = (e) => {
+    const { latitude, longitude } = e.nativeEvent.coordinate;
+
+    fetch(
+      `https://geo.api.gouv.fr/communes?lat=${latitude}&lon=${longitude}&fields=nom,codesPostaux,centre`
+    )
+      .then((response) => response.json())
+      .then((apiData) => {
+        if (apiData.length) {
+          setTempCity({
+            cityName: apiData[0].nom,
+            cityPostalCode: apiData[0].codesPostaux[0],
+          });
+          setTempCoordinates({ latitude, longitude });
+          setModalVisible(true);
+        }
+      });
+  };
+
+  const handleNewSearch = () => {
+    if (tempCoordinates && tempCity) {
+      dispatch(
+        setLocationFilters({
+          cityFilter: tempCity.cityName,
+          longitudeFilter: tempCoordinates.longitude,
+          latitudeFilter: tempCoordinates.latitude,
+        })
+      );
+
+      // Get user filters
+      const {
+        categoryFilter,
+        dateFilter,
+        momentFilter,
+        ageFilter,
+        priceFilter,
+        scopeFilter,
+      } = user.filters;
+
+      fetch(`${BACKEND_ADDRESS}/activities/geoloc`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          token: user.token,
+          latitude: tempCoordinates.latitude,
+          longitude: tempCoordinates.longitude,
+          scope: scopeFilter,
+          filters: {
+            categoryFilter,
+            dateFilter,
+            momentFilter,
+            ageFilter,
+            priceFilter,
+          },
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // console.log("data.result: ", data.result);
+          // console.log("data.error: ", data.error);
+          // console.log("data.activities: ", data.activities);
+          data.result &&
+            dispatch(importActivities(data.activities)) &&
+            dispatch(setErrorMsg(null)) &&
+            setMarkerColors(data.activities.map(() => initialMarkerColor));
+          !data.result &&
+            dispatch(importActivities([])) &&
+            dispatch(setErrorMsg(data.error)) &&
+            setMarkerColors([]);
+          setPressedMarkerIndex(null);
+          setTempCity(null);
+          setTempCoordinates(null);
+          setModalVisible(false);
+        });
+
+      fetch(
+        `${BACKEND_ADDRESS}/organizers/geoloc/${scopeFilter}/${tempCoordinates.longitude}/${tempCoordinates.latitude}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          data.result &&
+            dispatch(loadOrganizers(data.organizers)) &&
+            dispatch(setErrorOrganizersMsg(null));
+          !data.result &&
+            dispatch(loadOrganizers([])) &&
+            dispatch(setErrorOrganizersMsg(data.error));
+        });
+    }
+  };
+
+  const handleClose = () => {
+    setTempCity(null);
+    setTempCoordinates(null);
+    setModalVisible(false);
+  };
+
   const activityMarkers = user.activities.map((activity, i) => {
     let icon = null;
 
@@ -432,7 +535,7 @@ export default function MapResultsScreen({ navigation }) {
       // console.log("maxRadius: ", maxRadius);
 
       // Radius in kilometers
-      const radiusInKm = Math.max(...maxRadius) + 20;
+      const radiusInKm = Math.max(...maxRadius) + addToRadiusKms;
       // console.log("radiusInKm: ", radiusInKm);
 
       // Calculate bounding box coordinates
@@ -456,7 +559,7 @@ export default function MapResultsScreen({ navigation }) {
       headerLocalisation = (
         <Text style={styles.localisationBold}>
           Activités autour de {user.preferences.cityPreference} (-{" "}
-          {user.preferences.scopeFilter}km )
+          {user.preferences.scopePreference}km )
         </Text>
       );
 
@@ -465,7 +568,7 @@ export default function MapResultsScreen({ navigation }) {
       centerLongitude = user.preferences.longitudePreference; // Example longitude
 
       // Radius in kilometers
-      const radiusInKm = user.preferences.scopePreference + 20;
+      const radiusInKm = user.preferences.scopePreference + addToRadiusKms;
 
       // Calculate bounding box coordinates
       const oneDegreeOfLatitudeInKm = 111.32;
@@ -497,7 +600,7 @@ export default function MapResultsScreen({ navigation }) {
     centerLongitude = user.filters.longitudeFilter; // Example longitude
 
     // Radius in kilometers
-    const radiusInKm = user.filters.scopeFilter + 20;
+    const radiusInKm = user.filters.scopeFilter + addToRadiusKms;
 
     // Calculate bounding box coordinates
     const oneDegreeOfLatitudeInKm = 111.32;
@@ -514,7 +617,7 @@ export default function MapResultsScreen({ navigation }) {
     };
   }
 
-  console.log(`marker index : ${pressedMarkerIndex}`);
+  // console.log(`marker index : ${pressedMarkerIndex}`);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -576,12 +679,41 @@ export default function MapResultsScreen({ navigation }) {
         </View>
 
         <View style={styles.body}>
+          {tempCity && (
+            <Modal visible={modalVisible} animationType="fade" transparent>
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <TouchableOpacity
+                    onPress={() => handleNewSearch()}
+                    style={styles.modalButton}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={styles.textModalButton}>
+                      Nouvelle recherche sur :{"\n"}
+                      {"\n"}
+                      {tempCity.cityName} ({tempCity.cityPostalCode})
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => handleClose()}
+                    style={styles.modalButtonClose}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={styles.textModalButtonClose}>Fermer</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </Modal>
+          )}
+
           <MapView
+            provider={PROVIDER_GOOGLE}
             ref={mapViewRef}
             style={styles.map}
             region={region}
             showsUserLocation
             onPress={handleMapPress}
+            onLongPress={(e) => handleLongPress(e)}
           >
             {centerLatitude && centerLongitude && (
               <Marker
@@ -645,17 +777,69 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 6,
   },
-  textButton: {
-    color: "#5669FF",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
+  // textButton: {
+  //   color: "#5669FF",
+  //   fontWeight: "bold",
+  //   fontSize: 16,
+  // },
   body: {
     flex: 1,
     width: "100%",
   },
   map: {
-    flex: 0.95,
+    flex: 1,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalView: {
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 20,
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalButton: {
+    width: 210,
+    height: 64,
+    alignItems: "center",
+    // marginTop: 10,
+    paddingVertical: 8,
+    backgroundColor: "#5669FF",
+    borderRadius: 10,
+  },
+  textModalButton: {
+    color: "#ffffff",
+    height: 54,
+    fontWeight: "bold",
+    fontSize: 12,
+    textAlign: "center",
+  },
+  modalButtonClose: {
+    width: 210,
+    alignItems: "center",
+    // marginTop: 10,
+    paddingVertical: 8,
+    backgroundColor: "#5669FF",
+    borderRadius: 10,
+  },
+  textModalButtonClose: {
+    color: "#ffffff",
+    height: 20,
+    fontWeight: "bold",
+    fontSize: 12,
+    textAlign: "center",
   },
   errorMsg: {
     marginTop: 24,
@@ -730,13 +914,10 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   popupCardContainer: {
-    // position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    marginBottom: 50,
-    flex: 0.15,
+    position: "absolute",
+    bottom: 50,
     backgroundColor: "transparent",
     alignItems: "center",
+    width: "100%",
   },
 });

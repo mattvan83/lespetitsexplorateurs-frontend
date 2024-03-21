@@ -35,10 +35,10 @@ export default function ProfileScreen({ navigation }) {
     user.preferences.cityPreference
   );
   const [selectedLongitude, setSelectedLongitude] = useState(
-    user.preferences.latitudePreference
+    user.preferences.longitudePreference
   );
   const [selectedLatitude, setSelectedLatitude] = useState(
-    user.preferences.longitudePreference
+    user.preferences.latitudePreference
   );
 
   useEffect(() => {
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
   },
   profilNamePic: {
     alignSelf: "center",
-    justifyContent: 'center',
+    justifyContent: "center",
     marginBottom: 20,
   },
   username: {

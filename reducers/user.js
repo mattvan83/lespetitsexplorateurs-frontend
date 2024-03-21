@@ -4,9 +4,9 @@ const initialState = {
   value: {
     token: null,
     username: null,
-    cityName: null,
-    latitude: -200,
-    longitude: -200,
+    // cityName: null,
+    // latitude: -200,
+    // longitude: -200,
     activities: [],
     userActivities: [],
     favoriteActivities: [],
@@ -71,13 +71,13 @@ export const userSlice = createSlice({
       state.value.errorMsg = null;
       state.value.errorOrganizersMsg = null;
     },
-    addCurrentLocation: (state, action) => {
-      state.value.latitude = action.payload.latitude;
-      state.value.longitude = action.payload.longitude;
-    },
-    addCurrentCity: (state, action) => {
-      state.value.cityName = action.payload;
-    },
+    // addCurrentLocation: (state, action) => {
+    //   state.value.latitude = action.payload.latitude;
+    //   state.value.longitude = action.payload.longitude;
+    // },
+    // addCurrentCity: (state, action) => {
+    //   state.value.cityName = action.payload;
+    // },
     importActivities: (state, action) => {
       state.value.activities = action.payload;
     },
@@ -186,12 +186,15 @@ export const userSlice = createSlice({
       );
     },
     updateFavoriteActivities: (state, action) => {
-      if( state.value.favoriteActivities.length > 0) {
-        const foundActivity = state.value.favoriteActivities.find(activity => activity.id === action.payload.id);
+      if (state.value.favoriteActivities.length > 0) {
+        const foundActivity = state.value.favoriteActivities.find(
+          (activity) => activity.id === action.payload.id
+        );
         if (foundActivity !== undefined) {
-          state.value.favoriteActivities = state.value.favoriteActivities.filter(
-          (activity) => activity.id !== action.payload.id
-          );
+          state.value.favoriteActivities =
+            state.value.favoriteActivities.filter(
+              (activity) => activity.id !== action.payload.id
+            );
         } else {
           state.value.favoriteActivities.push(action.payload);
         }
@@ -214,8 +217,6 @@ export const userSlice = createSlice({
 export const {
   login,
   logout,
-  addCurrentLocation,
-  addCurrentCity,
   importActivities,
   setFilters,
   setCategoryFilters,
