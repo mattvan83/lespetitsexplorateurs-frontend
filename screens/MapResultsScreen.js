@@ -192,7 +192,7 @@ export default function MapResultsScreen({ navigation }) {
           setPressedMarkerIndex(null);
         }
       } catch (error) {
-        console.error(error);
+        console.error(error.message);
         setErrorActivitiesFetch(error.message);
       } finally {
         setIsLoading(false);
@@ -258,7 +258,7 @@ export default function MapResultsScreen({ navigation }) {
             dispatch(setErrorOrganizersFetch(data.error));
         }
       } catch (error) {
-        console.error(error);
+        console.error(error.message);
         setErrorOrganizersFetch(error.message);
       }
     })();

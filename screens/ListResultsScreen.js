@@ -168,7 +168,7 @@ export default function ListResultsScreen({ navigation, route }) {
             dispatch(setErrorActivitiesFetch(data.error));
         }
       } catch (error) {
-        console.error(error);
+        console.error(error.message);
         setErrorActivitiesFetch(error.message);
       } finally {
         setIsLoading(false);
@@ -234,7 +234,7 @@ export default function ListResultsScreen({ navigation, route }) {
             dispatch(setErrorOrganizersFetch(data.error));
         }
       } catch (error) {
-        console.error(error);
+        console.error(error.message);
         setErrorOrganizersFetch(error.message);
       }
     })();
@@ -397,7 +397,7 @@ export default function ListResultsScreen({ navigation, route }) {
         }
       }
     } catch (error) {
-      console.error(error);
+      console.error(error.message);
       setErrorActivitiesFetch(error.message);
     } finally {
       setIsLoading(false);
