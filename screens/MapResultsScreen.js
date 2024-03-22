@@ -8,6 +8,7 @@ import {
   Platform,
   Dimensions,
   Modal,
+  ActivityIndicator,
 } from "react-native";
 // import SearchBar from "../components/SearchBar";
 import Card from "../components/Card";
@@ -342,8 +343,8 @@ export default function MapResultsScreen({ navigation }) {
     setMarkerColors(user.activities.map(() => initialMarkerColor));
     // Reset pressedMarkerIndex
     setPressedMarkerIndex(null);
-    // Refocus map to center Location
-    reFocusMap();
+    // // Refocus map to center Location
+    // reFocusMap();
   };
 
   const handleLongPress = (e) => {
@@ -616,71 +617,78 @@ export default function MapResultsScreen({ navigation }) {
           </View>
         </View>
 
-        <View style={styles.body}>
-          {tempCity && (
-            <Modal visible={modalVisible} animationType="fade" transparent>
-              <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                  <TouchableOpacity
-                    onPress={() => handleNewSearch()}
-                    style={styles.modalButton}
-                    activeOpacity={0.8}
-                  >
-                    <Text style={styles.textModalButton}>
-                      Nouvelle recherche sur :{"\n"}
-                      {"\n"}
-                      {tempCity.cityName} ({tempCity.cityPostalCode})
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => handleClose()}
-                    style={styles.modalButtonClose}
-                    activeOpacity={0.8}
-                  >
-                    <Text style={styles.textModalButtonClose}>Fermer</Text>
-                  </TouchableOpacity>
+        {isLoading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#0000ff" />
+            <Text style={styles.loadingText}>Loading...</Text>
+          </View>
+        ) : (
+          <View style={styles.body}>
+            {tempCity && (
+              <Modal visible={modalVisible} animationType="fade" transparent>
+                <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                    <TouchableOpacity
+                      onPress={() => handleNewSearch()}
+                      style={styles.modalButton}
+                      activeOpacity={0.8}
+                    >
+                      <Text style={styles.textModalButton}>
+                        Nouvelle recherche sur :{"\n"}
+                        {"\n"}
+                        {tempCity.cityName} ({tempCity.cityPostalCode})
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => handleClose()}
+                      style={styles.modalButtonClose}
+                      activeOpacity={0.8}
+                    >
+                      <Text style={styles.textModalButtonClose}>Fermer</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-              </View>
-            </Modal>
-          )}
-
-          <MapView
-            provider={PROVIDER_GOOGLE}
-            ref={mapViewRef}
-            style={styles.map}
-            region={region}
-            showsUserLocation
-            onPress={handleMapPress}
-            onLongPress={(e) => handleLongPress(e)}
-          >
-            {centerLatitude && centerLongitude && (
-              <Marker
-                coordinate={{
-                  latitude: centerLatitude,
-                  longitude: centerLongitude,
-                }}
-                title={cityFilter}
-                // description="Super ville"
-                pinColor="#fecb2d"
-                onPress={() => handleMapPress()} // Reset all marker colors when clicking on this marker
-              />
+              </Modal>
             )}
-            {activityMarkers}
-          </MapView>
-          <TouchableOpacity
-            onPress={reFocusMap}
-            style={styles.refocusContainer}
-            activeOpacity={0.8}
-          >
-            <Ionicons name="location-outline" size={24} color="#fecb2d" />
-          </TouchableOpacity>
 
-          {pressedMarkerIndex !== null && (
-            <View style={styles.popupCardContainer}>
-              <Card activity={user.activities[pressedMarkerIndex]} />
-            </View>
-          )}
-        </View>
+            <MapView
+              provider={PROVIDER_GOOGLE}
+              ref={mapViewRef}
+              style={styles.map}
+              region={region}
+              showsUserLocation
+              onPress={handleMapPress}
+              onLongPress={(e) => handleLongPress(e)}
+            >
+              {centerLatitude && centerLongitude && (
+                <Marker
+                  coordinate={{
+                    latitude: centerLatitude,
+                    longitude: centerLongitude,
+                  }}
+                  title={cityFilter}
+                  // description="Super ville"
+                  pinColor="#fecb2d"
+                  onPress={() => handleMapPress()} // Reset all marker colors when clicking on this marker
+                />
+              )}
+              {activityMarkers}
+            </MapView>
+            <TouchableOpacity
+              onPress={reFocusMap}
+              style={styles.refocusContainer}
+              activeOpacity={0.8}
+            >
+              <Ionicons name="location-outline" size={24} color="#fecb2d" />
+            </TouchableOpacity>
+
+            {pressedMarkerIndex !== null && (
+              <View style={styles.popupCardContainer}>
+                <Card activity={user.activities[pressedMarkerIndex]} />
+              </View>
+            )}
+          </View>
+        )}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -720,6 +728,14 @@ const styles = StyleSheet.create({
   //   fontWeight: "bold",
   //   fontSize: 16,
   // },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    marginTop: 10,
+  },
   body: {
     flex: 1,
     width: "100%",
