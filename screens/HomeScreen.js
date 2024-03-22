@@ -42,7 +42,7 @@ export default function HomeScreen({ navigation }) {
   // console.log("user.preferences: ", user.preferences);
   // console.log("user.errorActivitiesFetch: ", user.errorActivitiesFetch);
   // console.log("organizers: ", organizers);
-  // console.log("user.errorOrganizersMsg: ", user.errorOrganizersMsg);
+  // console.log("user.errorOrganizersFetch: ", user.errorOrganizersFetch);
 
   const dispatch = useDispatch();
 
@@ -650,9 +650,9 @@ export default function HomeScreen({ navigation }) {
           </ScrollView>
 
           <Text style={globalStyles.title3}>Organisateurs</Text>
-          {user.errorOrganizersMsg ? (
+          {user.errorOrganizersFetch ? (
             <Text style={styles.errorActivitiesFetch}>
-              {user.errorOrganizersMsg}
+              {user.errorOrganizersFetch}
             </Text>
           ) : (
             <></>
