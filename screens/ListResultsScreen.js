@@ -9,6 +9,7 @@ import {
   Platform,
   ScrollView,
   Dimensions,
+  ActivityIndicator,
 } from "react-native";
 // import SearchBar from "../components/SearchBar";
 import Card from "../components/Card";
@@ -539,33 +540,49 @@ export default function ListResultsScreen({ navigation, route }) {
           </View>
         </View>
 
-        <View style={styles.body}>
-          <View style={styles.listActivities}>
-            {user.errorActivitiesFetch ? (
-              <Text style={styles.errorActivitiesFetch}>
-                {user.errorActivitiesFetch}
-              </Text>
-            ) : (
-              <></>
-            )}
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={styles.scrollView}
-            >
-              {activitiesList}
-            </ScrollView>
+        {isLoading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#0000ff" />
+            <Text style={styles.loadingText}>Loading...</Text>
           </View>
-          <View style={styles.mapButtonContainer}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("MapResults")}
-              style={styles.mapButton}
-              activeOpacity={0.8}
-            >
-              <Ionicons name="map-outline" size={24} color="#fff" />
-              <Text style={styles.textMapButton}>Carte</Text>
-            </TouchableOpacity>
+        ) : user.errorActivitiesFetch ? (
+          <View style={styles.body}>
+            <Text style={styles.errorActivitiesFetch}>
+              {user.errorActivitiesFetch}
+            </Text>
+            <View style={styles.mapButtonContainer}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("MapResults")}
+                style={styles.mapButton}
+                activeOpacity={0.8}
+              >
+                <Ionicons name="map-outline" size={24} color="#fff" />
+                <Text style={styles.textMapButton}>Carte</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        ) : (
+          <View style={styles.body}>
+            <View style={styles.listActivities}>
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={styles.scrollView}
+              >
+                {activitiesList}
+              </ScrollView>
+            </View>
+            <View style={styles.mapButtonContainer}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("MapResults")}
+                style={styles.mapButton}
+                activeOpacity={0.8}
+              >
+                <Ionicons name="map-outline" size={24} color="#fff" />
+                <Text style={styles.textMapButton}>Carte</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -612,6 +629,14 @@ const styles = StyleSheet.create({
     color: "#5669FF",
     fontWeight: "bold",
     fontSize: 16,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    marginTop: 10,
   },
   body: {
     flex: 1,
