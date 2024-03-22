@@ -277,61 +277,6 @@ export default function ListResultsScreen({ navigation, route }) {
           latitudeFilter: item.coords[1],
         })
       );
-
-      // Get user filters and token
-      const {
-        categoryFilter,
-        dateFilter,
-        momentFilter,
-        ageFilter,
-        priceFilter,
-        scopeFilter,
-      } = user.filters;
-
-      const { token } = user;
-
-      fetch(`${BACKEND_ADDRESS}/activities/geoloc`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          token: token,
-          latitude: item.coords[1],
-          longitude: item.coords[0],
-          scope: scopeFilter,
-          filters: {
-            categoryFilter,
-            dateFilter,
-            momentFilter,
-            ageFilter,
-            priceFilter,
-          },
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          // console.log("data.result: ", data.result);
-          // console.log("data.error: ", data.error);
-          // console.log("data.activities: ", data.activities);
-          data.result &&
-            dispatch(importActivities(data.activities)) &&
-            dispatch(setErrorActivitiesFetch(null));
-          !data.result &&
-            dispatch(importActivities([])) &&
-            dispatch(setErrorActivitiesFetch(data.error));
-        });
-
-      fetch(
-        `${BACKEND_ADDRESS}/organizers/geoloc/${scopeFilter}/${item.coords[0]}/${item.coords[1]}`
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          data.result &&
-            dispatch(loadOrganizers(data.organizers)) &&
-            dispatch(setErrorOrganizersFetch(null));
-          !data.result &&
-            dispatch(loadOrganizers([])) &&
-            dispatch(setErrorOrganizersFetch(data.error));
-        });
     }
   };
 
