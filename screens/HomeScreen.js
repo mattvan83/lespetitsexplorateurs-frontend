@@ -499,16 +499,21 @@ export default function HomeScreen({ navigation }) {
     return <CardBig key={i} activity={activity} />;
   });
 
+  // Get user preferences and filters
+  const {
+    latitudePreference,
+    longitudePreference,
+    scopePreference,
+    cityPreference,
+  } = user.preferences;
+
+  const { latitudeFilter, longitudeFilter, cityFilter, scopeFilter } =
+    user.filters;
+
   let headerLocalisation;
   let activitiesSectionTitle;
-  if (
-    user.filters.latitudeFilter === -200 ||
-    user.filters.longitudeFilter === -200
-  ) {
-    if (
-      user.preferences.latitudePreference === -200 ||
-      user.preferences.longitudePreference === -200
-    ) {
+  if (latitudeFilter === -200 || longitudeFilter === -200) {
+    if (latitudePreference === -200 || longitudePreference === -200) {
       headerLocalisation = <Text style={styles.localisationBold}>France</Text>;
       activitiesSectionTitle = (
         <View style={styles.activitiesSectionContainer}>
@@ -523,14 +528,10 @@ export default function HomeScreen({ navigation }) {
           </TouchableOpacity>
         </View>
       );
-    } else if (
-      user.preferences.latitudePreference !== -200 &&
-      user.preferences.longitudePreference !== -200
-    ) {
+    } else if (latitudePreference !== -200 && longitudePreference !== -200) {
       headerLocalisation = (
         <Text style={styles.localisationBold}>
-          {user.preferences.scopePreference}km autour de{" "}
-          {user.preferences.cityPreference}
+          {scopePreference}km autour de {cityPreference}
         </Text>
       );
       activitiesSectionTitle = (
@@ -547,13 +548,10 @@ export default function HomeScreen({ navigation }) {
         </View>
       );
     }
-  } else if (
-    user.filters.latitudeFilter !== -200 &&
-    user.filters.longitudeFilter !== -200
-  ) {
+  } else if (latitudeFilter !== -200 && longitudeFilter !== -200) {
     headerLocalisation = (
       <Text style={styles.localisationBold}>
-        {user.filters.scopeFilter}km autour de {user.filters.cityFilter}
+        {scopeFilter}km autour de {cityFilter}
       </Text>
     );
     activitiesSectionTitle = (

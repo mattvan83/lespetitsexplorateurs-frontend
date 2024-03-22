@@ -396,13 +396,12 @@ export default function ListResultsScreen({ navigation, route }) {
             dispatch(setErrorActivitiesFetch(data.error));
         }
       }
-
-      navigation.navigate("TabNavigator", { screen: "Explorer" });
     } catch (error) {
       console.error(error);
       setErrorActivitiesFetch(error.message);
     } finally {
       setIsLoading(false);
+      navigation.navigate("TabNavigator", { screen: "Explorer" });
     }
   };
 
