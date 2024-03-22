@@ -28,8 +28,8 @@ const initialState = {
       longitudePreference: -200,
       scopePreference: 50,
     },
-    errorMsg: null,
-    errorOrganizersMsg: null,
+    errorActivitiesFetch: null,
+    errorOrganizersFetch: null,
   },
 };
 
@@ -205,11 +205,11 @@ export const userSlice = createSlice({
     loadFavoriteActivities: (state, action) => {
       state.value.favoriteActivities = action.payload;
     },
-    setErrorMsg: (state, action) => {
-      state.value.errorMsg = action.payload;
+    setErrorActivitiesFetch: (state, action) => {
+      state.value.errorActivitiesFetch = action.payload;
     },
-    setErrorOrganizersMsg: (state, action) => {
-      state.value.errorOrganizersMsg = action.payload;
+    setErrorOrganizersFetch: (state, action) => {
+      state.value.errorOrganizersFetch = action.payload;
     },
   },
 });
@@ -234,7 +234,7 @@ export const {
   addUserActivity,
   addUserActivityPhoto,
   deleteUserActivity,
-  setErrorMsg,
-  setErrorOrganizersMsg,
+  setErrorActivitiesFetch,
+  setErrorOrganizersFetch,
 } = userSlice.actions;
 export default userSlice.reducer;

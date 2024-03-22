@@ -21,8 +21,8 @@ import {
   addCurrentLocation,
   importActivities,
   setLocationFilters,
-  setErrorMsg,
-  setErrorOrganizersMsg,
+  setErrorActivitiesFetch,
+  setErrorOrganizersFetch,
   setCategoryFilters,
 } from "../reducers/user";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
@@ -86,10 +86,10 @@ export default function ListResultsScreen({ navigation, route }) {
           .then((data) => {
             data.result &&
               dispatch(importActivities(data.activities)) &&
-              dispatch(setErrorMsg(null));
+              dispatch(setErrorActivitiesFetch(null));
             !data.result &&
               dispatch(importActivities([])) &&
-              dispatch(setErrorMsg(data.error));
+              dispatch(setErrorActivitiesFetch(data.error));
           });
 
         fetch(`${BACKEND_ADDRESS}/organizers/nogeoloc`)
@@ -97,10 +97,10 @@ export default function ListResultsScreen({ navigation, route }) {
           .then((data) => {
             data.result &&
               dispatch(loadOrganizers(data.organizers)) &&
-              dispatch(setErrorOrganizersMsg(null));
+              dispatch(setErrorOrganizersFetch(null));
             !data.result &&
               dispatch(loadOrganizers([])) &&
-              dispatch(setErrorOrganizersMsg(data.error));
+              dispatch(setErrorOrganizersFetch(data.error));
           });
       } else if (
         user.preferences.latitudePreference !== -200 &&
@@ -130,10 +130,10 @@ export default function ListResultsScreen({ navigation, route }) {
             // console.log("data.activities: ", data.activities);
             data.result &&
               dispatch(importActivities(data.activities)) &&
-              dispatch(setErrorMsg(null));
+              dispatch(setErrorActivitiesFetch(null));
             !data.result &&
               dispatch(importActivities([])) &&
-              dispatch(setErrorMsg(data.error));
+              dispatch(setErrorActivitiesFetch(data.error));
           });
 
         fetch(
@@ -143,10 +143,10 @@ export default function ListResultsScreen({ navigation, route }) {
           .then((data) => {
             data.result &&
               dispatch(loadOrganizers(data.organizers)) &&
-              dispatch(setErrorOrganizersMsg(null));
+              dispatch(setErrorOrganizersFetch(null));
             !data.result &&
               dispatch(loadOrganizers([])) &&
-              dispatch(setErrorOrganizersMsg(data.error));
+              dispatch(setErrorOrganizersFetch(data.error));
           });
       }
     } else if (latitudeFilter !== -200 || longitudeFilter !== -200) {
@@ -174,10 +174,10 @@ export default function ListResultsScreen({ navigation, route }) {
           // console.log("data.activities: ", data.activities);
           data.result &&
             dispatch(importActivities(data.activities)) &&
-            dispatch(setErrorMsg(null));
+            dispatch(setErrorActivitiesFetch(null));
           !data.result &&
             dispatch(importActivities([])) &&
-            dispatch(setErrorMsg(data.error));
+            dispatch(setErrorActivitiesFetch(data.error));
         });
 
       fetch(
@@ -187,10 +187,10 @@ export default function ListResultsScreen({ navigation, route }) {
         .then((data) => {
           data.result &&
             dispatch(loadOrganizers(data.organizers)) &&
-            dispatch(setErrorOrganizersMsg(null));
+            dispatch(setErrorOrganizersFetch(null));
           !data.result &&
             dispatch(loadOrganizers([])) &&
-            dispatch(setErrorOrganizersMsg(data.error));
+            dispatch(setErrorOrganizersFetch(data.error));
         });
     }
 
@@ -270,10 +270,10 @@ export default function ListResultsScreen({ navigation, route }) {
           // console.log("data.activities: ", data.activities);
           data.result &&
             dispatch(importActivities(data.activities)) &&
-            dispatch(setErrorMsg(null));
+            dispatch(setErrorActivitiesFetch(null));
           !data.result &&
             dispatch(importActivities([])) &&
-            dispatch(setErrorMsg(data.error));
+            dispatch(setErrorActivitiesFetch(data.error));
         });
 
       fetch(
@@ -283,10 +283,10 @@ export default function ListResultsScreen({ navigation, route }) {
         .then((data) => {
           data.result &&
             dispatch(loadOrganizers(data.organizers)) &&
-            dispatch(setErrorOrganizersMsg(null));
+            dispatch(setErrorOrganizersFetch(null));
           !data.result &&
             dispatch(loadOrganizers([])) &&
-            dispatch(setErrorOrganizersMsg(data.error));
+            dispatch(setErrorOrganizersFetch(data.error));
         });
     }
   };
@@ -329,10 +329,10 @@ export default function ListResultsScreen({ navigation, route }) {
             .then((data) => {
               data.result &&
                 dispatch(importActivities(data.activities)) &&
-                dispatch(setErrorMsg(null));
+                dispatch(setErrorActivitiesFetch(null));
               !data.result &&
                 dispatch(importActivities([])) &&
-                dispatch(setErrorMsg(data.error));
+                dispatch(setErrorActivitiesFetch(data.error));
             });
 
           fetch(`${BACKEND_ADDRESS}/organizers/nogeoloc`)
@@ -340,10 +340,10 @@ export default function ListResultsScreen({ navigation, route }) {
             .then((data) => {
               data.result &&
                 dispatch(loadOrganizers(data.organizers)) &&
-                dispatch(setErrorOrganizersMsg(null));
+                dispatch(setErrorOrganizersFetch(null));
               !data.result &&
                 dispatch(loadOrganizers([])) &&
-                dispatch(setErrorOrganizersMsg(data.error));
+                dispatch(setErrorOrganizersFetch(data.error));
             });
         } else if (
           user.preferences.latitudePreference !== -200 &&
@@ -373,10 +373,10 @@ export default function ListResultsScreen({ navigation, route }) {
               // console.log("data.activities: ", data.activities);
               data.result &&
                 dispatch(importActivities(data.activities)) &&
-                dispatch(setErrorMsg(null));
+                dispatch(setErrorActivitiesFetch(null));
               !data.result &&
                 dispatch(importActivities([])) &&
-                dispatch(setErrorMsg(data.error));
+                dispatch(setErrorActivitiesFetch(data.error));
             });
 
           fetch(
@@ -386,10 +386,10 @@ export default function ListResultsScreen({ navigation, route }) {
             .then((data) => {
               data.result &&
                 dispatch(loadOrganizers(data.organizers)) &&
-                dispatch(setErrorOrganizersMsg(null));
+                dispatch(setErrorOrganizersFetch(null));
               !data.result &&
                 dispatch(loadOrganizers([])) &&
-                dispatch(setErrorOrganizersMsg(data.error));
+                dispatch(setErrorOrganizersFetch(data.error));
             });
         }
       } else if (latitudeFilter !== -200 || longitudeFilter !== -200) {
@@ -417,10 +417,10 @@ export default function ListResultsScreen({ navigation, route }) {
             // console.log("data.activities: ", data.activities);
             data.result &&
               dispatch(importActivities(data.activities)) &&
-              dispatch(setErrorMsg(null));
+              dispatch(setErrorActivitiesFetch(null));
             !data.result &&
               dispatch(importActivities([])) &&
-              dispatch(setErrorMsg(data.error));
+              dispatch(setErrorActivitiesFetch(data.error));
           });
 
         fetch(
@@ -430,10 +430,10 @@ export default function ListResultsScreen({ navigation, route }) {
           .then((data) => {
             data.result &&
               dispatch(loadOrganizers(data.organizers)) &&
-              dispatch(setErrorOrganizersMsg(null));
+              dispatch(setErrorOrganizersFetch(null));
             !data.result &&
               dispatch(loadOrganizers([])) &&
-              dispatch(setErrorOrganizersMsg(data.error));
+              dispatch(setErrorOrganizersFetch(data.error));
           });
       }
     }
@@ -549,8 +549,10 @@ export default function ListResultsScreen({ navigation, route }) {
 
         <View style={styles.body}>
           <View style={styles.listActivities}>
-            {user.errorMsg ? (
-              <Text style={styles.errorMsg}>{user.errorMsg}</Text>
+            {user.errorActivitiesFetch ? (
+              <Text style={styles.errorActivitiesFetch}>
+                {user.errorActivitiesFetch}
+              </Text>
             ) : (
               <></>
             )}
@@ -626,7 +628,7 @@ const styles = StyleSheet.create({
   listActivities: {
     height: "100%",
   },
-  errorMsg: {
+  errorActivitiesFetch: {
     marginTop: 24,
     marginHorizontal: 20,
     width: "90%",

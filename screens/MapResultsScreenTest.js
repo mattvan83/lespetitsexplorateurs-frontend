@@ -20,8 +20,8 @@ import {
   addCurrentLocation,
   importActivities,
   setLocationFilters,
-  setErrorMsg,
-  setErrorOrganizersMsg,
+  setErrorActivitiesFetch,
+  setErrorOrganizersFetch,
 } from "../reducers/user";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 import { Ionicons } from "@expo/vector-icons";
@@ -93,10 +93,10 @@ export default function MapResultsScreenTest({ navigation }) {
           .then((data) => {
             data.result &&
               dispatch(importActivities(data.activities)) &&
-              dispatch(setErrorMsg(null));
+              dispatch(setErrorActivitiesFetch(null));
             !data.result &&
               dispatch(importActivities([])) &&
-              dispatch(setErrorMsg(data.error));
+              dispatch(setErrorActivitiesFetch(data.error));
           });
 
         fetch(`${BACKEND_ADDRESS}/organizers/nogeoloc`)
@@ -104,10 +104,10 @@ export default function MapResultsScreenTest({ navigation }) {
           .then((data) => {
             data.result &&
               dispatch(loadOrganizers(data.organizers)) &&
-              dispatch(setErrorOrganizersMsg(null));
+              dispatch(setErrorOrganizersFetch(null));
             !data.result &&
               dispatch(loadOrganizers([])) &&
-              dispatch(setErrorOrganizersMsg(data.error));
+              dispatch(setErrorOrganizersFetch(data.error));
           });
       } else if (
         user.preferences.latitudePreference !== -200 &&
@@ -136,10 +136,10 @@ export default function MapResultsScreenTest({ navigation }) {
             // console.log("data.activities: ", data.activities);
             data.result &&
               dispatch(importActivities(data.activities)) &&
-              dispatch(setErrorMsg(null));
+              dispatch(setErrorActivitiesFetch(null));
             !data.result &&
               dispatch(importActivities([])) &&
-              dispatch(setErrorMsg(data.error));
+              dispatch(setErrorActivitiesFetch(data.error));
           });
 
         fetch(
@@ -149,10 +149,10 @@ export default function MapResultsScreenTest({ navigation }) {
           .then((data) => {
             data.result &&
               dispatch(loadOrganizers(data.organizers)) &&
-              dispatch(setErrorOrganizersMsg(null));
+              dispatch(setErrorOrganizersFetch(null));
             !data.result &&
               dispatch(loadOrganizers([])) &&
-              dispatch(setErrorOrganizersMsg(data.error));
+              dispatch(setErrorOrganizersFetch(data.error));
           });
       }
     } else if (latitudeFilter !== -200 || longitudeFilter !== -200) {
@@ -179,10 +179,10 @@ export default function MapResultsScreenTest({ navigation }) {
           // console.log("data.activities: ", data.activities);
           data.result &&
             dispatch(importActivities(data.activities)) &&
-            dispatch(setErrorMsg(null));
+            dispatch(setErrorActivitiesFetch(null));
           !data.result &&
             dispatch(importActivities([])) &&
-            dispatch(setErrorMsg(data.error));
+            dispatch(setErrorActivitiesFetch(data.error));
         });
 
       fetch(
@@ -192,10 +192,10 @@ export default function MapResultsScreenTest({ navigation }) {
         .then((data) => {
           data.result &&
             dispatch(loadOrganizers(data.organizers)) &&
-            dispatch(setErrorOrganizersMsg(null));
+            dispatch(setErrorOrganizersFetch(null));
           !data.result &&
             dispatch(loadOrganizers([])) &&
-            dispatch(setErrorOrganizersMsg(data.error));
+            dispatch(setErrorOrganizersFetch(data.error));
         });
     }
     // // Execute when the component unmounts
@@ -273,11 +273,11 @@ export default function MapResultsScreenTest({ navigation }) {
           // console.log("data.activities: ", data.activities);
           data.result &&
             dispatch(importActivities(data.activities)) &&
-            dispatch(setErrorMsg(null)) &&
+            dispatch(setErrorActivitiesFetch(null)) &&
             setMarkerColors(data.activities.map(() => initialMarkerColor));
           !data.result &&
             dispatch(importActivities([])) &&
-            dispatch(setErrorMsg(data.error)) &&
+            dispatch(setErrorActivitiesFetch(data.error)) &&
             setMarkerColors([]);
           setPressedMarkerIndex(null);
         });
@@ -289,10 +289,10 @@ export default function MapResultsScreenTest({ navigation }) {
         .then((data) => {
           data.result &&
             dispatch(loadOrganizers(data.organizers)) &&
-            dispatch(setErrorOrganizersMsg(null));
+            dispatch(setErrorOrganizersFetch(null));
           !data.result &&
             dispatch(loadOrganizers([])) &&
-            dispatch(setErrorOrganizersMsg(data.error));
+            dispatch(setErrorOrganizersFetch(data.error));
         });
     }
   };
@@ -652,7 +652,7 @@ const styles = StyleSheet.create({
   map: {
     flex: 1,
   },
-  errorMsg: {
+  errorActivitiesFetch: {
     marginTop: 24,
     marginLeft: 20,
     color: "red",
