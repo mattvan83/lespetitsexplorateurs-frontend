@@ -6,17 +6,17 @@ import {
   Platform,
   Image,
   Switch,
-  TouchableOpacity,
   KeyboardAvoidingView,
-  Keyboard,
 } from "react-native";
-import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { login } from "../reducers/user";
 import globalStyles from "../globalStyles";
 import { AntDesign } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import Button from "../components/Button";
+import ButtonPlainText from "../components/ButtonPlainText";
 
 const EMAIL_REGEX =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -34,7 +34,7 @@ export default function SignupScreen({ navigation }) {
   const [isEnabled, setIsEnabled] = useState(false);
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
-  const handleSubmit = () => {
+  const handlePress = () => {
     if (EMAIL_REGEX.test(email)) {
       fetch(`${BACKEND_ADDRESS}/users/signup`, {
         method: "POST",
@@ -147,20 +147,8 @@ export default function SignupScreen({ navigation }) {
       </View>
 
       <View style={styles.bottom}>
-        <TouchableOpacity
-          onPress={() => handleSubmit()}
-          style={styles.button}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.textButton}>S'inscrire</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => navigation.navigate("Signin")}
-          activeOpacity={0.8}
-        >
-          <Text>Déjà inscrit ? Connectez-vous ici</Text>
-        </TouchableOpacity>
+        <Button onPress={handlePress} text="Se connecter" />
+        <ButtonPlainText onPress={() => navigation.navigate("Signin")} text="Déjà inscrit ? Connectez-vous ici" />
       </View>
     </KeyboardAvoidingView>
   );

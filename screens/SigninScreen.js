@@ -15,6 +15,7 @@ import globalStyles from "../globalStyles";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Button from "../components/Button";
+import ButtonPlainText from "../components/ButtonPlainText";
 
 const EMAIL_REGEX =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -134,15 +135,7 @@ export default function SigninScreen({ navigation }) {
 
       <View style={styles.bottom}>
         <Button onPress={handlePress} text="Se connecter" />
-
-        <TouchableOpacity
-          onPress={() => navigation.navigate("Signup")}
-          activeOpacity={0.8}
-        >
-          <Text>
-            Pas encore de compte ? Inscrivez-vous ici
-          </Text>
-        </TouchableOpacity>
+        <ButtonPlainText onPress={() => navigation.navigate("Signup")} text="Pas encore de compte ? Inscrivez-vous ici" />
       </View>
     </KeyboardAvoidingView>
   );
