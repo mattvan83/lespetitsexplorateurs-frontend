@@ -1,29 +1,19 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
-export default function Button({ text }) {
-
-    const handleSubmit = () => {
-
-    }
+export default function Button({ text, onPress }) {
 
     return (
-        <View style={styles.buttonContainer}>
             <TouchableOpacity
-                onPress={() => handleSubmit()}
+                onPress={onPress}
                 style={styles.button}
                 activeOpacity={0.8}
             >
                 <Text style={styles.textButton}>{text}</Text>
             </TouchableOpacity>
-        </View>
     );
 }
 
-
 const styles = StyleSheet.create({
-    buttonContainer: {
-        alignItems: 'center'
-    },
     button: {
         padding: 10,
         width: '70%',
