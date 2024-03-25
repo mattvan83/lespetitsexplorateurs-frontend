@@ -14,7 +14,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addActivityInfoScreen1, resetActivityInfos } from '../reducers/activities';
 import { useState } from 'react';
 import FilterCategoryMedium from "../components/FilterCategoryMedium";
-import { handleFilterButtonClick } from '../modules/handleFilterButtonClick';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Button from '../components/Button';
 const { invertMappingTable } = require("../modules/invertMapping");
@@ -122,7 +121,7 @@ export default function ProfileScreen({ navigation }) {
           )}
 
         <Button onPress={handleContinue} text="Continuer" />
-        
+
       </KeyboardAvoidingView>
 
     </TouchableOpacity>

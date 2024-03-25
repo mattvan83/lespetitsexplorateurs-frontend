@@ -10,6 +10,7 @@ import globalStyles from '../globalStyles';
 import { useDispatch, useSelector } from 'react-redux';
 import { addActivityInfoScreen4 } from '../reducers/activities';
 import { useState } from 'react';
+import Button from '../components/Button';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -106,15 +107,8 @@ export default function ProfileScreen({ navigation }) {
         )}
 
       </View>
-      <View style={styles.bottom}>
-        <TouchableOpacity
-          onPress={() => handleContinue()}
-          style={styles.button}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.textButton}>Continuer</Text>
-        </TouchableOpacity>
-      </View>
+
+      <Button onPress={handleContinue} text="Continuer" />
 
     </KeyboardAvoidingView>
   );
@@ -174,38 +168,11 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     padding: 6,
   },
-  textButton: {
-    color: '#5669FF',
-    fontWeight: 'bold',
-    fontSize: 16
-  },
   text: {
     fontSize: 16,
     color: "#120D26",
     marginTop: 12,
     marginLeft: 20,
-  },
-  bottom: {
-    position: "absolute",
-    bottom: 30,
-    width: "100%",
-    flex: 0.1
-  },
-  button: {
-    padding: 10,
-    width: "70%",
-    height: 58,
-    backgroundColor: "#5669FF",
-    borderRadius: 15,
-    justifyContent: "center",
-    alignItems: "center",
-    alignSelf: 'center',
-  },
-  textButton: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#fff",
-    textTransform: "uppercase",
   },
   buttonGroup: {
     marginLeft: 20,
