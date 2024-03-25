@@ -62,9 +62,8 @@ export default function ActivitiesScreen({ navigation }) {
         keyExtractor={item => String(item.id)}
         style={styles.flatlist}
       />
-      <View style={globalStyles.bottomButton}>
-        <Button onPress={handlePress} text="Répertorier une activité" />
-      </View>
+
+      <Button onPress={handlePress} text="Répertorier une activité" />
 
     </KeyboardAvoidingView>
   );
