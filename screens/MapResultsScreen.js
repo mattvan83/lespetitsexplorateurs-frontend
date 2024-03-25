@@ -96,7 +96,7 @@ export default function MapResultsScreen({ navigation }) {
         const { token } = user;
 
         if (latitudeFilter === -200 || longitudeFilter === -200) {
-          // Case where filters localization has been cleared and no preferences localization is defined
+          // Case where filters location has been cleared and no preferences location is defined
           if (latitudePreference === -200 || longitudePreference === -200) {
             const response = await fetch(
               `${BACKEND_ADDRESS}/activities/nogeoloc`,
@@ -104,7 +104,7 @@ export default function MapResultsScreen({ navigation }) {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                  token: token,
+                  token,
                   filters: {
                     categoryFilter,
                     dateFilter,
@@ -125,7 +125,7 @@ export default function MapResultsScreen({ navigation }) {
               dispatch(setErrorActivitiesFetch(data.error)) &&
               setMarkerColors([]);
             setPressedMarkerIndex(null);
-            // Case where filters localization has been cleared and preferences localization is defined
+            // Case where filters location has been cleared and preferences location is defined
           } else if (
             latitudePreference !== -200 &&
             longitudePreference !== -200
@@ -136,7 +136,7 @@ export default function MapResultsScreen({ navigation }) {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                  token: token,
+                  token,
                   latitude: latitudePreference,
                   longitude: longitudePreference,
                   scope: scopePreference,
@@ -161,13 +161,13 @@ export default function MapResultsScreen({ navigation }) {
               setMarkerColors([]);
             setPressedMarkerIndex(null);
           }
-          // Case where filters localization is defined
+          // Case where filters location is defined
         } else if (latitudeFilter !== -200 || longitudeFilter !== -200) {
           const response = await fetch(`${BACKEND_ADDRESS}/activities/geoloc`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              token: token,
+              token,
               latitude: latitudeFilter,
               longitude: longitudeFilter,
               scope: scopeFilter,
@@ -209,14 +209,14 @@ export default function MapResultsScreen({ navigation }) {
   useEffect(() => {
     (async () => {
       try {
-        // Get user preferences, filters and token
+        // Get user preferences, filters
         const { latitudePreference, longitudePreference, scopePreference } =
           user.preferences;
 
         const { latitudeFilter, longitudeFilter, scopeFilter } = user.filters;
 
         if (latitudeFilter === -200 || longitudeFilter === -200) {
-          // Case where filters localization has been cleared and no preferences localization is defined
+          // Case where filters location has been cleared and no preferences location is defined
           if (latitudePreference === -200 || longitudePreference === -200) {
             const response = await fetch(
               `${BACKEND_ADDRESS}/organizers/nogeoloc`
@@ -228,7 +228,7 @@ export default function MapResultsScreen({ navigation }) {
             !data.result &&
               dispatch(loadOrganizers([])) &&
               dispatch(setErrorOrganizersFetch(data.error));
-            // Case where filters localization has been cleared and preferences localization is defined
+            // Case where filters location has been cleared and preferences location is defined
           } else if (
             latitudePreference !== -200 &&
             longitudePreference !== -200
@@ -244,7 +244,7 @@ export default function MapResultsScreen({ navigation }) {
               dispatch(loadOrganizers([])) &&
               dispatch(setErrorOrganizersFetch(data.error));
           }
-          // Case where filters localization is defined
+          // Case where filters location is defined
         } else if (latitudeFilter !== -200 || longitudeFilter !== -200) {
           const response = await fetch(
             `${BACKEND_ADDRESS}/organizers/geoloc/${scopeFilter}/${longitudeFilter}/${latitudeFilter}`
@@ -620,7 +620,7 @@ export default function MapResultsScreen({ navigation }) {
         {isLoading ? (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#0000ff" />
-            <Text style={styles.loadingText}>Loading...</Text>
+            <Text style={styles.loadingText}>Chargement...</Text>
           </View>
         ) : (
           <View style={styles.body}>
