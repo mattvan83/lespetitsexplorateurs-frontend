@@ -5,15 +5,15 @@ import {
   Platform,
   View,
   Image,
-  TouchableOpacity,
   FlatList,
 } from "react-native";
 import globalStyles from "../globalStyles";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { loadUserActivities } from "../reducers/user";
 import { resetActivityInfos } from "../reducers/activities";
 import CardEditDelete from "../components/CardEditDelete";
+import Button from "../components/Button";
 
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
@@ -30,7 +30,7 @@ export default function ActivitiesScreen({ navigation }) {
   }, []);
 
 
-  const handleSubmit = () => {
+  const handlePress = () => {
     dispatch(resetActivityInfos())
     navigation.navigate("ActivityPart1");
   };
@@ -45,9 +45,9 @@ export default function ActivitiesScreen({ navigation }) {
       {user.userActivities.length === 0 && (
         <View style={styles.noMsgContainer}>
           <Image
-          style={styles.img}
-          source={require('../assets/Images/19.jpg')}
-        />
+            style={styles.img}
+            source={require('../assets/Images/19.jpg')}
+          />
           <Text style={styles.text} >Vous n'avez répertorié aucune activité.</Text>
           <Text style={styles.text}>Commencez dès à présent !</Text>
         </View>)}
@@ -62,14 +62,10 @@ export default function ActivitiesScreen({ navigation }) {
         keyExtractor={item => String(item.id)}
         style={styles.flatlist}
       />
+      <View style={globalStyles.bottomButton}>
+        <Button onPress={handlePress} text="Répertorier une activité" />
+      </View>
 
-      <TouchableOpacity
-        onPress={() => handleSubmit()}
-        style={styles.button}
-        activeOpacity={0.8}
-      >
-        <Text style={styles.textButton}>Répertorier une activité</Text>
-      </TouchableOpacity>
     </KeyboardAvoidingView>
   );
 }
@@ -79,24 +75,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     backgroundColor: "white",
-  },
-  button: {
-    padding: 10,
-    width: "70%",
-    height: 58,
-    backgroundColor: "#5669FF",
-    borderRadius: 15,
-    justifyContent: "center",
-    alignItems: "center",
-    alignSelf: "center",
-    position: "absolute",
-    bottom: 30,
-  },
-  textButton: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#fff",
-    textTransform: "uppercase",
   },
   flatlist: {
     width: '100%',

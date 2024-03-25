@@ -31,7 +31,6 @@ export default function SigninScreen({ navigation }) {
   const [showPassword, setShowPassword] = useState(false);
 
   const handlePress = () => {
-    console.log("Pressed!")
     if (EMAIL_REGEX.test(email)) {
       fetch(`${BACKEND_ADDRESS}/users/signin`, {
         method: "POST",
@@ -164,7 +163,6 @@ const styles = StyleSheet.create({
   bottom: {
     position: "absolute",
     bottom: 30,
-    alignSelf: "center",
     gap: 20,
     marginBottom: 30,
     width: "100%",

@@ -1,8 +1,9 @@
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
 export default function Button({ text, onPress }) {
 
     return (
+        <View style={styles.bottomButton}>
             <TouchableOpacity
                 onPress={onPress}
                 style={styles.button}
@@ -10,10 +11,17 @@ export default function Button({ text, onPress }) {
             >
                 <Text style={styles.textButton}>{text}</Text>
             </TouchableOpacity>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
+    bottomButton: {
+        position: "absolute",
+        bottom: 30,
+        width: "100%",
+        alignItems: "center",
+    },
     button: {
         padding: 10,
         width: '70%',
