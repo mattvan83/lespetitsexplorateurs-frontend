@@ -15,6 +15,7 @@ import globalStyles from "../globalStyles";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
+import Button from '../components/Button';
 
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
@@ -234,15 +235,8 @@ export default function NewOrganizerScreen({ navigation }) {
             <Text style={styles.error}>Oops, le code postal contient une coquille</Text>
           </View>
         )} */}
-        <View style={styles.bottom}>
-          <TouchableOpacity
-            onPress={() => handleSubmit()}
-            style={styles.button}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.textButton}>Créer le profil</Text>
-          </TouchableOpacity>
-        </View>
+        <Button onPress={handleSubmit} text="Créer le profil" />
+
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -260,6 +254,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     alignItems: "center",
     width: "100%",
+    marginBottom: 120, // Pour que le Button ne soit pas superposé au dernier input
   },
   img: {
     width: 150,
@@ -293,21 +288,6 @@ const styles = StyleSheet.create({
     textAlign: "left",
     width: "90%",
   },
-  button: {
-    padding: 10,
-    width: "70%",
-    height: 58,
-    backgroundColor: "#5669FF",
-    borderRadius: 15,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  textButton: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#fff",
-    textTransform: "uppercase",
-  },
   border: {
     alignItems: "center",
     paddingLeft: 4,
@@ -316,15 +296,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 12,
     width: "90%",
-  },
-  bottom: {
-    // position: "absolute",
-    // bottom: 30,
-    alignSelf: "center",
-    marginTop: 20,
-    marginBottom: 30,
-    width: "100%",
-    alignItems: "center",
   },
   error: {
     marginTop: 20,

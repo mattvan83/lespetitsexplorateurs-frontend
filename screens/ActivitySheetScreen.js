@@ -11,9 +11,9 @@ import {
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { Ionicons } from "@expo/vector-icons";
-import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { updateFavoriteActivities } from "../reducers/user";
+import Button from '../components/Button';
 
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
@@ -277,15 +277,8 @@ export default function ActivitySheetScreen({
         </ScrollView>
       </View>
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          onPress={() => handleCalendar()}
-          style={styles.button}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.textButton}>AJOUTER À L'AGENDA</Text>
-        </TouchableOpacity>
-      </View>
+      <Button onPress={handleCalendar} text="Ajouter à l'agenda" />
+
     </View>
   );
 }
@@ -432,21 +425,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 20,
     marginTop: 15,
-  },
-  button: {
-    padding: 10,
-    width: "70%",
-    height: 58,
-    backgroundColor: "#5669FF",
-    borderRadius: 15,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  textButton: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#fff",
-    textTransform: "uppercase",
   },
   photoOrg: {
     width: 48,

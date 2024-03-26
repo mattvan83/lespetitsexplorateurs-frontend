@@ -21,21 +21,13 @@ export default function FiltersScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
   const [price, setPrice] = useState(user.filters.priceFilter);
   const [scope, setScope] = useState(user.filters.scopeFilter);
-  const [selectedCategories, setSelectedCategories] = useState(
-    user.filters.categoryFilter
-  );
+  const [selectedCategories, setSelectedCategories] = useState(user.filters.categoryFilter);
   const [selectedDates, setSelectedDates] = useState(user.filters.dateFilter);
-  const [selectedMoments, setSelectedMoments] = useState(
-    user.filters.momentFilter
-  );
+  const [selectedMoments, setSelectedMoments] = useState(user.filters.momentFilter);
   const [selectedAges, setSelectedAges] = useState(user.filters.ageFilter);
   const [selectedCity, setSelectedCity] = useState(user.filters.cityFilter);
-  const [selectedLongitude, setSelectedLongitude] = useState(
-    user.filters.longitudeFilter
-  );
-  const [selectedLatitude, setSelectedLatitude] = useState(
-    user.filters.latitudeFilter
-  );
+  const [selectedLongitude, setSelectedLongitude] = useState(user.filters.longitudeFilter);
+  const [selectedLatitude, setSelectedLatitude] = useState(user.filters.latitudeFilter);
 
   const categories = ["Sport", "Musique", "Créativité", "Motricité", "Éveil"];
   const dateFilters = ["Aujourd'hui", "Demain", "Cette semaine", "Ce week-end"];
@@ -278,6 +270,7 @@ export default function FiltersScreen({ navigation }) {
         >
           <Text style={styles.eraseTextButton}>EFFACER</Text>
         </TouchableOpacity>
+        
         <TouchableOpacity
           onPress={() => handleSetFilters()}
           style={styles.applyButton}
@@ -285,6 +278,7 @@ export default function FiltersScreen({ navigation }) {
         >
           <Text style={styles.applyTextButton}>APPLIQUER</Text>
         </TouchableOpacity>
+
       </View>
     </KeyboardAvoidingView>
   );

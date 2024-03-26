@@ -21,6 +21,7 @@ import Slider from "@react-native-community/slider";
 import InputLocalisation from "../components/InputLocalisation";
 import FilterTextCategory from "../components/FilterTextCategory";
 import { handleFilterButtonClick } from "../modules/handleFilterButtonClick";
+import Button from '../components/Button';
 
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
@@ -181,15 +182,8 @@ export default function ProfileScreen({ navigation }) {
           <Text style={styles.textSlider}>50km</Text>
         </View>
       </ScrollView>
-      <View style={styles.bottom}>
-        <TouchableOpacity
-          onPress={() => handleSetPreferences()}
-          style={styles.button}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.textButton}>Enregistrer</Text>
-        </TouchableOpacity>
-      </View>
+
+      <Button onPress={handleSetPreferences} text="Enregistrer" />
     </KeyboardAvoidingView>
   );
 }
@@ -263,27 +257,5 @@ const styles = StyleSheet.create({
     color: "#120D26",
     marginTop: 12,
     marginLeft: 20,
-  },
-  bottom: {
-    position: "absolute",
-    bottom: 20,
-    width: "100%",
-    flex: 0.1,
-  },
-  button: {
-    padding: 10,
-    width: "70%",
-    height: 58,
-    backgroundColor: "#5669FF",
-    borderRadius: 15,
-    justifyContent: "center",
-    alignItems: "center",
-    alignSelf: "center",
-  },
-  textButton: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#fff",
-    textTransform: "uppercase",
   },
 });
