@@ -56,8 +56,8 @@ export default function MapResultsScreen({ navigation }) {
   // console.log("user.filters: ", user.filters);
   // console.log("markerColors: ", markerColors);
   // console.log("pressedMarkerIndex: ", pressedMarkerIndex);
-  console.log("tempCity: ", tempCity);
-  console.log("tempCoordinates: ", tempCoordinates);
+  // console.log("tempCity: ", tempCity);
+  // console.log("tempCoordinates: ", tempCoordinates);
 
   const dispatch = useDispatch();
 
@@ -311,7 +311,7 @@ export default function MapResultsScreen({ navigation }) {
   };
 
   const handlePressFilters = () => {
-    navigation.navigate("Filters");
+    navigation.navigate("Filters", { previousScreen: "MapResults" });
   };
 
   const reFocusMap = () => {
@@ -567,7 +567,7 @@ export default function MapResultsScreen({ navigation }) {
         <View style={styles.header}>
           <View style={styles.topHeader}>
             <TouchableOpacity
-              onPress={() => navigation.goBack()}
+              onPress={() => navigation.navigate("ListResults")}
               style={styles.goBackButton}
               activeOpacity={0.8}
             >

@@ -41,7 +41,7 @@ export default function ListResultsScreen({ navigation, route }) {
   const [isLoading, setIsLoading] = useState(false);
 
   // console.log("user.filters: ", user.filters);
-  console.log("user.preferences: ", user.preferences);
+  // console.log("user.preferences: ", user.preferences);
   // console.log("category: ", category);
 
   const dispatch = useDispatch();
@@ -410,7 +410,7 @@ export default function ListResultsScreen({ navigation, route }) {
   };
 
   const handlePressFilters = () => {
-    navigation.navigate("Filters");
+    navigation.navigate("Filters", { previousScreen: "ListResults" });
   };
 
   const activitiesList = user.activities.map((activity, i) => {

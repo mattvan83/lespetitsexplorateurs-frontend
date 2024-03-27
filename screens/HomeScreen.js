@@ -47,7 +47,7 @@ export default function HomeScreen({ navigation }) {
   // console.log("user.errorActivitiesFetch: ", user.errorActivitiesFetch);
   // console.log("organizers: ", organizers);
   // console.log("user.errorOrganizersFetch: ", user.errorOrganizersFetch);
-  console.log("geolocation: ", geolocation);
+  // console.log("geolocation: ", geolocation);
 
   const dispatch = useDispatch();
 
@@ -556,7 +556,7 @@ export default function HomeScreen({ navigation }) {
   };
 
   const handlePressFilters = () => {
-    navigation.navigate("Filters");
+    navigation.navigate("Filters", { previousScreen: "Explorer" });
   };
 
   const categoryList = categories.map((category, i) => {

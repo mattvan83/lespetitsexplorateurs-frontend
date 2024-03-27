@@ -16,7 +16,12 @@ import FilterCategoryMedium from "../components/FilterCategoryMedium";
 import InputLocalisation from "../components/InputLocalisation";
 import { handleFilterButtonClick } from "../modules/handleFilterButtonClick";
 
-export default function FiltersScreen({ navigation }) {
+export default function FiltersScreen({ navigation, route }) {
+  const { previousScreen } = route.params
+    ? route.params
+    : { previousScreen: null };
+  console.log("previousScreen: ", previousScreen);
+
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
   const [price, setPrice] = useState(user.filters.priceFilter);
@@ -194,7 +199,9 @@ export default function FiltersScreen({ navigation }) {
         scopeFilter: scope,
       })
     );
-    navigation.navigate("ListResults");
+    previousScreen === "Explorer"
+      ? navigation.navigate("ListResults")
+      : navigation.navigate(previousScreen);
   };
 
   return (

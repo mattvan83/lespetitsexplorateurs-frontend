@@ -520,7 +520,7 @@ export default function MapResultsScreenTest({ navigation }) {
       <View style={styles.header}>
         <View style={styles.topHeader}>
           <TouchableOpacity
-            onPress={() => navigation.goBack()}
+            onPress={() => navigation.navigate("ListResults")}
             style={styles.goBackButton}
             activeOpacity={0.8}
           >
