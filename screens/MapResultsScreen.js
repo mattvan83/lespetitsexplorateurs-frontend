@@ -18,7 +18,6 @@ import * as Location from "expo-location";
 import { useDispatch, useSelector } from "react-redux";
 import { loadOrganizers } from "../reducers/organizers";
 import {
-  addCurrentLocation,
   importActivities,
   setLocationFilters,
   setErrorActivitiesFetch,
@@ -192,7 +191,7 @@ export default function MapResultsScreen({ navigation }) {
         }
       } catch (error) {
         console.error(error.message);
-        setErrorActivitiesFetch(error.message);
+        dispatch(setErrorActivitiesFetch(error.message));
       } finally {
         setIsLoading(false);
       }
@@ -258,7 +257,7 @@ export default function MapResultsScreen({ navigation }) {
         }
       } catch (error) {
         console.error(error.message);
-        setErrorOrganizersFetch(error.message);
+        dispatch(setErrorOrganizersFetch(error.message));
       }
     })();
   }, [

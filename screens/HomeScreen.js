@@ -237,7 +237,7 @@ export default function HomeScreen({ navigation }) {
           }
         } catch (error) {
           console.error(error.message);
-          setErrorActivitiesFetch(error.message);
+          dispatch(setErrorActivitiesFetch(error.message));
         } finally {
           setIsLoadingActivities(false);
         }
@@ -358,7 +358,7 @@ export default function HomeScreen({ navigation }) {
           }
         } catch (error) {
           console.error(error.message);
-          setErrorActivitiesFetch(error.message);
+          dispatch(setErrorActivitiesFetch(error.message));
         } finally {
           setIsLoadingActivities(false);
         }
@@ -426,7 +426,7 @@ export default function HomeScreen({ navigation }) {
           }
         } catch (error) {
           console.error(error.message);
-          setErrorOrganizersFetch(error.message);
+          dispatch(setErrorOrganizersFetch(error.message));
         } finally {
           setIsLoadingOrganizers(false);
         }
@@ -484,7 +484,7 @@ export default function HomeScreen({ navigation }) {
           }
         } catch (error) {
           console.error(error.message);
-          setErrorOrganizersFetch(error.message);
+          dispatch(setErrorOrganizersFetch(error.message));
         } finally {
           setIsLoadingOrganizers(false);
         }

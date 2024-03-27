@@ -167,7 +167,7 @@ export default function ListResultsScreen({ navigation, route }) {
         }
       } catch (error) {
         console.error(error.message);
-        setErrorActivitiesFetch(error.message);
+        dispatch(setErrorActivitiesFetch(error.message));
       } finally {
         setIsLoading(false);
       }
@@ -233,7 +233,7 @@ export default function ListResultsScreen({ navigation, route }) {
         }
       } catch (error) {
         console.error(error.message);
-        setErrorOrganizersFetch(error.message);
+        dispatch(setErrorOrganizersFetch(error.message));
       }
     })();
   }, [
