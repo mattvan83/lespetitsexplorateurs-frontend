@@ -29,7 +29,7 @@ import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 import { Ionicons } from "@expo/vector-icons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useFetchActivities } from "../hooks/useFetchActivities"; // Import custom hook for fetching activities
-import { useFetchOrganizers } from "../hooks/useFetchOrganizers"; // Import custom hook for fetching activities
+import { useFetchOrganizers } from "../hooks/useFetchOrganizers"; // Import custom hook for fetching organizers
 
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
@@ -38,14 +38,13 @@ export default function ListResultsScreen({ navigation, route }) {
 
   const user = useSelector((state) => state.user.value);
   const [suggestionsList, setSuggestionsList] = useState([]);
-  const { isLoadingActivities, setIsLoadingActivities } =
+  const { isLoadingActivities, setIsLoadingActivities, fetchActivities } =
     useFetchActivities(user);
-  const { isLoadingOrganizers, setIsLoadingOrganizers } =
-    useFetchOrganizers(user);
+  const { isLoadingOrganizers } = useFetchOrganizers(user);
 
   // console.log("user.filters: ", user.filters);
   // console.log("user.preferences: ", user.preferences);
-  // console.log("category: ", category);
+  console.log("category: ", category);
 
   const dispatch = useDispatch();
 
@@ -95,126 +94,11 @@ export default function ListResultsScreen({ navigation, route }) {
   };
 
   const handlePressGoBackButton = async () => {
-    try {
-      setIsLoadingActivities(true);
-      if (category) {
-        dispatch(setCategoryFilters([]));
-
-        // Get user preferences, filters and token
-        const {
-          agePreference,
-          latitudePreference,
-          longitudePreference,
-          scopePreference,
-        } = user.preferences;
-
-        const {
-          latitudeFilter,
-          longitudeFilter,
-          dateFilter,
-          momentFilter,
-          ageFilter,
-          priceFilter,
-          scopeFilter,
-        } = user.filters;
-
-        const { token } = user;
-
-        if (latitudeFilter === -200 || longitudeFilter === -200) {
-          // Case where filters location has been cleared and no preferences location is defined
-          if (latitudePreference === -200 || longitudePreference === -200) {
-            const response = await fetch(
-              `${BACKEND_ADDRESS}/activities/nogeoloc`,
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  token,
-                  filters: {
-                    categoryFilter: [],
-                    dateFilter,
-                    momentFilter,
-                    ageFilter,
-                    priceFilter,
-                  },
-                }),
-              }
-            );
-            const data = await response.json();
-            data.result &&
-              dispatch(importActivities(data.activities)) &&
-              dispatch(setErrorActivitiesFetch(null));
-            !data.result &&
-              dispatch(importActivities([])) &&
-              dispatch(setErrorActivitiesFetch(data.error));
-            // Case where filters location has been cleared and preferences location is defined
-          } else if (
-            latitudePreference !== -200 &&
-            longitudePreference !== -200
-          ) {
-            const response = await fetch(
-              `${BACKEND_ADDRESS}/activities/geoloc`,
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  token,
-                  latitude: latitudePreference,
-                  longitude: longitudePreference,
-                  scope: scopePreference,
-                  filters: {
-                    categoryFilter: [],
-                    dateFilter,
-                    momentFilter,
-                    ageFilter: agePreference,
-                    priceFilter,
-                  },
-                }),
-              }
-            );
-            const data = await response.json();
-            data.result &&
-              dispatch(importActivities(data.activities)) &&
-              dispatch(setErrorActivitiesFetch(null));
-            !data.result &&
-              dispatch(importActivities([])) &&
-              dispatch(setErrorActivitiesFetch(data.error));
-          }
-          // Case where filters location is defined
-        } else if (latitudeFilter !== -200 || longitudeFilter !== -200) {
-          const response = await fetch(`${BACKEND_ADDRESS}/activities/geoloc`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              token: token,
-              latitude: latitudeFilter,
-              longitude: longitudeFilter,
-              scope: scopeFilter,
-              filters: {
-                categoryFilter: [],
-                dateFilter,
-                momentFilter,
-                ageFilter,
-                priceFilter,
-              },
-            }),
-          });
-          const data = await response.json();
-          data.result &&
-            dispatch(importActivities(data.activities)) &&
-            dispatch(setErrorActivitiesFetch(null));
-          !data.result &&
-            dispatch(importActivities([])) &&
-            dispatch(setErrorActivitiesFetch(data.error));
-        }
-      }
-    } catch (error) {
-      console.error(error.message);
-      dispatch(setErrorActivitiesFetch(error.message));
-    } finally {
-      setIsLoadingActivities(false);
-      navigation.navigate("TabNavigator", { screen: "Explorer" });
+    if (category) {
+      dispatch(setCategoryFilters([]));
+      await fetchActivities(true);
     }
+    navigation.navigate("TabNavigator", { screen: "Explorer" });
   };
 
   const onClearPress = () => {
