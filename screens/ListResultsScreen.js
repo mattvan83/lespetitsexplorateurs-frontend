@@ -35,8 +35,6 @@ export default function ListResultsScreen({ navigation, route }) {
   const { category } = route.params ? route.params : { category: null };
 
   const user = useSelector((state) => state.user.value);
-  // const userFilters = useSelector((state) => state.user.value.filters);
-  // const userPreferences = useSelector((state) => state.user.value.preferences);
   const [suggestionsList, setSuggestionsList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 

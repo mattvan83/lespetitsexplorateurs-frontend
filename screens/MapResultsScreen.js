@@ -36,7 +36,6 @@ const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
 export default function MapResultsScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
-  // const userFilters = useSelector((state) => state.user.value.filters);
   const [suggestionsList, setSuggestionsList] = useState([]);
   const mapViewRef = useRef(null);
 

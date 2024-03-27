@@ -4,9 +4,6 @@ const initialState = {
   value: {
     token: null,
     username: null,
-    // cityName: null,
-    // latitude: -200,
-    // longitude: -200,
     activities: [],
     userActivities: [],
     favoriteActivities: [],
@@ -71,13 +68,6 @@ export const userSlice = createSlice({
       state.value.errorMsg = null;
       state.value.errorOrganizersMsg = null;
     },
-    // addCurrentLocation: (state, action) => {
-    //   state.value.latitude = action.payload.latitude;
-    //   state.value.longitude = action.payload.longitude;
-    // },
-    // addCurrentCity: (state, action) => {
-    //   state.value.cityName = action.payload;
-    // },
     importActivities: (state, action) => {
       state.value.activities = action.payload;
     },
