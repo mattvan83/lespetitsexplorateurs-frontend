@@ -159,7 +159,6 @@ export default function HomeScreen({ navigation }) {
                   longitudePreference: longitude,
                 })
               );
-
               dispatch(
                 setLocationFilters({
                   cityFilter: cityName,
@@ -235,19 +234,6 @@ export default function HomeScreen({ navigation }) {
             !data.result &&
               dispatch(importActivities([])) &&
               dispatch(setErrorActivitiesFetch(data.error));
-
-            fetch(
-              `${BACKEND_ADDRESS}/organizers/geoloc/${scopeFilter}/${longitudeFilter}/${latitudeFilter}`
-            )
-              .then((response) => response.json())
-              .then((data) => {
-                data.result &&
-                  dispatch(loadOrganizers(data.organizers)) &&
-                  dispatch(setErrorOrganizersFetch(null));
-                !data.result &&
-                  dispatch(loadOrganizers([])) &&
-                  dispatch(setErrorOrganizersFetch(data.error));
-              });
           }
         } catch (error) {
           console.error(error.message);
@@ -368,13 +354,6 @@ export default function HomeScreen({ navigation }) {
               !data.result &&
                 dispatch(importActivities([])) &&
                 dispatch(setErrorActivitiesFetch(data.error));
-
-              // }, delay);
-
-              // // Cleanup the timeout when the component unmounts or when the position is obtained
-              // return () => {
-              //   clearTimeout(timeoutId);
-              // };
             }
           }
         } catch (error) {
