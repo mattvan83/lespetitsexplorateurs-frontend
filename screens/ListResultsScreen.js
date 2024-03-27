@@ -44,7 +44,7 @@ export default function ListResultsScreen({ navigation, route }) {
 
   // console.log("user.filters: ", user.filters);
   // console.log("user.preferences: ", user.preferences);
-  console.log("category: ", category);
+  // console.log("category: ", category);
 
   const dispatch = useDispatch();
 
