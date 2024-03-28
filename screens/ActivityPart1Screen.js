@@ -14,8 +14,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addActivityInfoScreen1, resetActivityInfos } from '../reducers/activities';
 import { useState } from 'react';
 import FilterCategoryMedium from "../components/FilterCategoryMedium";
-import { handleFilterButtonClick } from '../modules/handleFilterButtonClick';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Button from '../components/Button';
 const { invertMappingTable } = require("../modules/invertMapping");
 
 
@@ -120,16 +120,10 @@ export default function ProfileScreen({ navigation }) {
             </Text>
           )}
 
-        <View style={styles.bottom}>
-          <TouchableOpacity
-            onPress={() => handleContinue()}
-            style={styles.button}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.textButton}>Continuer</Text>
-          </TouchableOpacity>
-        </View>
+        <Button onPress={handleContinue} text="Continuer" />
+
       </KeyboardAvoidingView>
+
     </TouchableOpacity>
   );
 }
@@ -162,38 +156,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     margin: 15,
   },
-  textButton: {
-    color: '#5669FF',
-    fontWeight: 'bold',
-    fontSize: 16
-  },
   text: {
     fontSize: 16,
     color: "#120D26",
     marginTop: 12,
     marginLeft: 20,
-  },
-  bottom: {
-    position: "absolute",
-    bottom: 30,
-    width: "100%",
-    flex: 0.1,
-  },
-  button: {
-    padding: 10,
-    width: "70%",
-    height: 58,
-    backgroundColor: "#5669FF",
-    borderRadius: 15,
-    justifyContent: "center",
-    alignItems: "center",
-    alignSelf: 'center',
-  },
-  textButton: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#fff",
-    textTransform: "uppercase",
   },
   descriptionInput: {
     width: "90%",

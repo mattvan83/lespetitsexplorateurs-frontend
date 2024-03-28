@@ -7,6 +7,7 @@ import { useState } from "react";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
+import Button from '../components/Button';
 
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
@@ -254,28 +255,8 @@ export default function ActivityPart5Screen({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      {!activities.isCurrentlyUpdated && (
-        <View style={styles.bottom}>
-          <TouchableOpacity
-            onPress={() => handleCreate()}
-            style={styles.button}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.textButton}>Créer l'activité</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-      {activities.isCurrentlyUpdated && (
-        <View style={styles.bottom}>
-          <TouchableOpacity
-            onPress={() => handleEdit()}
-            style={styles.button}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.textButton}>Mettre à jour l'activité</Text>
-          </TouchableOpacity>
-        </View>
-      )}
+      {!activities.isCurrentlyUpdated && <Button onPress={handleCreate} text="Créer l'activité" />}
+      {activities.isCurrentlyUpdated && <Button onPress={handleEdit} text="Mettre à jour l'activité" />}
 
     </KeyboardAvoidingView>
   );
@@ -337,38 +318,11 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     padding: 6,
   },
-  textButton: {
-    color: "#5669FF",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
   text: {
     fontSize: 14,
     color: "#120D26",
     marginTop: 12,
     marginLeft: 20,
     width: 350,
-  },
-  bottom: {
-    position: "absolute",
-    bottom: 30,
-    width: "100%",
-    flex: 0.1,
-  },
-  button: {
-    padding: 10,
-    width: "70%",
-    height: 58,
-    backgroundColor: "#5669FF",
-    borderRadius: 15,
-    justifyContent: "center",
-    alignItems: "center",
-    alignSelf: "center",
-  },
-  textButton: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#fff",
-    textTransform: "uppercase",
   },
 });

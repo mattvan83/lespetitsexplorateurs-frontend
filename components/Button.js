@@ -1,15 +1,11 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
-export default function Button({ text }) {
-
-    const handleSubmit = () => {
-
-    }
+export default function Button({ text, onPress }) {
 
     return (
-        <View style={styles.buttonContainer}>
+        <View style={styles.bottomButton}>
             <TouchableOpacity
-                onPress={() => handleSubmit()}
+                onPress={onPress}
                 style={styles.button}
                 activeOpacity={0.8}
             >
@@ -19,13 +15,16 @@ export default function Button({ text }) {
     );
 }
 
-
 const styles = StyleSheet.create({
-    buttonContainer: {
-        alignItems: 'center'
+    bottomButton: {
+        position: "absolute",
+        bottom: 30,
+        width: "100%",
+        alignItems: "center",
     },
     button: {
         padding: 10,
+        marginTop: 30,
         width: '70%',
         height: 58,
         backgroundColor: '#5669FF',

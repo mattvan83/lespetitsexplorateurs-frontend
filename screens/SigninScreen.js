@@ -14,6 +14,8 @@ import { login, setPreferences, setPreferencesFilters } from "../reducers/user";
 import globalStyles from "../globalStyles";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import Button from "../components/Button";
+import ButtonPlainText from "../components/ButtonPlainText";
 
 const EMAIL_REGEX =
   /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -36,7 +38,7 @@ export default function SigninScreen({ navigation }) {
     "10+years": "10+ ans",
   };
 
-  const handleSubmit = () => {
+  const handlePress = () => {
     if (EMAIL_REGEX.test(email)) {
       fetch(`${BACKEND_ADDRESS}/users/signin`, {
         method: "POST",
@@ -144,22 +146,8 @@ export default function SigninScreen({ navigation }) {
       </View>
 
       <View style={styles.bottom}>
-        <TouchableOpacity
-          onPress={() => handleSubmit()}
-          style={styles.button}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.textButton}>Se connecter</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => navigation.navigate("Signup")}
-          activeOpacity={0.8}
-        >
-          <Text style={styles.textBottom}>
-            Pas encore de compte ? Inscrivez-vous ici
-          </Text>
-        </TouchableOpacity>
+        <Button onPress={handlePress} text="Se connecter" />
+        <ButtonPlainText onPress={() => navigation.navigate("Signup")} text="Pas encore de compte ? Inscrivez-vous ici" />
       </View>
     </KeyboardAvoidingView>
   );
@@ -185,25 +173,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 30,
   },
-  button: {
-    padding: 10,
-    width: "70%",
-    height: 58,
-    backgroundColor: "#5669FF",
-    borderRadius: 15,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  textButton: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#fff",
-    textTransform: "uppercase",
-  },
   bottom: {
     position: "absolute",
     bottom: 30,
-    alignSelf: "center",
     gap: 20,
     marginBottom: 30,
     width: "100%",
