@@ -30,25 +30,29 @@ import {
   calculateBarycenter,
   convertCoordsToKm,
 } from "../modules/localisation";
+import { useFetchActivities } from "../hooks/useFetchActivities"; // Import custom hook for fetching activities
+import { useFetchOrganizers } from "../hooks/useFetchOrganizers"; // Import custom hook for fetching organizers
 
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
+
+const initialMarkerColor = "rgba(255, 255, 255, 0.65)";
+const pressedMarkerColor = "rgba(0, 255, 0, 0.75)";
 
 export default function MapResultsScreen({ navigation }) {
   const user = useSelector((state) => state.user.value);
   const [suggestionsList, setSuggestionsList] = useState([]);
   const mapViewRef = useRef(null);
-
-  const initialMarkerColor = "rgba(255, 255, 255, 0.65)";
-  const pressedMarkerColor = "rgba(0, 255, 0, 0.75)";
-
-  const [markerColors, setMarkerColors] = useState(
-    user.activities.map(() => initialMarkerColor)
-  );
-  const [pressedMarkerIndex, setPressedMarkerIndex] = useState(null);
+  const {
+    isLoadingActivities,
+    markerColors,
+    setMarkerColors,
+    pressedMarkerIndex,
+    setPressedMarkerIndex,
+  } = useFetchActivities(user, "MapResults");
+  const { isLoadingOrganizers } = useFetchOrganizers(user);
   const [tempCity, setTempCity] = useState(null);
   const [tempCoordinates, setTempCoordinates] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const addToRadiusKms = 25;
 
   // console.log("user.filters: ", user.filters);
@@ -65,206 +69,6 @@ export default function MapResultsScreen({ navigation }) {
       console.log("Unmount MapResultsScreen");
     };
   }, []);
-
-  // useEffect to manage fetch of activities at each update of user.filters
-  useEffect(() => {
-    (async () => {
-      try {
-        setIsLoading(true);
-
-        // Get user preferences, filters and token
-        const {
-          agePreference,
-          latitudePreference,
-          longitudePreference,
-          scopePreference,
-        } = user.preferences;
-
-        const {
-          latitudeFilter,
-          longitudeFilter,
-          categoryFilter,
-          dateFilter,
-          momentFilter,
-          ageFilter,
-          priceFilter,
-          scopeFilter,
-        } = user.filters;
-
-        const { token } = user;
-
-        if (latitudeFilter === -200 || longitudeFilter === -200) {
-          // Case where filters location has been cleared and no preferences location is defined
-          if (latitudePreference === -200 || longitudePreference === -200) {
-            const response = await fetch(
-              `${BACKEND_ADDRESS}/activities/nogeoloc`,
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  token,
-                  filters: {
-                    categoryFilter,
-                    dateFilter,
-                    momentFilter,
-                    ageFilter,
-                    priceFilter,
-                  },
-                }),
-              }
-            );
-            const data = await response.json();
-            data.result &&
-              dispatch(importActivities(data.activities)) &&
-              dispatch(setErrorActivitiesFetch(null)) &&
-              setMarkerColors(data.activities.map(() => initialMarkerColor));
-            !data.result &&
-              dispatch(importActivities([])) &&
-              dispatch(setErrorActivitiesFetch(data.error)) &&
-              setMarkerColors([]);
-            setPressedMarkerIndex(null);
-            // Case where filters location has been cleared and preferences location is defined
-          } else if (
-            latitudePreference !== -200 &&
-            longitudePreference !== -200
-          ) {
-            const response = await fetch(
-              `${BACKEND_ADDRESS}/activities/geoloc`,
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  token,
-                  latitude: latitudePreference,
-                  longitude: longitudePreference,
-                  scope: scopePreference,
-                  filters: {
-                    categoryFilter,
-                    dateFilter,
-                    momentFilter,
-                    ageFilter: agePreference,
-                    priceFilter,
-                  },
-                }),
-              }
-            );
-            const data = await response.json();
-            data.result &&
-              dispatch(importActivities(data.activities)) &&
-              dispatch(setErrorActivitiesFetch(null)) &&
-              setMarkerColors(data.activities.map(() => initialMarkerColor));
-            !data.result &&
-              dispatch(importActivities([])) &&
-              dispatch(setErrorActivitiesFetch(data.error)) &&
-              setMarkerColors([]);
-            setPressedMarkerIndex(null);
-          }
-          // Case where filters location is defined
-        } else if (latitudeFilter !== -200 || longitudeFilter !== -200) {
-          const response = await fetch(`${BACKEND_ADDRESS}/activities/geoloc`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              token,
-              latitude: latitudeFilter,
-              longitude: longitudeFilter,
-              scope: scopeFilter,
-              filters: {
-                categoryFilter,
-                dateFilter,
-                momentFilter,
-                ageFilter,
-                priceFilter,
-              },
-            }),
-          });
-          const data = await response.json();
-          data.result &&
-            dispatch(importActivities(data.activities)) &&
-            dispatch(setErrorActivitiesFetch(null)) &&
-            setMarkerColors(data.activities.map(() => initialMarkerColor));
-          !data.result &&
-            dispatch(importActivities([])) &&
-            dispatch(setErrorActivitiesFetch(data.error)) &&
-            setMarkerColors([]);
-          setPressedMarkerIndex(null);
-        }
-      } catch (error) {
-        console.error(error.message);
-        dispatch(setErrorActivitiesFetch(error.message));
-      } finally {
-        setIsLoading(false);
-      }
-    })();
-
-    // // Execute when the component unmounts
-    // return () => {
-    //   console.log("Unmount MapResultsScreen");
-    // };
-  }, [user.filters]);
-
-  // useEffect to manage fetch of organizers at each update of user.filters.scopeFilter, user.filters.latitudeFilter or user.filters.longitudeFilter
-  useEffect(() => {
-    (async () => {
-      try {
-        // Get user preferences, filters
-        const { latitudePreference, longitudePreference, scopePreference } =
-          user.preferences;
-
-        const { latitudeFilter, longitudeFilter, scopeFilter } = user.filters;
-
-        if (latitudeFilter === -200 || longitudeFilter === -200) {
-          // Case where filters location has been cleared and no preferences location is defined
-          if (latitudePreference === -200 || longitudePreference === -200) {
-            const response = await fetch(
-              `${BACKEND_ADDRESS}/organizers/nogeoloc`
-            );
-            const data = await response.json();
-            data.result &&
-              dispatch(loadOrganizers(data.organizers)) &&
-              dispatch(setErrorOrganizersFetch(null));
-            !data.result &&
-              dispatch(loadOrganizers([])) &&
-              dispatch(setErrorOrganizersFetch(data.error));
-            // Case where filters location has been cleared and preferences location is defined
-          } else if (
-            latitudePreference !== -200 &&
-            longitudePreference !== -200
-          ) {
-            const response = await fetch(
-              `${BACKEND_ADDRESS}/organizers/geoloc/${scopePreference}/${longitudePreference}/${latitudePreference}`
-            );
-            const data = await response.json();
-            data.result &&
-              dispatch(loadOrganizers(data.organizers)) &&
-              dispatch(setErrorOrganizersFetch(null));
-            !data.result &&
-              dispatch(loadOrganizers([])) &&
-              dispatch(setErrorOrganizersFetch(data.error));
-          }
-          // Case where filters location is defined
-        } else if (latitudeFilter !== -200 || longitudeFilter !== -200) {
-          const response = await fetch(
-            `${BACKEND_ADDRESS}/organizers/geoloc/${scopeFilter}/${longitudeFilter}/${latitudeFilter}`
-          );
-          const data = await response.json();
-          data.result &&
-            dispatch(loadOrganizers(data.organizers)) &&
-            dispatch(setErrorOrganizersFetch(null));
-          !data.result &&
-            dispatch(loadOrganizers([])) &&
-            dispatch(setErrorOrganizersFetch(data.error));
-        }
-      } catch (error) {
-        console.error(error.message);
-        dispatch(setErrorOrganizersFetch(error.message));
-      }
-    })();
-  }, [
-    user.filters.scopeFilter,
-    user.filters.latitudeFilter,
-    user.filters.longitudeFilter,
-  ]);
 
   const searchCity = (query) => {
     // Prevent search with an empty query
@@ -329,7 +133,7 @@ export default function MapResultsScreen({ navigation }) {
 
     // Set the color of the currently pressed marker
     newColors[index] = pressedMarkerColor;
-    console.log(newColors);
+    // console.log(newColors);
 
     setMarkerColors(newColors);
     setPressedMarkerIndex(index);
@@ -408,8 +212,6 @@ export default function MapResultsScreen({ navigation }) {
       default:
         console.log(`${activity.category} not found`);
     }
-
-    // console.log(`markerColors[${i}]: `, markerColors[i]);
 
     return (
       <Marker
@@ -554,8 +356,6 @@ export default function MapResultsScreen({ navigation }) {
     };
   }
 
-  // console.log(`marker index : ${pressedMarkerIndex}`);
-
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
@@ -615,7 +415,7 @@ export default function MapResultsScreen({ navigation }) {
           </View>
         </View>
 
-        {isLoading ? (
+        {isLoadingActivities || isLoadingOrganizers ? (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#0000ff" />
             <Text style={styles.loadingText}>Chargement...</Text>

@@ -11,7 +11,7 @@ export const useFetchOrganizers = (user) => {
 
   // useEffect to manage fetch of organizers at each update of user.filters.scopeFilter, user.filters.latitudeFilter or user.filters.longitudeFilter
   useEffect(() => {
-    const fetchOrganizers = async () => {
+    const fetchOrganizers = async (user) => {
       try {
         // Fetch organizers based on user filters
         setIsLoadingOrganizers(true);
@@ -60,7 +60,7 @@ export const useFetchOrganizers = (user) => {
       }
     };
 
-    fetchOrganizers();
+    fetchOrganizers(user);
 
     // Clean-up function
     return () => {

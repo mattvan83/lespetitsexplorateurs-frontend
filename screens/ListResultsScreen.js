@@ -38,8 +38,10 @@ export default function ListResultsScreen({ navigation, route }) {
 
   const user = useSelector((state) => state.user.value);
   const [suggestionsList, setSuggestionsList] = useState([]);
-  const { isLoadingActivities, setIsLoadingActivities, fetchActivities } =
-    useFetchActivities(user);
+  const { isLoadingActivities, fetchActivities } = useFetchActivities(
+    user,
+    "ListResults"
+  );
   const { isLoadingOrganizers } = useFetchOrganizers(user);
 
   // console.log("user.filters: ", user.filters);
@@ -96,7 +98,7 @@ export default function ListResultsScreen({ navigation, route }) {
   const handlePressGoBackButton = async () => {
     if (category) {
       dispatch(setCategoryFilters([]));
-      await fetchActivities(true);
+      await fetchActivities(user, "ListResults", true);
     }
     navigation.navigate("TabNavigator", { screen: "Explorer" });
   };
