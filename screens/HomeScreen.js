@@ -96,7 +96,7 @@ export default function HomeScreen({ navigation }) {
           const cityName = apiData[0].nom;
           console.log("Geolocation cityName: ", cityName);
 
-          // Set location details in user preferences if not defined -> indirectly set user location filters as default state
+          // Set location details in user preferences and filters if not defined
           // ToDo: Call fetch PUT /updatePreferences to update partially user preferences?
 
           // Get user preferences, filters and token
