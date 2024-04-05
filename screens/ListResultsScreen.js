@@ -40,9 +40,10 @@ export default function ListResultsScreen({ navigation, route }) {
   const [suggestionsList, setSuggestionsList] = useState([]);
   const { isLoadingActivities, fetchActivities } = useFetchActivities(
     user,
-    "ListResults"
+    "ListResults",
+    null
   );
-  const { isLoadingOrganizers } = useFetchOrganizers(user);
+  const { isLoadingOrganizers } = useFetchOrganizers(user, "ListResults", null);
 
   // console.log("user.filters: ", user.filters);
   // console.log("user.preferences: ", user.preferences);
@@ -98,7 +99,7 @@ export default function ListResultsScreen({ navigation, route }) {
   const handlePressGoBackButton = async () => {
     if (category) {
       dispatch(setCategoryFilters([]));
-      await fetchActivities(user, "ListResults", true);
+      await fetchActivities(user, "ListResults", null, true);
     }
     navigation.navigate("TabNavigator", { screen: "Explorer" });
   };

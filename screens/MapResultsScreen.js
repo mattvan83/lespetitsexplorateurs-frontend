@@ -48,8 +48,8 @@ export default function MapResultsScreen({ navigation }) {
     setMarkerColors,
     pressedMarkerIndex,
     setPressedMarkerIndex,
-  } = useFetchActivities(user, "MapResults");
-  const { isLoadingOrganizers } = useFetchOrganizers(user);
+  } = useFetchActivities(user, "MapResults", null);
+  const { isLoadingOrganizers } = useFetchOrganizers(user, "MapResults", null);
   const [tempCity, setTempCity] = useState(null);
   const [tempCoordinates, setTempCoordinates] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
