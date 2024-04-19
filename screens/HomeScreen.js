@@ -18,17 +18,13 @@ import * as Location from "expo-location";
 import { useDispatch, useSelector } from "react-redux";
 import { loadOrganizers } from "../reducers/organizers";
 import { loadFavoriteActivities } from "../reducers/user";
-import {
-  importActivities,
-  setLocationFilters,
-  setLocationPreferences,
-  setErrorActivitiesFetch,
-  setErrorOrganizersFetch,
-} from "../reducers/user";
+import { setLocationFilters } from "../reducers/user";
 import Organizers from "../components/Organizers";
 import { AutocompleteDropdown } from "react-native-autocomplete-dropdown";
 import { Ionicons } from "@expo/vector-icons";
 import HomeCategoryMedium from "../components/HomeCategoryMedium";
+import { useFetchActivities } from "../hooks/useFetchActivities"; // Import custom hook for fetching activities
+import { useFetchOrganizers } from "../hooks/useFetchOrganizers"; // Import custom hook for fetching organizers
 
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
@@ -38,8 +34,16 @@ export default function HomeScreen({ navigation }) {
   const organizers = useSelector((state) => state.organizers.value);
   const categories = ["Sport", "Musique", "Créativité", "Motricité", "Éveil"];
   const [geolocation, setGeolocation] = useState(null);
-  const [isLoadingActivities, setIsLoadingActivities] = useState(true);
-  const [isLoadingOrganizers, setIsLoadingOrganizers] = useState(true);
+  const { isLoadingActivities } = useFetchActivities(
+    user,
+    "Explorer",
+    geolocation
+  );
+  const { isLoadingOrganizers } = useFetchOrganizers(
+    user,
+    "Explorer",
+    geolocation
+  );
 
   // console.log("user: ", user);
   // console.log("user.filters: ", user.filters);
@@ -47,7 +51,9 @@ export default function HomeScreen({ navigation }) {
   // console.log("user.errorActivitiesFetch: ", user.errorActivitiesFetch);
   // console.log("organizers: ", organizers);
   // console.log("user.errorOrganizersFetch: ", user.errorOrganizersFetch);
-  // console.log("geolocation: ", geolocation);
+  // console.log("isLoadingActivities: ", isLoadingActivities);
+  // console.log("isLoadingOrganizers: ", isLoadingOrganizers);
+  // console.log("Explorer geolocation: ", geolocation);
 
   const dispatch = useDispatch();
 
@@ -78,419 +84,6 @@ export default function HomeScreen({ navigation }) {
       }
     })();
   }, []);
-
-  // useEffect to manage fetch of activities at each update of geolocation
-  useEffect(() => {
-    (async () => {
-      // Test if geolocation has been obtained
-      if (geolocation) {
-        try {
-          // console.log("User geolocation available");
-          console.log("User geolocation: ", geolocation);
-          const { latitude, longitude } = geolocation;
-
-          const response = await fetch(
-            `https://geo.api.gouv.fr/communes?lat=${latitude}&lon=${longitude}&fields=nom,codesPostaux,centre`
-          );
-          const apiData = await response.json();
-          const cityName = apiData[0].nom;
-          console.log("Geolocation cityName: ", cityName);
-
-          // Set location details in user preferences if not defined -> indirectly set user location filters as default state
-          // ToDo: Call fetch PUT /updatePreferences to update partially user preferences?
-
-          // Get user preferences, filters and token
-          const {
-            agePreference,
-            latitudePreference,
-            longitudePreference,
-            scopePreference,
-          } = user.preferences;
-
-          const {
-            latitudeFilter,
-            longitudeFilter,
-            categoryFilter,
-            dateFilter,
-            momentFilter,
-            ageFilter,
-            priceFilter,
-            scopeFilter,
-          } = user.filters;
-
-          const { token } = user;
-
-          if (latitudeFilter === -200 || longitudeFilter === -200) {
-            // Case where filters location has been cleared and no preferences location is defined
-            if (latitudePreference === -200 || longitudePreference === -200) {
-              console.log("Use geolocation");
-
-              const response = await fetch(
-                `${BACKEND_ADDRESS}/activities/geoloc`,
-                {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    token,
-                    latitude,
-                    longitude,
-                    scope: scopeFilter,
-                    filters: {
-                      categoryFilter,
-                      dateFilter,
-                      momentFilter,
-                      ageFilter,
-                      priceFilter,
-                    },
-                  }),
-                }
-              );
-              const data = await response.json();
-              data.result &&
-                dispatch(importActivities(data.activities)) &&
-                dispatch(setErrorActivitiesFetch(null));
-              !data.result &&
-                dispatch(importActivities([])) &&
-                dispatch(setErrorActivitiesFetch(data.error));
-              dispatch(
-                setLocationPreferences({
-                  cityPreference: cityName,
-                  latitudePreference: latitude,
-                  longitudePreference: longitude,
-                })
-              );
-              dispatch(
-                setLocationFilters({
-                  cityFilter: cityName,
-                  latitudeFilter: latitude,
-                  longitudeFilter: longitude,
-                })
-              );
-              // Case where filters location has been cleared and preferences location is defined
-            } else if (
-              latitudePreference !== -200 &&
-              longitudePreference !== -200
-            ) {
-              console.log("Use preferences location");
-              console.log("user.preferences: ", user.preferences);
-
-              const response = await fetch(
-                `${BACKEND_ADDRESS}/activities/geoloc`,
-                {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    token,
-                    latitude: latitudePreference,
-                    longitude: longitudePreference,
-                    scope: scopePreference,
-                    filters: {
-                      categoryFilter,
-                      dateFilter,
-                      momentFilter,
-                      ageFilter: agePreference,
-                      priceFilter,
-                    },
-                  }),
-                }
-              );
-              const data = await response.json();
-              data.result &&
-                dispatch(importActivities(data.activities)) &&
-                dispatch(setErrorActivitiesFetch(null));
-              !data.result &&
-                dispatch(importActivities([])) &&
-                dispatch(setErrorActivitiesFetch(data.error));
-            }
-            // Case where filters location is defined
-          } else if (latitudeFilter !== -200 || longitudeFilter !== -200) {
-            console.log("Use filters location");
-            console.log("user.filters: ", user.filters);
-
-            const response = await fetch(
-              `${BACKEND_ADDRESS}/activities/geoloc`,
-              {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  token,
-                  latitude: latitudeFilter,
-                  longitude: longitudeFilter,
-                  scope: scopeFilter,
-                  filters: {
-                    categoryFilter,
-                    dateFilter,
-                    momentFilter,
-                    ageFilter,
-                    priceFilter,
-                  },
-                }),
-              }
-            );
-            const data = await response.json();
-            data.result &&
-              dispatch(importActivities(data.activities)) &&
-              dispatch(setErrorActivitiesFetch(null));
-            !data.result &&
-              dispatch(importActivities([])) &&
-              dispatch(setErrorActivitiesFetch(data.error));
-          }
-        } catch (error) {
-          console.error(error.message);
-          dispatch(setErrorActivitiesFetch(error.message));
-        } finally {
-          setIsLoadingActivities(false);
-        }
-      } else if (geolocation === undefined) {
-        try {
-          // console.log("User geolocation unavailable");
-
-          // Get user preferences, filters and token
-          const {
-            agePreference,
-            latitudePreference,
-            longitudePreference,
-            scopePreference,
-          } = user.preferences;
-
-          const {
-            latitudeFilter,
-            longitudeFilter,
-            categoryFilter,
-            dateFilter,
-            momentFilter,
-            ageFilter,
-            priceFilter,
-            scopeFilter,
-          } = user.filters;
-
-          const { token } = user;
-
-          if (latitudeFilter === -200 || longitudeFilter === -200) {
-            // Case where filters location has been cleared and no preferences location is defined
-            if (latitudePreference === -200 || longitudePreference === -200) {
-              const response = await fetch(
-                `${BACKEND_ADDRESS}/activities/nogeoloc`,
-                {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    token,
-                    filters: {
-                      categoryFilter,
-                      dateFilter,
-                      momentFilter,
-                      ageFilter,
-                      priceFilter,
-                    },
-                  }),
-                }
-              );
-              const data = await response.json();
-              data.result &&
-                dispatch(importActivities(data.activities)) &&
-                dispatch(setErrorActivitiesFetch(null));
-              !data.result &&
-                dispatch(importActivities([])) &&
-                dispatch(setErrorActivitiesFetch(data.error));
-
-              // Case where filters location has been cleared and preferences location is defined
-            } else if (
-              latitudePreference !== -200 &&
-              longitudePreference !== -200
-            ) {
-              const response = await fetch(
-                `${BACKEND_ADDRESS}/activities/geoloc`,
-                {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    token,
-                    latitude: latitudePreference,
-                    longitude: longitudePreference,
-                    scope: scopePreference,
-                    filters: {
-                      categoryFilter,
-                      dateFilter,
-                      momentFilter,
-                      ageFilter: agePreference,
-                      priceFilter,
-                    },
-                  }),
-                }
-              );
-              const data = await response.json();
-              data.result &&
-                dispatch(importActivities(data.activities)) &&
-                dispatch(setErrorActivitiesFetch(null));
-              !data.result &&
-                dispatch(importActivities([])) &&
-                dispatch(setErrorActivitiesFetch(data.error));
-            } else if (latitudeFilter !== -200 || longitudeFilter !== -200) {
-              const response = await fetch(
-                `${BACKEND_ADDRESS}/activities/geoloc`,
-                {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    token,
-                    latitude: latitudeFilter,
-                    longitude: longitudeFilter,
-                    scope: scopeFilter,
-                    filters: {
-                      categoryFilter,
-                      dateFilter,
-                      momentFilter,
-                      ageFilter,
-                      priceFilter,
-                    },
-                  }),
-                }
-              );
-              const data = await response.json();
-              data.result &&
-                dispatch(importActivities(data.activities)) &&
-                dispatch(setErrorActivitiesFetch(null));
-              !data.result &&
-                dispatch(importActivities([])) &&
-                dispatch(setErrorActivitiesFetch(data.error));
-            }
-          }
-        } catch (error) {
-          console.error(error.message);
-          dispatch(setErrorActivitiesFetch(error.message));
-        } finally {
-          setIsLoadingActivities(false);
-        }
-      }
-    })();
-  }, [geolocation]);
-
-  // useEffect to manage fetch of organizers at each update of geolocation
-  useEffect(() => {
-    (async () => {
-      // Test if geolocation has been obtained
-      if (geolocation) {
-        try {
-          // console.log("User geolocation available");
-          // console.log("User geolocation: ", geolocation);
-          const { latitude, longitude } = geolocation;
-
-          // Get user preferences, filters
-          const { latitudePreference, longitudePreference, scopePreference } =
-            user.preferences;
-
-          const { latitudeFilter, longitudeFilter, scopeFilter } = user.filters;
-
-          if (latitudeFilter === -200 || longitudeFilter === -200) {
-            // Case where filters location has been cleared and no preferences location is defined
-            if (latitudePreference === -200 || longitudePreference === -200) {
-              const response = await fetch(
-                `${BACKEND_ADDRESS}/organizers/geoloc/${scopeFilter}/${longitude}/${latitude}`
-              );
-              const data = await response.json();
-              data.result &&
-                dispatch(loadOrganizers(data.organizers)) &&
-                dispatch(setErrorOrganizersFetch(null));
-              !data.result &&
-                dispatch(loadOrganizers([])) &&
-                dispatch(setErrorOrganizersFetch(data.error));
-              // Case where filters location has been cleared and preferences location is defined
-            } else if (
-              latitudePreference !== -200 &&
-              longitudePreference !== -200
-            ) {
-              const response = await fetch(
-                `${BACKEND_ADDRESS}/organizers/geoloc/${scopePreference}/${longitudePreference}/${latitudePreference}`
-              );
-              const data = await response.json();
-              data.result &&
-                dispatch(loadOrganizers(data.organizers)) &&
-                dispatch(setErrorOrganizersFetch(null));
-              !data.result &&
-                dispatch(loadOrganizers([])) &&
-                dispatch(setErrorOrganizersFetch(data.error));
-            }
-            // Case where filters location is defined
-          } else if (latitudeFilter !== -200 || longitudeFilter !== -200) {
-            const response = await fetch(
-              `${BACKEND_ADDRESS}/organizers/geoloc/${scopeFilter}/${longitudeFilter}/${latitudeFilter}`
-            );
-            const data = await response.json();
-            data.result &&
-              dispatch(loadOrganizers(data.organizers)) &&
-              dispatch(setErrorOrganizersFetch(null));
-            !data.result &&
-              dispatch(loadOrganizers([])) &&
-              dispatch(setErrorOrganizersFetch(data.error));
-          }
-        } catch (error) {
-          console.error(error.message);
-          dispatch(setErrorOrganizersFetch(error.message));
-        } finally {
-          setIsLoadingOrganizers(false);
-        }
-      } else if (geolocation === undefined) {
-        try {
-          // console.log("User geolocation unavailable");
-
-          // Get user preferences, filters
-          const { latitudePreference, longitudePreference, scopePreference } =
-            user.preferences;
-
-          const { latitudeFilter, longitudeFilter, scopeFilter } = user.filters;
-
-          if (latitudeFilter === -200 || longitudeFilter === -200) {
-            // Case where filters location has been cleared and no preferences location is defined
-            if (latitudePreference === -200 || longitudePreference === -200) {
-              const response = await fetch(
-                `${BACKEND_ADDRESS}/organizers/nogeoloc`
-              );
-              const data = await response.json();
-              data.result &&
-                dispatch(loadOrganizers(data.organizers)) &&
-                dispatch(setErrorOrganizersFetch(null));
-              !data.result &&
-                dispatch(loadOrganizers([])) &&
-                dispatch(setErrorOrganizersFetch(data.error));
-              // Case where filters location has been cleared and preferences location is defined
-            } else if (
-              latitudePreference !== -200 &&
-              longitudePreference !== -200
-            ) {
-              const response = await fetch(
-                `${BACKEND_ADDRESS}/organizers/geoloc/${scopePreference}/${longitudePreference}/${latitudePreference}`
-              );
-              const data = await response.json();
-              data.result &&
-                dispatch(loadOrganizers(data.organizers)) &&
-                dispatch(setErrorOrganizersFetch(null));
-              !data.result &&
-                dispatch(loadOrganizers([])) &&
-                dispatch(setErrorOrganizersFetch(data.error));
-            }
-            // Case where filters location is defined
-          } else if (latitudeFilter !== -200 || longitudeFilter !== -200) {
-            const response = await fetch(
-              `${BACKEND_ADDRESS}/organizers/geoloc/${scopeFilter}/${longitudeFilter}/${latitudeFilter}`
-            );
-            const data = await response.json();
-            data.result &&
-              dispatch(loadOrganizers(data.organizers)) &&
-              dispatch(setErrorOrganizersFetch(null));
-            !data.result &&
-              dispatch(loadOrganizers([])) &&
-              dispatch(setErrorOrganizersFetch(data.error));
-          }
-        } catch (error) {
-          console.error(error.message);
-          dispatch(setErrorOrganizersFetch(error.message));
-        } finally {
-          setIsLoadingOrganizers(false);
-        }
-      }
-    })();
-  }, [geolocation]);
 
   const searchCity = (query) => {
     // Prevent search with an empty query

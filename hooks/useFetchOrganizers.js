@@ -5,16 +5,20 @@ import { setErrorOrganizersFetch } from "../reducers/user";
 
 const BACKEND_ADDRESS = process.env.BACKEND_ADDRESS;
 
-export const useFetchOrganizers = (user) => {
-  const [isLoadingOrganizers, setIsLoadingOrganizers] = useState(false);
+export const useFetchOrganizers = (user, currentScreenName, geolocation) => {
+  const [isLoadingOrganizers, setIsLoadingOrganizers] = useState(
+    currentScreenName === "Explorer" ? true : false
+  );
   const dispatch = useDispatch();
 
-  // useEffect to manage fetch of organizers at each update of user.filters.scopeFilter, user.filters.latitudeFilter or user.filters.longitudeFilter
+  // useEffect to manage fetch of organizers at each update of (user.filters.scopeFilter, user.filters.latitudeFilter, user.filters.longitudeFilter) OR geolocation
   useEffect(() => {
-    const fetchOrganizers = async () => {
+    const fetchOrganizers = async (user, currentScreenName, geolocation) => {
+      // Fetch organizers based on user filters OR geolocation
       try {
-        // Fetch organizers based on user filters
-        setIsLoadingOrganizers(true);
+        if (currentScreenName !== "Explorer") {
+          setIsLoadingOrganizers(true);
+        }
 
         // Get user preferences, filters
         const { latitudePreference, longitudePreference, scopePreference } =
@@ -27,8 +31,10 @@ export const useFetchOrganizers = (user) => {
         if (latitudeFilter === -200 || longitudeFilter === -200) {
           // Case where filters location has been cleared and no preferences location is defined
           if (latitudePreference === -200 || longitudePreference === -200) {
-            endpoint = `${BACKEND_ADDRESS}/organizers/nogeoloc`;
-            // Case where filters location has been cleared and preferences location is defined
+            if (currentScreenName === "Explorer" && geolocation) {
+              const { latitude, longitude } = geolocation;
+              endpoint = `${BACKEND_ADDRESS}/organizers/geoloc/${scopeFilter}/${longitude}/${latitude}`;
+            } else endpoint = `${BACKEND_ADDRESS}/organizers/nogeoloc`;
           } else if (
             latitudePreference !== -200 &&
             longitudePreference !== -200
@@ -60,17 +66,24 @@ export const useFetchOrganizers = (user) => {
       }
     };
 
-    fetchOrganizers();
-
+    if (
+      currentScreenName !== "Explorer" ||
+      (currentScreenName === "Explorer" && geolocation) ||
+      (currentScreenName === "Explorer" && geolocation === undefined)
+    ) {
+      fetchOrganizers(user, currentScreenName, geolocation);
+    }
     // Clean-up function
     return () => {
       // Perform any cleanup if needed
     };
   }, [
-    user.filters.scopeFilter,
-    user.filters.latitudeFilter,
-    user.filters.longitudeFilter,
-  ]);
+    currentScreenName === "Explorer"
+      ? geolocation
+      : (user.filters.scopeFilter,
+        user.filters.latitudeFilter,
+        user.filters.longitudeFilter),
+  ]); // Trigger effect when geolocation or user filters location change based on the currentScreenName
 
   // Return loading state if needed
   return { isLoadingOrganizers, setIsLoadingOrganizers };
